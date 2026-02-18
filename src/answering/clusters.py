@@ -611,7 +611,7 @@ Keep each summary concise but informative, focusing on the relationships and the
     # Use configuration-based max_tokens if available, otherwise use a reasonable default
     max_tokens = 2000  # Increased for batch processing
     if global_config and "entity_summary_to_max_tokens" in global_config:
-        max_tokens = global_config["entity_summary_to_max_tokens"] * len(valid_clusters)  # Scale with number of clusters
+        max_tokens = min(global_config["entity_summary_to_max_tokens"] * len(valid_clusters), 16384)
 
     logger.info(f"Processing batch of {len(valid_clusters)} clusters with max_tokens={max_tokens}")
 
