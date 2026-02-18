@@ -1,0 +1,32 @@
+# Knowledge graphs (large, rebuilt from data)
+kg/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+*.env
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Run logs and results (regenerable)
+run_all_embeddings.log
+results/

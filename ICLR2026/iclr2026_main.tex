@@ -1,0 +1,2400 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2026_conference,times}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+% \input{math_commands.tex}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2025}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2025}
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2025}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage{colortbl}       % Add in your preamble if not already present
+\usepackage{pifont}
+% ---------- graphics & floats ----------
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing, calligraphy}
+\usepackage{mdframed}
+% ---------- core maths ----------
+\let\Bbbk\relax
+\usepackage{amsmath, amssymb, amsthm}
+% ---------- algorithms ----------
+\usepackage[utf8]{inputenc}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{lipsum}
+\usepackage{booktabs,multirow,tabularx,xcolor,array}
+% Required packages for improved table formatting
+\usepackage{booktabs}        % For professional table formatting (\toprule, \midrule, \bottomrule)
+\usepackage{xcolor}          % For color support
+\usepackage{colortbl}        % For colored table rows
+\usepackage{array}           % For advanced table column formatting
+\usepackage{multirow}        % For cells that span multiple rows
+\usepackage{siunitx}         % For aligning numbers in tables
+\usepackage{listings}
+\usepackage{xcolor}  % For colors
+
+% Table row coloring command
+\definecolor{lightgray}{gray}{0.9}  % Define light gray color
+
+% Optional: Command for improved table captions
+\usepackage{caption}
+\captionsetup[table]{skip=10pt}  % Adds spacing between table and caption
+
+% ---------- lists and boxes ----------
+\usepackage[inline]{enumitem}
+\usepackage{multirow}
+\usepackage[most]{tcolorbox}
+\usepackage{makecell}
+
+
+% ---------- appendix & mini-toc ----------
+\usepackage[toc,page,header]{appendix}
+\usepackage{wrapfig}
+
+% ---------- colours & highlighting ----------
+\usepackage{xcolor}
+\usepackage{soul}             % \hl highlighting
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{minitoc}
+\usepackage{titletoc}
+\renewcommand \thepart{}
+\renewcommand \partname{}
+\usepackage[toc,page,header]{appendix}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\score}[2]{#1\,($\pm$#2)}   % formats "mean (±sd)"
+\newcommand{\best}[1]{\textbf{#1}}      % wrap best entries
+% Define green check and red x
+\newcommand{\cmark}{\textcolor{green}{\ding{51}}} % check mark
+\newcommand{\xmark}{\textcolor{red}{\ding{55}}}   % x mark
+\AtBeginDocument{\renewcommand{\eqref}[1]{(\ref{#1})}}
+
+% ---------- hyperlinks (must be last) ----------
+\usepackage{hyperref}      % hyperlinks
+\definecolor{darkred}{RGB}{150,0,0}
+\definecolor{darkgreen}{RGB}{0,150,0}
+\definecolor{darkblue}{RGB}{0,0,200}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkred,
+    citecolor=darkblue,
+    urlcolor=darkblue
+}
+\definecolor{lightseagreen}{HTML}{20B2AA}
+
+% ---------- theorem environments ----------
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}{Example}
+\newtheorem{procedure}[theorem]{Procedure}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{lemma}[theorem]{Lemma}
+ \newtheorem{assumption}{Assumption}
+\renewcommand*{\theassumption}{\Alph{assumption}}
+
+% ---------- maths shorthand ----------
+% \newcommand{\R}{\mathbb R}
+% \newcommand{\E}{\mathbb E}
+% \newcommand{\Var}{\mathrm{Var}}
+% \newcommand{\KL}{\mathrm{KL}}
+% \newcommand{\1}{\mathbf 1}
+
+% Customize algorithm appearance
+\algnewcommand{\algorithmicinput}{\textbf{Input:}}
+\algnewcommand{\algorithmicoutput}{\textbf{Output:}}
+\algnewcommand{\Input}{\item[\algorithmicinput]}
+\algnewcommand{\Output}{\item[\algorithmicoutput]}
+
+\newcommand{\mc}{\mathcal}
+\newcommand{\m}[1]{\mathbf{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ti}[1]{\widetilde{#1}}
+\newcommand{\g}[1]{\boldsymbol{#1}}
+\newcommand{\mb}[1]{\mathbb{#1}}
+\newcommand{\circled}[1]{%
+  \tikz[baseline=(char.base)]{%
+    \node[shape=circle, draw, inner sep=.5pt, minimum size=10pt, line width=0.1pt, fill=lightgray] (char) {#1};
+  }%
+}
+
+% \DeclareMathOperator*{\argmax}{arg\,max}
+% \DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\minimize}{minimize}
+\DeclareMathOperator{\trace}{trace}
+\DeclareMathOperator{\eig}{eig}
+\DeclareMathOperator{\logt}{logdet}
+
+\newcommand{\da}[1]{{\color{magenta}{[DA: #1]}}}
+\newcommand{\ham}[1]{{\color{blue}{[HM: #1]}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Top-k / Top-N operator (use as \Top{K} or \Top{N})
+\newcommand{\Top}[1]{\operatorname{Top\!-\!#1}}
+
+
+% Add these packages to your preamble
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+
+
+% Define colors for the prompt box
+\definecolor{promptbg}{RGB}{240, 248, 255}      % Light blue backgrounds
+\definecolor{promptborder}{RGB}{70, 130, 180}   % Steel blue border
+
+% Create a counter for prompts
+\newcounter{promptcounter}
+
+% Create the prompt environment with proper referencing
+\newenvironment{promptbox}[2]{%
+    \refstepcounter{promptcounter}%
+    \label{#1}%
+    \begin{tcolorbox}[
+        colback=promptbg,
+        colframe=promptborder,
+        coltitle=white,
+        colbacktitle=promptborder,
+        title={\textbf{Prompt \thepromptcounter: #2}},
+        fonttitle=\sffamily\bfseries,
+        enhanced,
+        breakable,
+        attach boxed title to top left={yshift=-2mm, xshift=2mm},
+        boxed title style={rounded corners},
+        rounded corners,
+        drop shadow,
+        left=4pt,
+        right=4pt,
+        top=6pt,
+        bottom=6pt
+    ]%
+}{%
+    \end{tcolorbox}%
+}
+
+
+
+
+\usepackage{hyperref}
+\usepackage{url}
+%\renewcommand{\baselinestretch}{0.75}
+
+%\title{Query-Aware Flow Diffusion: Graph-Based Retrieval-Augmented Generation with Statistical Retrival Guarantees}
+
+% \title{Query-Aware Flow Diffusion for Graph-Based RAG with Retrieval Guarantees}
+\title{Query-Aware Flow Diffusion for Graph-Based RAG with Retrieval Guarantees}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{\textbf{Zhuoping Zhou\textsuperscript{$\pi$},
+Davoud Ataee Tarzanagh\textsuperscript{$\pi$},
+Sima Didari\textsuperscript{$\pi$}, Wenjun Hu,
+Baruch Gutow,}\\
+\textbf{Oxana Verkholyak, Masoud Faraki, Heng Hao,
+Hankyu Moon, Seungjai Min} \\[0.5em]
+~Samsung SDS Research America, Mountain View, CA, USA \\
+[0.5em]
+\texttt{\{zhuoping.z, d.tarzanagh, s.didari, wenjun.hu1, baruch.g,} \\
+\texttt{oxana.v, m.faraki, h.heng, hankyu.m, seungjai.min\}@samsung.com}
+}
+
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+\begin{document}
+
+\maketitle
+
+\begingroup
+\renewcommand
+\thefootnote{}%
+\footnote{\textsuperscript{$\pi$}\;Equal contribution.}%
+\addtocounter{footnote}{-1}%
+\endgroup
+
+
+\begin{abstract}
+Graph-based Retrieval-Augmented Generation (RAG) systems leverage interconnected knowledge structures to capture complex relationships that flat retrieval struggles with, enabling multi-hop reasoning. Yet most existing graph-based methods suffer from (i) heuristic designs lacking theoretical guarantees for subgraph quality or relevance and/or (ii) the use of static exploration strategies that ignore the query's holistic meaning, retrieving neighborhoods or communities regardless of intent. We propose \textit{Query-Aware Flow Diffusion RAG} (QAFD-RAG), a training-free framework that dynamically adapts graph traversal to each query's holistic semantics. The central innovation is \emph{query-aware traversal}: during graph exploration, edges are dynamically weighted by how well their endpoints align with the query's embedding, guiding flow along semantically relevant paths while avoiding structurally connected but irrelevant regions. These query-specific reasoning subgraphs enable the first statistical guarantees for query-aware graph retrieval, showing that QAFD-RAG recovers relevant subgraphs with high probability under mild signal-to-noise conditions. The algorithm converges exponentially fast, with complexity scaling with the retrieved subgraph size rather than the full graph. Experiments on question answering and text-to-SQL tasks demonstrate consistent improvements over state-of-the-art graph-based RAG methods.
+\end{abstract}
+
+
+\section{Introduction}
+Retrieval-Augmented Generation (RAG) enhances language models (LMs) by integrating external knowledge during generation \citep{fan2024survey,gao2023retrieval}. A retriever first gathers relevant information for a query, which is then combined with the input and passed to the generator \citep{karpukhin2020dense}. This is especially useful for question answering (QA) \citep{xiong2020answering,zhu2021retrieving}, where added context improves accuracy in domains such as healthcare, law, finance, and education \citep{xu2024ram,zhang2023enhancing}. With recent advances in large LMs (LLMs), RAG has become increasingly important for trustworthy AI, helping mitigate hallucinations \citep{tonmoy2024comprehensive}, improve transparency \citep{kim2024re}, adaptability \citep{shi2024retrieval,wang2023knowledge}, privacy \citep{zeng2024mitigating,zeng2024good}, fairness \citep{shrestha2024fairrag}, and reliability \citep{fang2024enhancing}.
+
+
+
+Although conventional RAG is effective for unstructured document retrieval, real-world knowledge often has graph-structured forms—such as database schemas, social networks, and biomedical repositories. These structures preserve relational information that similarity-based retrieval misses, including multi-hop dependencies, hierarchies, and complex interactions. Graph-oriented RAG leverages such properties through techniques such as community detection and graph neural networks \citep{edge2024local,wang2024knowledge}, extending beyond similarity search to capture topological and semantic relationships \citep{fan2024survey,gao2023retrieval}. This enables advanced multi-hop reasoning crucial for tasks such as text-to-SQL generation, scientific discovery, and medical diagnosis, where understanding relationships is as important as retrieving facts \citep{chen2025graph,wigh2022review,zhang2024tree}. For an overview, see the survey by \citet{han2024retrieval}.
+
+
+
+
+However, existing graph-based RAG methods \citep{han2024retrieval} {suffer from heuristic designs lacking theoretical guarantees for subgraph quality or relevance and/or the use of static exploration strategies that ignore the query's holistic meaning during traversal}. As shown in Figure~\ref{fig:graphrags}, GraphRAG~\citep{edge2024local} applies uniform community detection regardless of query relevance, while LightRAG~\citep{guo2024lightrag} extracts ego-networks around seed nodes without semantic alignment.  In contrast, QAFD-RAG incorporates query semantics by reweighting edges and propagating mass along semantically aligned paths. Nodes on the reasoning chain (Apple $\rightarrow$ Mac $\rightarrow$ macOS) are emphasized with stronger colors, while irrelevant ones (Amazon River, Fuji) fade due to suppressed flow. This reweighting turns diffusion into a semantic filter, producing compact, interpretable subgraphs aligned with user intent. By contrast, holistic query-agnostic methods often include irrelevant nodes, omit distant but relevant information, and return unstructured lists rather than coherent reasoning paths. Lacking theoretical foundations, these heuristics also yield unpredictable performance.
+
+
+Given these limitations, we ask:
+\begin{center}
+\begin{tcolorbox}[
+    enhanced,
+    colback=gray!8,
+    colframe=blue!65,
+    boxrule=0.6pt,
+    leftrule=4pt,
+    arc=2pt,
+    left=2pt,
+    right=3pt,
+    top=3pt,
+    bottom=3pt,
+    fontupper=\itshape,
+    before skip=2pt,
+    after skip=2pt,
+    width=0.79\textwidth
+]
+\textcolor{gray!75}{\textbf{Q:}} Under what conditions can we establish recovery guarantees for retrieving subgraphs that adapt to a query’s holistic meaning in graph-based RAG?
+\end{tcolorbox}
+\end{center}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.30\linewidth]{figs/GraphRAG.png}
+    \includegraphics[width=0.33\linewidth]{figs/LightRAG.png}
+    \includegraphics[width=0.35\linewidth]{figs/QAFD-RAG.png}
+     \textbf{GraphRAG} \hspace{3cm} \textbf{LightRAG} \hspace{3cm} \textbf{QAFD-RAG}
+\caption[Comparison of graph-based RAG methods]{Comparison of graph-based RAG methods on Wikipedia pages (Apple fruit, Apple Inc., Amazon River, Amazon.com)\protect\footnotemark. 
+Query: “Introduce Steve Jobs’s products in Apple.” 
+\textbf{GraphRAG}~\citep{edge2024local}  retrieves entire communities, mixing relevant nodes (e.g., Mac, macOS) with irrelevant ones (e.g., Amazon River, Apple fruit). 
+\textbf{LightRAG}~\citep{guo2024lightrag} focuses on \textcolor{lightseagreen}{1-hop} neighborhoods, including both relevant nodes (e.g., Steve Jobs, iPhone) and structurally close but irrelevant ones (e.g., Fuji). \textbf{QAFD-RAG} reweights edges by the \textit{query’s holistic meaning}, suppressing irrelevant one-hop neighborhoods and preventing traversal into the Amazon River, Amazon.com, and Apple fruit clusters. 
+The resulting subgraph is coherent, with edge thickness reflecting weight and node mass indicating importance (\textcolor{green!70!black}{highest}, \textcolor{yellow!90!black}{lowest}); see the discussion following Eqn.~\eqref{eqn:dual:prob}.  %in %Section~\ref{sec:qafd}.
+}
+    \label{fig:graphrags}
+\end{figure}
+\footnotetext{Code is available at \href{https://anonymous.4open.science/r/QAFD-E5B6/}{anonymous repository}.}
+
+To address this, we turn to graph diffusion theory and in particular \textit{flow diffusion}—the process of spreading mass from seed nodes to neighbors along graph edges \citep{lovasz1993random,chung1997spectral,fortunato2010community,spielman2013local, fountoulakis2023flow}. Spectral diffusion methods are effective for clustering and community detection due to strong guarantees and efficiency, but have not been studied in the presence of queries. We reformulate diffusion for graph-based RAG, linking flow/traversal to a query’s holistic meaning. Specifically, we propose Query-Aware Flow Diffusion RAG (QAFD-RAG), a framework for dynamic, query-aware graph traversal via principled flow diffusion. The main contributions of this work are:
+\begin{enumerate}[wide, labelindent=3pt, itemsep=0pt, label=\textbf{C\arabic*.}]
+\vspace{-.1cm}
+\item \textbf{Query-Aware Flow Diffusion Framework:} We introduce the first principled flow diffusion method for graph-based RAG that incorporates query semantics via alignment-based edge weighting. QAFD-RAG adapts flow probabilities online, guiding traversal toward semantically relevant regions with complexity scaling with the retrieved subgraph size rather than the full graph (Figures~\ref{fig:graphrags} and \ref{fig:overview}).
+\item \textbf{Optimization and Statistical Guarantees:} We provide the first rigorous analysis of query-aware traversal with provable guarantees. Our results (Theorem~\ref{lem:complexity}) show exponential convergence to a unique query-dependent stationary distribution, and recovery guarantees (Theorem~\ref{thm:recovery}) ensuring relevant subgraphs are retrieved with high probability under mild signal-to-noise conditions.
+% \item \textbf{Experimental Validation:} QAFD-RAG demonstrates superior performance across multiple benchmarks, consistently outperforming both graph-based RAG and text-to-SQL baselines. On the UltraDomain QA dataset (Tables~\ref{tab:rag_all_in_one_part1} and \ref{tab:rag_all_in_one_part2}), QAFD-RAG leads in 96\% of topic–metric comparisons (48 out of 50 evaluated pairs). For multi-hop question answering (Table~\ref{tab:multi-hop}), QAFD-RAG achieves {the highest F1/EM scores on HotpotQA (73.42/58.10) and MuSiQue (47.99/33.50), and remains competitive with HippoRAG on 2WikiMultiHopQA (69.41/59.50 vs. 70.15/61.85)}, significantly outperforming GraphRAG {and LightRAG across all benchmarks, as well as RAPTOR}. In text-to-SQL tasks (Tables~\ref{tab:sql_accuracy}--\ref{tab:schema_linking}), QAFD-RAG attains execution accuracies of 26.7\% on SQLite and 23.7\% on Snowflake databases, surpassing the Spider-Agent baseline~\citep{lei2024spider} (21.5\% and 16.3\%, respectively) while simultaneously reducing LLM API calls by 31.9--54.5\%.
+\item \textbf{Experimental Validation:} We evaluate QAFD-RAG on general QA (Tables~\ref{tab:rag_all_in_one_part1} and \ref{tab:rag_all_in_one_part2}), multi-hop QA (Table~\ref{tab:multi-hop}), long-document summarization (Table~\ref{tab:squality_automated}), and text-to-SQL (Table~\ref{tab:sql_accuracy}). Across these benchmarks, QAFD-RAG consistently outperforms state-of-the-art graph-based RAG baselines and improves over text-to-SQL baselines.
+\end{enumerate}
+
+\textbf{Notation.}
+Let $\mathbb{R}^d$ be $d$-dimensional Euclidean space, and let $\mathbb{R}^d_{+}$ and $\mathbb{R}^d_{++}$ denote the nonnegative and strictly positive orthants. Vectors and matrices are in boldface (e.g., $\mathbf{a}$, $\mathbf{A}$) with entries $a_i$ and $a_{ij}$. For a matrix $\mathbf{A}$, $\mathbf{A}_{i:}$ and $\mathbf{A}_{:j}$ denote its $i$th row and $j$th column, and $\mathbf{A}\succ 0$ and $\mathbf{A}\succeq 0$ mean positive definite and positive semidefinite. For vectors, $\|\mathbf{a}\|_1:=\sum_i |a_i|$ and $\|\mathbf{a}\|:=\big(\sum_i |a_i|^2\big)^{1/2}$. For matrices, $\|\mathbf{A}\|_1:=\sum_{i,j}|a_{ij}|$ and $\|\mathbf{A}\|_{F}:=\big(\sum_{i,j}|a_{ij}|^2\big)^{1/2}$. For $n\in\mathbb{N}$, define $[n]:=\{1,\ldots,n\}$. We use standard asymptotic notations $O$, $\Omega$, $\Theta$, $o$, and $\omega$ (as $n\to\infty$).
+We write $\triangleleft$ for a fixed deterministic tie-breaking order on any finite set. For a finite set $U$ and scores $f:U\to\mathbb{R}$, \texttt{Top}-$k_{u\in U}(f(u))$ returns the $k$ elements of $U$ with largest scores, breaking ties by $\triangleleft$; equivalently, if $u_{(1)},\ldots,u_{(|U|)}$ are sorted in decreasing order of $(f(u),\triangleleft)$, then \texttt{Top}-$k_{u\in U}(f(u)):=\{u_{(1)},\ldots,u_{(k)}\}$.
+
+
+
+
+\section{Methodology}\label{sec:qafd}
+\begin{figure*}
+  \centering
+  \includegraphics[width=\linewidth]{figs/question_illustration.pdf}
+\caption{Two-stage QAFD-RAG framework: the indexing stage builds a KG from documents, and the query stage applies QAFD to extract and prompt subgraphs for response generation.}
+  \label{fig:overview}
+  \vspace{-.3cm}
+\end{figure*}
+
+\subsection{{Framework Overview}}
+ QAFD-RAG is a training-free, graph-based reasoning framework for RAG tasks.  
+The framework operates in two phases: an \textit{Indexing Stage} (IS), which builds a knowledge graph (KG) from raw documents \citep{chen2025pathrag,guo2024lightrag}, and a \textit{Query Stage} (QS), which introduces our key contribution—query-aware flow diffusion. This mechanism integrates query semantics into graph traversal, enabling adaptive retrieval with statistical guarantees. Unlike SOTA RAG methods such as GraphRAG~\citep{edge2024local}, which applies static community detection, or LightRAG~\citep{guo2024lightrag}, which extracts ego-nets (Figure~\ref{fig:graphrags}), QAFD-RAG dynamically reweights edges and diffuses flow according to query alignment, suppressing irrelevant clusters and highlighting reasoning paths. 
+
+In IS, \textit{IS-Step 1: Document Chunking} splits documents into context-preserving chunks; \textit{IS-Step 2: Entity and Relationship Extraction} uses LLM prompting to build a structured KG. In QS, \textit{QS-Step 1: Keyword Extraction} pulls conceptual and surface terms (e.g., \textit{Feminism}, \textit{Elaine Benes}) for broad coverage (Figure~\ref{fig:overview}, Step~1). Next, \textit{QS-Step 2: Seed Node Selection and QAFD} scores nodes by similarity to query keywords {as detailed in Algorithm~\ref{alg:seed_selection}}. For example, in Figure~\ref{fig:graphrags}, \textit{Steve Jobs} (0.95), \textit{Apple} (0.92), and \textit{iPhone} (0.88) are selected, while irrelevant ones (e.g., \textit{Amazon}, 0.15) are excluded.  Top-scoring nodes serve as seeds where mass is injected and propagated via flow diffusion (Figure~\ref{fig:overview}, Step~2). Edges are dynamically reweighted to blend structure and semantics {through the query-aware edge weighting mechanism described in Section~\ref{sec:qafd:detailed}}, suppressing irrelevant expansions (Apple $\to$ Amazon River/fruit) and reinforcing meaningful ones. { We formulate this diffusion process as a constrained optimization problem, solved efficiently via a push–relabel algorithm (Algorithm~\ref{alg:single_seed_query_diffusion}). Recovery guarantees and algorithm complexity are provided in Section~\ref{sec:guarantees}.} Finally, \textit{QS-Step 3: Response Generation} summarizes retrieved communities (e.g., \textit{Elaine Benes}, \textit{Feminism}) and prompts a downstream LLM, yielding grounded, consistent answers along reasoning paths.
+
+
+
+%
+\subsection{Query-Aware Flow Diffusion}\label{sec:qafd:detailed}
+
+We cast subgraph retrieval as a QAFD problem.  Given a natural language query $q \in \mathcal{Q}$ and a knowledge graph $\mathcal{G} = (\mathcal{V}, \mathcal{E}, \mathcal{R})$, with $\mathcal{V}$ entities, $\mathcal{E}$ edges, and $\mathcal{R}$ relations, the task is to retrieve a subgraph $\mathcal{G}_q \subseteq \mathcal{G}$ capturing reasoning paths relevant for downstream language model processing. We first recall flow diffusion from graph diffusion theory \citep{lovasz1993random,chung1997spectral,spielman2013local,fountoulakis2023flow}.  
+%
+\begin{definition}[Flow Diffusion]\label{def:fd}
+Flow diffusion spreads an initial amount of “mass” or “information” 
+from seed nodes through a graph along its edges. At each step, mass is divided among neighbors by edge weights, so strongly connected nodes receive more and weakly connected ones less.  
+\end{definition}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+\begin{minipage}{0.5\textwidth}
+\vspace{-0.7cm}
+\begin{algorithm}[H]
+\caption{Seed Node Selection}
+\label{alg:seed_selection}
+\begin{algorithmic}[1]
+\Input Query $q$, graph $\mathcal{G}=(\mathcal{V},\mathcal{E},\mathcal{R})$ with node embeddings $\{\boldsymbol{e}_v\}_{v\in\mathcal{V}}$, embedding function $h(\cdot)$, similarity $H_{\mathrm{sim}}(\cdot,\cdot)$, number of seeds $N$
+\Output Seed entities $\mathcal{S}_{\mathcal{V}}\subseteq\mathcal{V}$ with $|\mathcal{S}_{\mathcal{V}}|=N$
+\State Extract keywords $\mathcal{K}_q=\{w_1,\ldots,w_{|\mathcal{K}_q|}\}$ from $q$ using an LLM
+\State Compute $\boldsymbol{e}_{q,i}= h(w_i)$ for all $i=1, \ldots, |\mathcal{K}_q|$
+\ForAll{$v\in\mathcal{V}$}
+    \State $\text{score}(v,q)\gets \max\limits_{i\in \{1, \ldots, |\mathcal{K}_q|\}} H_{\mathrm{sim}}(\boldsymbol{e}_{q,i},\boldsymbol{e}_v)$ \label{eqn:score}
+\EndFor
+ \State 
+ $\mathcal{S}_{\mathcal{V}} \gets \texttt{Top-}N_{v\in\mathcal{V}}\big(\text{score}(v,q)\big)$
+ \label{eqn:seed_selection}
+\State \Return $\mathcal{S}_{\mathcal{V}}$
+\end{algorithmic}
+\end{algorithm}
+\vspace{-0.5cm}
+\end{minipage}
+\end{wrapfigure}
+
+
+%
+Intuitively, flow diffusion resembles water or dye moving through pipes: most flow follows stronger pipes (high-weight edges), little through weaker ones. While well studied in clustering and community detection, it has not been explored in the presence of queries. We reformulate diffusion for graph-based RAG, linking traversal to query semantics. The first step is seed node selection, as seeds are usually assumed \textit{a priori} in diffusion methods~\citep{spielman2013local,WFHM2017}. Seed selection identifies query-relevant entities as starting points for flow diffusion.  
+We adopt a semantic similarity--based approach and treat seed utility as approximately additive under an independence assumption; see Algorithm~\ref{alg:seed_selection}.  Let $\mathcal{Q}$ be the query space and $\mathcal{W}$ the vocabulary space. Define $g: \mathcal{Q} \rightarrow 2^{\mathcal{W}}$ mapping a query $q \in \mathcal{Q}$ to keywords $\mathcal{K}_q := \{w_1, \ldots, w_{|\mathcal{K}_q|}\}$ via LLM prompting (Appendices~\ref{app:prompts:qa} and \ref{app:prompts:text-to-sql}). 
+Let $\mathcal{K}_{\mathcal{V}} := \{k_v : v \in \mathcal{V}\}$ be node identifiers. Let $h:\mathcal{W}\cup\mathcal{V}\rightarrow\mathbb{R}^d$ denote an embedding function that maps query keywords and graph nodes to $\mathbb{R}^d$:
+\begin{align*}
+\mathcal{E}_q 
+:= \{h(w_i)\}_{i=1}^{|\mathcal{K}_q|}
+ = \{\boldsymbol{e}_{q,i}\in\mathbb{R}^d\}_{i=1}^{|\mathcal{K}_q|}, \quad\textnormal{and}\quad  
+\mathcal{E}_{\mathcal{V}}  
+:= \{h(v)\}_{v\in\mathcal{V}}
+ = \{\boldsymbol{e}_v\in\mathbb{R}^d\}_{v\in\mathcal{V}}.
+\end{align*}
+We then define a similarity function $H_{\text{sim}}: \mathbb{R}^d \times \mathbb{R}^d \rightarrow \mathbb{R}$ for semantic relatedness, with common choices including cosine similarity $\boldsymbol{e} \cdot \boldsymbol{e}' /\|\boldsymbol{e}\| \|\boldsymbol{e}'\|$, dot product $\boldsymbol{e} \cdot \boldsymbol{e}'$, or RBF kernel $\exp(-\gamma \|\boldsymbol{e} - \boldsymbol{e}'\|^2)$.  
+The relevance score of a node $v$ for query $q$ is the maximum similarity across keywords via  Step~\ref{eqn:score}. We then select the $N$ highest-scoring entities via Step~\ref{eqn:seed_selection}, breaking ties arbitrarily. For small graphs, keywords and seeds can often be extracted in one LLM prompt (Appendix~\ref{app:prompts:text-to-sql}).  For large graphs (e.g., Table~\ref{tab:dataset_description}), we apply Algorithm~\ref{alg:seed_selection}, which runs in $\mathcal{O}\!\left(|\mathcal{V}|\,|\mathcal{K}_q|\,d + |\mathcal{V}|\log N\right)$.
+
+
+\textbf{Dynamic Query-Aware Edge Weights.} Given seeds $\mathcal{S}_{\mathcal{V}}$ and query $q \in \mathcal{Q}$, we perform flow diffusion to extract reasoning subgraphs. Traditional diffusion uses static edge weights that ignore query context, leading to uniform exploration. Our key insight is to make edges \textit{query-aware gates} that modulate flow strength using both structural connectivity and query alignment, enabling recovery guarantees. For each $q \in \mathcal{Q}$, edge $(u,v) \in \mathcal{E}$, and $a,b \geq 0$, the query-aware edge weights are
+\begin{align} \label{eqn:query_weights_sim} 
+\bar{w}(q, u, v) &:= H_{\text{sim}}(h(u), h(v)) \circ \left( a + b \cdot 
+\left( H_{\text{sim}}(h(u), h(q)) \circ H_{\text{sim}}(h(v), h(q)) \right)\right),
+\end{align}  
+where $h(\cdot)$ is the embedding function, $H_{\text{sim}}$ a similarity measure, $\circ$ a binary operation (addition or multiplication), and $a,b \geq 0$ hyperparameters.  
+
+{We explore three variants that balance structural and semantic signals differently:}
+\begin{subequations}
+\begin{align}
+\bar{w}_{\text{Mean}}(q,u,v) &:= \tfrac{1}{3}\left( H_{\text{sim}}(h(u),h(v)) 
++ H_{\text{sim}}(h(u),h(q)) 
++ H_{\text{sim}}(h(v),h(q)) \right), \label{eqn:weight_mean} \\[0.7em]
+\bar{w}_{\text{Product}}(q,u,v) &:= H_{\text{sim}}(h(u),h(v)) 
+\cdot H_{\text{sim}}(h(u),h(q)) 
+\cdot H_{\text{sim}}(h(v),h(q)),  \label{eqn:weight_product} \\[0.7em]
+\bar{w}_{\text{Hybrid}}(q,u,v) &:= H_{\text{sim}}(h(u),h(v)) \cdot 
+\left( a + b \left( H_{\text{sim}}(h(u),h(q)) + H_{\text{sim}}(h(v),h(q)) \right) \right). 
+\label{eqn:weight_hybrid}
+\end{align}    
+\end{subequations}
+Here, $H_{\text{sim}}(h(u), h(v))$ captures structural (node–node) similarity, while $H_{\text{sim}}(h(u), h(q)) \circ H_{\text{sim}}(h(v), h(q))$ measures query relevance to nodes $u$ and $v$. {The multiplicative interaction in Product and Hybrid amplifies edges between query-relevant nodes while exponentially suppressing edges to irrelevant regions, transforming diffusion into a semantic filter.} Weights are computed online: \textit{when a query arrives, we first compute its embedding and then update only the edge weights $\bar{w}(q, u, v)$ encountered during traversal}. In experiments, $\bar{w}_{\text{Hybrid}}(q,u,v)$ yields slightly better results.
+
+% \textbf{Dynamic Query-Aware Edge Weights.} Given seeds $\mathcal{S}_{\mathcal{V}}$ and query $q \in \mathcal{Q}$, we perform flow diffusion to extract reasoning subgraphs. Our main novelty is embedding query semantics through \textit{dynamic edge reweighting}. For each $q \in \mathcal{Q}$, edge $(u,v) \in \mathcal{E}$, and $a,b \geq 0$, the query-aware edge weights are
+% \begin{align} \label{eqn:query_weights_sim} 
+% \bar{w}(q, u, v) &:= H_{\text{sim}}(h(u), h(v)) \circ \left( a + b \cdot 
+% \left( H_{\text{sim}}(h(u), h(q)) \circ H_{\text{sim}}(h(v), h(q)) \right)\right),
+% \end{align}  
+% where $h(\cdot)$ is the embedding function, $H_{\text{sim}}$ a similarity measure, $\circ$ a binary operation (addition or multiplication), and $a,b \geq 0$ hyperparameters.  
+% Three variants are:  
+% \begin{subequations}
+% \begin{align}
+% \bar{w}_{\text{Mean}}(q,u,v) &:= \tfrac{1}{3}\left( H_{\text{sim}}(h(u),h(v)) 
+% + H_{\text{sim}}(h(u),h(q)) 
+% + H_{\text{sim}}(h(v),h(q)) \right), \label{eqn:weight_mean} \\[0.7em]
+% \bar{w}_{\text{Product}}(q,u,v) &:= H_{\text{sim}}(h(u),h(v)) 
+% \cdot H_{\text{sim}}(h(u),h(q)) 
+% \cdot H_{\text{sim}}(h(v),h(q)), \label{eqn:weight_product} \\[0.7em]
+% \bar{w}_{\text{Hybrid}}(q,u,v) &:= H_{\text{sim}}(h(u),h(v)) \cdot 
+% \left( a + b \left( H_{\text{sim}}(h(u),h(q)) + H_{\text{sim}}(h(v),h(q)) \right) \right). 
+% \label{eqn:weight_hybrid}
+% \end{align}    
+% \end{subequations}
+% Here, $H_{\text{sim}}(h(u), h(v))$ captures structural (node–node) similarity, while $H_{\text{sim}}(h(u), h(q)) \circ H_{\text{sim}}(h(v), h(q))$ measures query relevance to nodes $u$ and $v$. This enables query-specific graphs that emphasize both connectivity and relevance. Weights are computed online: \textit{when a query arrives, we first compute its embedding and then update only the edge weights $\bar{w}(q, u, v)$ encountered during traversal}. In experiments, $\bar{w}_{\text{Hybrid}}(q,u,v)$ yields slightly better results.
+
+\noindent \textbf{QAFD’s Primal–Dual Formulation.}  Given approaches for seed nodes and dynamic weight computations $\bar{w}(q, u, v)$, 
+we formulate flow diffusion (Definition~\ref{def:fd}) as a constrained optimization problem that minimizes total flow cost while enforcing mass conservation at each node. 
+Let $\mathbf{f} \in \mathbb{R}^{|\mathcal{E}|}$ denote edge flows, 
+$\bar{\mathbf{W}}(q) \in \mathbb{R}^{|\mathcal{E}| \times |\mathcal{E}|}$ the diagonal matrix of query-aware edge weights, 
+and $\mathbf{B} \in \mathbb{R}^{|\mathcal{V}| \times |\mathcal{E}|}$ the incidence matrix of $\mathcal{G}$. The optimization is
+\begin{align}
+\label{eqn:flow_optimization}
+\min_{\mathbf{f} \in \mathbb{R}^{|\mathcal{E}|}} \frac{1}{2} \mathbf{f}^\top \bar{\mathbf{W}}(q) \mathbf{f} \quad \text{subj. to} \quad \boldsymbol{\Delta} + \mathbf{B} \bar{\mathbf{W}}(q) \mathbf{f} \leq \mathbf{T}, \qquad \forall q \in \mathcal{Q}. %\tag{}
+\end{align}
+Here, $\boldsymbol{\Delta} \in \mathbb{R}^{|\mathcal{V}|}$ encodes source mass injection and $\mathbf{T} \in \mathbb{R}^{|\mathcal{V}|}$ represents sink capacities. We note that in previous formulations~\citep{WFHM2017,fountoulakis2020p,fountoulakis2023flow}, $\bar{\mathbf{W}}(q)$ is query-independent and, in most cases, is restricted to be the identity matrix. Following Definition~\ref{def:fd}, the sink capacity vector $\mathbf{T}$ determines how much mass each node can hold before diffusing to neighbors. A common choice is degree-based capacity where $T_v = \text{degree}(v)$, which allows high-degree nodes to accumulate more mass proportional to their connectivity, though uniform capacity $T_v = \beta$ for some constant $\beta > 0$ provides an alternative that treats all nodes equally regardless of their structural prominence. The source vector $\boldsymbol{\Delta}$ controls the initial mass distribution across nodes, with a common choice $\Delta_v = \alpha \sum_{u \in \mathcal{V}} T_u $ for source nodes $v \in \mathcal{S}_{\mathcal{V}}$ and $\Delta_v = 0$ otherwise, where $\alpha > 0$ controls source strength.  
+
+The corresponding Lagrangian of \eqref{eqn:flow_optimization} with multiplier vector $\mathbf{x} \in \mathbb{R}^{|\mathcal{V}|}_{+}$ is
+\begin{equation}\label{eqn:lag}
+\mathcal{L}(\mathbf{f}, \mathbf{x}; q ) = \tfrac{1}{2} \mathbf{f}^\top \bar{\mathbf{W}}(q) \mathbf{f} 
++ \mathbf{x}^\top \left(\boldsymbol{\Delta} + \mathbf{B} \bar{\mathbf{W}}(q) \mathbf{f} - \mathbf{T}\right),
+\qquad \forall q \in \mathcal{Q}.
+\end{equation}
+Taking $\partial \mathcal{L}/\partial \mathbf{f} = 0$ gives the primal-dual relation $\mathbf{f} = -\mathbf{B} \mathbf{x}$. Substituting this into \eqref{eqn:lag} and setting $\mathbf{L}(q) = \mathbf{B}\bar{\mathbf{W}}(q) \mathbf{B}^\top$ yields the dual problem
+\begin{align}\label{eqn:dual:prob}
+\min_{\mathbf{x} \in \mathbb{R}^{|\mathcal{V}|}_{+}} F(\mathbf{x};q) 
+:= \tfrac{1}{2} \mathbf{x}^\top \mathbf{L}(q) \mathbf{x} 
++ \mathbf{x}^\top (\mathbf{T} - \boldsymbol{\Delta}),
+\qquad \forall q \in \mathcal{Q}.
+\end{align}
+
+\begin{wrapfigure}{R}{0.5\textwidth}
+\begin{minipage}{0.5\textwidth}
+\vspace{-.35cm}
+\begin{algorithm}[H]
+\caption{Query-Aware Flow Diffusion% (QAFD) %Single Seed
+}\label{alg:single_seed_query_diffusion}
+\begin{algorithmic}[1]
+\Input Graph $\mathcal{G} = (\mathcal{V}, \mathcal{E})$ with node embeddings 
+$\{\mathbf{e}_v\}_{v \in \mathcal{V}}$, seed node $s \in \mathcal{V}$ (via Algorithm~\ref{alg:seed_selection}), 
+query $q$ and embedding $\mathbf{e}_q \gets h(q)$, $\alpha, \epsilon \geq 0$.
+\Output Node importance scores $\mathbf{x} \in \mathbb{R}^{|\mathcal{V}|}$
+\State Initialize $\mathbf{m} \gets \mathbf{0}$, $\mathbf{x} \gets \mathbf{0}$
+\State Set sink capacities $T_v = \deg(v)$ for all $v \in \mathcal{V}$
+\State Set source mass $m_s = \alpha \cdot \sum_{v \in \mathcal{V}} T_v$
+\While{$\sum_v \max(0, m_v - T_v) > \epsilon$}
+    \State Select $v \in \{u : m_u > T_u\}$ u.a.r.
+    \State $\texttt{excess} \gets m_v - T_v$, \quad $w_v \gets 0$
+    \For{$u \in \text{neighbors}(v)$}
+        \State Compute $\bar{w}(q, v, u)$ using Eq.~\eqref{eqn:query_weights_sim}
+        \State $w_v \gets w_v + \bar{w}(q, v, u)$ 
+    \EndFor
+    \State $x_v \gets x_v + \texttt{excess} / w_v$, \quad $m_v \gets T_v$
+    \For{$u \in \text{neighbors}(v)$}
+        \State $m_u \gets m_u + \texttt{excess} \cdot \bar{w}(q, v, u)/w_v$
+    \EndFor
+\EndWhile
+\State \Return $\mathbf{x}$
+\end{algorithmic}
+\end{algorithm}
+\vspace{-.7cm}
+\end{minipage}
+\end{wrapfigure}
+It is often more convenient to use \eqref{eqn:dual:prob}, which incorporates the $\boldsymbol{T}$ and $\boldsymbol{\Delta}$ constraints into the objective. The solution provides node importance scores $ \mathbf{x} \in \mathbb{R}^{|\mathcal{V}|}_{+}$, indicating each entity’s query relevance. Intuitively, $\mathbf{f}$ represents edge flow strength—thicker edges in Figure~\ref{fig:graphrags}(right)—while $\mathbf{x}$ denotes node mass or importance, shown by color in Figure~\ref{fig:graphrags}(right): greener nodes are most relevant, yellow least, with intermediate shades indicating moderate importance.
+
+
+
+
+Algorithm~\ref{alg:single_seed_query_diffusion} performs coordinate-wise optimization updates on the dual objective~\eqref{eqn:dual:prob} for a query and seed node. We set $\Delta_v = \alpha \sum_{u \in \mathcal{V}} T_u$ for $v \in \mathcal{S}_{\mathcal{V}}$ and $\Delta_v = 0$ otherwise. At each step, a node $v$ with excess mass ($m_v > T_v$) is chosen uniformly at random and $x_v$ is increased to reduce the objective. The mass vector $\mathbf{m}$ tracks the gradient of $F(\mathbf{x})$, initialized as $\mathbf{m} = \boldsymbol{\Delta}$ at $\mathbf{x} = \mathbf{0}$ with $\nabla F(\mathbf{0}) = \mathbf{T} - \boldsymbol{\Delta}$. More generally, $\mathbf{m} = \boldsymbol{\Delta} - \mathbf{L}(q)\mathbf{x}$, linking to $\nabla F(\mathbf{x},q) = \mathbf{T} - \mathbf{m}$. The condition $m_v > T_v$ is equivalent to $\partial F/\partial x_v < 0$, ensuring updates decrease the objective. Push operations enforce complementary slackness: active $x_v > 0$ correspond to nodes at capacity ($m_v = T_v$), satisfying dual optimality.
+
+\noindent \textbf{Locality Preservation and On-Demand Computation.} After selecting seedource nodes $\mathcal{S}_{\mathcal{V}}$, Algorithm~\ref{alg:single_seed_query_diffusion} preserves the locality of flow diffusion while enabling online graph traversal. This property is crucial for large-scale KGs with millions of nodes. Unlike SOTA RAGs~\citep{edge2024graphrag}, which requires full preprocessing, QAFD-RAG dynamically discovers relevant entities and relationships during traversal. 
+When mass flows from node $v$ to its neighbors, the algorithm: (i) computes query-aware edge weights $\bar{w}(q, v, u)$ on-demand via \eqref{eqn:query_weights_sim}; (ii) retrieves embeddings $\mathbf{e}_u$ and properties only when mass reaches $u$; and (iii) determines sink capacities $T_u$ dynamically. This lazy evaluation makes complexity scale with the explored subgraph rather than the full graph. %, enabling scalability to enterprise knowledge bases.
+
+\noindent \textbf{Extension to Multi-Subquery Formulation. }
+For complex queries requiring multi-hop reasoning, a single embedding via \eqref{eqn:query_weights_sim} may be insufficient. We address this by decomposing such queries into multiple subqueries, as they often involve distinct reasoning aspects solvable independently and then combined. For example, the Spider 2.0~\citep{lei2024spider} query \textit{"Please help me find the film category with the highest total rental hours in cities whose names either start with 'A' or contain a hyphen."} decomposes into filtering cities, linking to addresses and customers, finding rentals, mapping rentals to films, and identifying film categories with the highest totals. This decomposition enables more effective embeddings during traversal by handling reasoning aspects independently before aggregation. Given a complex query $q$, we decompose it into $K$ subqueries $\mathcal{Q}_K=\{q_1, q_2, \ldots, q_K\}$ using LLM-based decomposition (see Prompt~\ref{promp:seed}), where each $q_i$ captures a specific reasoning aspect. We then apply flow diffusion to each subquery independently: for each $q_k$, we compute
+\begin{align}
+\label{eqn:subquery_weights}
+\bar{w}(q_k, u, v) = H_{\text{sim}}(h(u), h(v)) \circ \left[a + b \cdot \left(H_{\text{sim}}(h(u), h(q_k)) \circ H_{\text{sim}}(h(v), h(q_k))\right)\right].
+\end{align}
+We then solve the flow optimization problem for each subquery. From \eqref{eqn:dual:prob}, we obtain
+\begin{align}\label{eqn:subquery_dual_optimization}
+\min_{\mathbf{x}^{(k)} \in \mathbb{R}_+^{|\mathcal{V}|}} F(\mathbf{x}^{(k)}; q_k) &:= \tfrac{1}{2} (\mathbf{x}^{(k)})^\top \mathbf{L}^{(k)}(q_k) \mathbf{x}^{(k)} + (\mathbf{x}^{(k)})^\top (\mathbf{T}^{(k)} - \boldsymbol{\Delta}^{(k)}), \qquad \forall  q_k \in \mathcal{Q}_K.
+\end{align}
+Here, $\mathbf{L}^{(k)}(q_k) = \mathbf{B} \bar{\mathbf{W}}^{(k)}(q_k) \mathbf{B}^\top$ is the weighted Laplacian for $q_k$, with $\bar{\mathbf{W}}^{(k)}(q_k)$ denoting the diagonal matrix of edge weights $\bar{w}(q_k, u, v)$. The solution yields subquery-specific importance scores $\mathbf{x}^{(k)}$, with support $\mathcal{V}_{\text{support}}^{(k)} = \{v \in \mathcal{V} : x_v^{(k)} > \underline{\epsilon}\}$, where $\underline{\epsilon} > 0$ filters out negligible values. The final retrieved subgraph combines all subqueries, $\mathcal{G}_q = \bigcup_{k=1}^K \mathcal{G}_{q_k}$, where each $\mathcal{G}_{q_k}$ is built from $\mathcal{V}_{\text{support}}^{(k)}$ and its edges. See Figure~\ref{fig:A1:schema_optimal_paths_local141_gpt-4o} for an illustrative example.
+
+
+
+
+
+
+
+\section{Optimization and Statistical Guarantees}\label{sec:guarantees}
+We now provide theoretical guarantees for Algorithm~\ref{alg:single_seed_query_diffusion}, focusing on convergence and locality.
+\begin{lemma}\label{lem:locality}
+Let $\mathbf{x}^{(k)*}$ be the optimal solution of \eqref{eqn:subquery_dual_optimization}. The support of each iterate generated by Algorithm~\ref{alg:single_seed_query_diffusion} is contained within $\operatorname{supp}(\mathbf{x}^{(k)*})$. Moreover, $ |\operatorname{supp}(\mathbf{x}^{(k)*})| \leq \|\boldsymbol{\Delta}^{(k)}\|_1$.
+\end{lemma}
+%
+Let $\bar{d}$ be the maximum degree of a node in $\operatorname{supp}(\mathbf{x}^*)$. Since each iteration only touches a node $u \in \operatorname{supp}(\mathbf{x}^*)$ and its neighbors, Lemma~\ref{lem:locality} implies that the number of nodes ever explored is at most $\|\boldsymbol{\Delta}\|_1$. Thus, if $\|\boldsymbol{\Delta}\|_1$ is small and $\bar{d}$ does not scale linearly with $n$, Algorithm~\ref{alg:single_seed_query_diffusion} remains local, with subgraph size controlled by $\|\boldsymbol{\Delta}\|_1$.
+\begin{theorem}\label{lem:complexity}
+For subquery $q_k$, assume $|\operatorname{supp}(\mathbf{x}^{(k)*})| < |\mathcal{V}|$, where $\mathbf{x}^{(k)*}$ solves \eqref{eqn:subquery_dual_optimization}. After $\tau^{(k)} = O\!\left(\|\boldsymbol{\Delta}^{(k)}\|_1 \tfrac{\gamma^{(k)}}{\eta^{(k)}} \log \tfrac{1}{\xi}\right)$, where $\gamma^{(k)} = \max_{u \in \operatorname{supp}(\mathbf{x}^{(k)*})} \sum_{v \sim u} \bar{w}(q_k, u, v)$ and $\eta^{(k)} \geq \min_{(u,v) \in \operatorname{supp}(\mathbf{B}\mathbf{x}^{(k)*})} \bar{w}(q_k, u, v)$, we obtain $\mathbb{E}\!\left[F\!\left(\mathbf{x}^{(k),\tau^{(k)}}; q_k\right)\right] - F\!\left(\mathbf{x}^{(k)*};q_k\right) \leq \xi$.
+\end{theorem}
+%
+\begin{corollary}\label{thm:convergence_rag}
+Algorithm~\ref{alg:single_seed_query_diffusion} converges to $\mathbf{x}^{(k)*}$ in $O(\bar{d} \cdot \|\boldsymbol{\Delta}\|_1 \cdot \log(1/\epsilon))$ iterations, where $\bar{d}$ is the maximum degree in the KG, $\|\boldsymbol{\Delta}\|_1$ is the total injected mass, and $\epsilon$ is the desired accuracy.
+\end{corollary}
+Theorem~\ref{lem:complexity} shows that convergence depends on $\gamma^{(k)}/\eta^{(k)}$, where $\gamma^{(k)}$ is the maximum query-aware weighted degree and $\eta^{(k)}$ the minimum edge weight in the optimal support. Since $\bar{w}(q_k, u, v)$ is query-dependent, convergence adapts to each subquery’s semantics—unlike traditional diffusion with static weights. 
+The runtime to reach an $\epsilon$-accurate solution is $O(\bar{d}\|\boldsymbol{\Delta}\|_1 \tfrac{\alpha}{\beta} \log \tfrac{1}{\epsilon})$. If $\bar{d}$, $\|\boldsymbol{\Delta}\|_1$, and $\alpha/\beta$ are sublinear in $n$, Algorithm~\ref{alg:single_seed_query_diffusion} achieves sublinear time, scaling to large KGs. This improves over exhaustive subgraph and graph-based RAG methods with $O(|\mathcal{V}|^2)$ complexity, showing QAFD-RAG combines efficiency with semantic adaptability.
+
+\noindent \textbf{Statistical Guarantees under a Random Graph Model.} Under appropriate signal-to-noise conditions, we can provide guarantees about the quality of recovered reasoning paths.
+%
+
+
+Our analysis relies on a probabilistic framework where the embeddings $\mathbf{e}_u$, $\mathbf{e}_v$, and $\mathbf{e}_{q_{k}}$ for relevant nodes and queries follow a structured random model. While this assumption may seem restrictive, these embeddings can capture diverse node and query characteristics beyond simple text. The mathematical foundations for analyzing node-attributed graphs have been extensively developed in prior work on graph clustering \citep{AP09,ALM13,AGPT2016,PKDJ17,WFHM2017,FWY20,LG20} and diffusion processes \citep{fountoulakis2020p,yang2023weighted,fountoulakis2021local}. Our novelty lies in incorporating query semantics into this framework, allowing us to analyze how query-dependent edge weights shape traversal dynamics and to provide the subgraph recovery guarantees.
+%
+\begin{definition}
+\label{def:correct-model}
+    Given a schema graph with node set $\mathcal{V}$, for each query $q_k$, define $\mathcal{R}_k \subseteq \mathcal{V}$ as the set of relevant nodes (tables/columns required by the query) with $r_k=|\mathcal{R}_k|$. The random graph generation is governed by the following edge probabilities: for each pair of nodes $(u,v)$, edges are independently drawn with probability $\rho_1$ if $u,v \in \mathcal{R}_k$, with probability $\rho_2$ if exactly one node is in $\mathcal{R}_k$, and otherwise follow the original schema structure. For each node $u \in \mathcal{V}$, we have
+$
+\mathbf{e}_u = \boldsymbol{\mu}_u + \mathbf{z}_u,
+$
+where $\boldsymbol{\mu}_u \in \mathbb{R}^d$ is a deterministic vector, and $\mathbf{z}_u \in \mathbb{R}^d$ is random noise with independent mean-zero sub-Gaussian coordinates $z_{u\ell}$, each having variance proxy $\sigma_\ell$:
+$$
+\textnormal{Prob}(|z_{u\ell}| \geq t) \leq 2\exp\left(-\frac{t^2}{2\sigma_\ell^2}\right),   \quad \textnormal{for all}~~t \geq 0.
+$$
+For each $q_k$, let
+$
+\mathbf{e}_{q_k} = \boldsymbol{\mu}_{q_k} + \mathbf{z}_{q_k},
+$
+using the same noise model. For nodes in the relevant set $\mathcal{R}_k$, we set $\boldsymbol{\mu}_u = \boldsymbol{\mu}_v = \boldsymbol{\mu}_{q_k}$ for all $u, v \in \mathcal{R}_k$. Finally, for query $q_k$, we define $\bar{w}(q_k, u, v) = \bar{w}_{\text{Product}}(q_k, u, v)$, where $H_{\text{sim}}(\mathbf{a}, \mathbf{b}) = \exp(-\gamma \|\mathbf{a} - \mathbf{b}\|^2)$ is an RBF-kernel similarity function. We also allow distinct bandwidths $\gamma_i$ for each factor in $\bar{w}_{\text{Product}}$.
+\end{definition}
+Note that this formulation is chosen for simplicity of analysis. In practice, other measures--such as cosine similarity--can be used depending on the application. Throughout, we define
+\begin{equation}
+    \hat{\sigma} := \max_{1 \leq \ell \leq d} \sigma_\ell \quad \textnormal{and} \quad \hat{\mu} := \min_{u \in \mathcal{R}_k,\, v \notin \mathcal{R}_k} \|\boldsymbol{\mu}_u - \boldsymbol{\mu}_v\|.
+\end{equation}
+
+\begin{assumption}[Knowledge Graph Structure and Signal-to-Noise] \label{assump:snr}
+The knowledge graph satisfies the following: 
+(1) Entities relevant to a query $q_i$ form a connected subgraph $\mathcal{R}_i$; 
+(2) The embedding space preserves semantic similarity with signal-to-noise ratio 
+$\hat{\mu}/\hat{\sigma} = \omega(\sqrt{d \log|\mathcal{V}|})$; 
+(3) Variance concentrates as $\sum_{\ell=1}^d \sigma_\ell^2 / \hat{\sigma}^2 = O(\log|\mathcal{V}|)$; 
+and (4) Irrelevant entities have embeddings well-separated from query embeddings.
+\end{assumption}
+
+\begin{lemma}[Query-Aware Edge Weight Separation]\label{thm:edge-separation} 
+Under Assumption \ref{assump:snr}, if the similarity function parameters satisfy $\gamma_i \hat{\sigma}^2 = o(\log^{-1} |\mathcal{V}|)$ for $i \in \{1,2,3\}$, then with probability at least $1 - O(|\mathcal{V}|^{-2})$:  
+\textit{(i)} For all $u,v \in \mathcal{R}_k$, $\bar{w}(q_k, u, v) \geq (1 - o(1))$;  
+\textit{(ii)} For all $u \in \mathcal{R}_k, v \in \mathcal{V} \setminus \mathcal{R}_k$, $\bar{w}(q_k, u, v) \leq \exp(-\omega(\log |\mathcal{V}|))$.
+\end{lemma}
+
+Lemma~\ref{thm:edge-separation} shows that under the signal-to-noise conditions in Assumption~\ref{assump:snr}, query-aware edge weights $\bar{w}(q_k, u, v)$ separate relevant nodes $\mathcal{R}_k$ from irrelevant ones $\mathcal{V}\setminus \mathcal{R}_k$. With similarity parameters $\gamma_i$ scaled inversely with $\log|\mathcal{V}|$, the lemma guarantees with high probability that (i) edges within $\mathcal{R}_k$ remain essentially unchanged, preserving reasoning paths, while (ii) edges between relevant and irrelevant nodes become exponentially small, blocking diffusion into contextually irrelevant regions.
+
+\begin{theorem}%[Query-Aware Subgraph Recovery]
+\label{thm:recovery}
+Under the conditions of Lemma~\ref{thm:edge-separation}, assume that either \textit{(i)} the induced subgraph on $\mathcal{R}_k$ is connected, or \textit{(ii)} $\rho_1 \geq \frac{(4+\epsilon)\log r_k}{\delta^2(r_k-1)}$ for some $\delta \in (0,1)$ and $\epsilon > 0$. If the source mass is set as $\Delta_s^{(k)} = (1+\beta)\sum_{u \in \mathcal{R}_k} T_u$ for any $\beta > 0$, then with high probability we have
+\begin{equation}
+\begin{aligned}
+ \mathcal{R}_k \subseteq \textnormal{supp}(\mathbf{x}^{(k)}), \qquad\textnormal{and}\qquad   \sum_{u \in \textnormal{supp}(\mathbf{x}^{(k)}) \setminus \mathcal{R}_k} T_u 
+   \leq \beta \sum_{u \in \mathcal{R}_k} T_u.
+\end{aligned}
+\end{equation}
+\end{theorem}
+
+
+Theorem~\ref{thm:recovery} shows that query-aware flow diffusion reliably recovers the query-relevant subgraph $\mathcal{R}_k$ with controlled precision. It provides two guarantees: \textbf{Complete recovery} ($\mathcal{R}_k \subseteq \textnormal{supp}(\mathbf{x}^{(k)})$) ensures all semantically relevant nodes to query $q_k$ receive positive flow and are included, so no essential information is lost. \textbf{Limited leakage} ($\sum_{u \in \textnormal{supp}(\mathbf{x}^{(k)}) \setminus \mathcal{R}_k} T_u \leq \beta \sum_{u \in \mathcal{R}_k} T_u$) bounds flow escaping into irrelevant regions. The trade-off parameter $\beta$ controls this balance: smaller $\beta$ enforces tighter focus, while larger $\beta$ allows peripheral context at some cost to precision. Together, these results show that QAFD-RAG’s query-aware edge weighting acts as a semantic filter, concentrating flow on relevant reasoning paths while minimizing diffusion to unrelated regions. 
+
+\begin{table*}[t]
+\centering
+\caption{Comparison of QAFD-RAG and baselines on UltraDomain across five GPT-4o--scored dimensions (0--100).
+Rows are grouped by dataset and columns by metric; values are mean ($\pm$ std) over 5 evaluations.
+Best per dataset/metric is bolded. \textit{Continued in Appendix~\ref{app:add_results}.}}
+\label{tab:rag_all_in_one_part1}
+\rowcolors{1}{white}{gray!15}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llrrrrr}
+\toprule
+\textbf{Dataset} & \textbf{Method} & \textbf{Comprehensive.} & \textbf{Diversity} & \textbf{Logicality} & \textbf{Relevance} & \textbf{Coherence} \\
+
+\midrule
+Agriculture & GraphRAG  & \score{87.30}{4.46} & \score{82.85}{4.73} & \score{90.80}{5.84} & \score{94.01}{6.62} & \score{90.08}{3.23} \\
+            & LightRAG  & \score{83.65}{5.97} & \score{77.71}{7.34} & \score{88.85}{3.76} & \score{93.55}{4.16} & \score{88.67}{2.57} \\
+            & RAPTOR & \score{83.32}{8.67} & \score{76.65}{12.08} & \score{89.54}{3.63} & \score{94.56}{3.41} & \score{89.47}{3.01} \\
+            & HippoRAG & \score{82.51}{5.14} & \score{76.26}{9.23} & \score{88.84}{3.26} & \score{94.09}{2.48} & \score{88.79}{2.73} \\
+            & QAFD-RAG  & \best{\score{89.93}{3.36}} & \best{\score{84.95}{4.26}} & \best{\score{92.10}{2.53}} & \best{\score{95.67}{3.28}} & \best{\score{92.00}{1.62}} \\
+\midrule
+Biology & GraphRAG  & \score{85.76}{10.80} & \score{81.05}{10.39} & \score{88.94}{11.70} & \score{93.00}{12.50} & \score{88.57}{11.10} \\
+        & LightRAG  & \score{83.92}{4.13}  & \score{78.28}{6.46}  & \score{88.40}{4.24}  & \score{93.31}{5.42}  & \score{88.09}{2.86} \\
+        & RAPTOR & \score{83.57}{6.20} & \score{77.10}{9.41} & \score{88.33}{5.62} & \score{93.62}{6.42} & \score{88.67}{4.21} \\
+        & HippoRAG & \score{83.07}{4.15} & \score{76.91}{7.25} & \score{88.07}{3.69} & \score{93.62}{3.53} & \score{88.52}{2.90} \\
+        & QAFD-RAG  & \best{\score{89.44}{3.92}} & \best{\score{85.13}{4.11}} & \best{\score{91.19}{4.20}} & \best{\score{95.05}{4.71}} & \best{\score{91.33}{2.59}} \\
+\midrule
+Cooking & GraphRAG  & \score{86.23}{7.00} & \score{79.10}{8.72} & \score{90.79}{2.68} & \score{95.14}{2.91} & \score{90.63}{1.75} \\
+        & LightRAG  & \score{82.11}{7.56} & \score{74.97}{9.46} & \score{87.49}{5.82} & \score{92.27}{5.88} & \score{87.98}{4.09} \\
+        & RAPTOR & \score{83.15}{6.99} & \score{75.30}{9.79} & \score{88.52}{5.12} & \score{93.59}{5.48} & \score{88.83}{3.87} \\
+        & HippoRAG & \score{82.52}{4.55} & \score{74.13}{7.25} & \score{88.40}{3.20} & \score{93.71}{2.66} & \score{88.57}{2.61} \\
+        % & PathRAG   & \score{87.26}{8.02} & \score{81.87}{8.68} & \score{90.20}{5.97} & \score{93.60}{8.24} & \score{90.56}{4.10} \\
+        & QAFD-RAG  & \best{\score{89.25}{3.82}} & \best{\score{83.42}{5.25}} & \best{\score{91.35}{2.73}} & \best{\score{95.45}{2.83}} & \best{\score{91.58}{2.04}} \\
+\midrule
+History & GraphRAG  & \score{84.18}{10.30} & \score{78.88}{9.97} & \score{88.18}{11.63} & \score{92.35}{13.51} & \score{88.40}{10.71} \\
+        & LightRAG  & \score{82.24}{6.04}  & \score{76.42}{7.51}  & \score{86.98}{5.75}  & \score{92.18}{6.17}  & \score{87.18}{4.24} \\
+        & RAPTOR & \score{82.08}{7.43} & \score{75.59}{9.75} & \score{87.67}{4.63} & \score{92.94}{4.93} & \score{88.13}{3.58} \\
+        & HippoRAG & \score{80.45}{6.95} & \score{74.61}{8.22} & \score{86.37}{6.36} & \score{91.54}{8.22} & \score{86.97}{4.77} \\
+        & QAFD-RAG  & \best{\score{87.75}{3.96}} & \best{\score{83.14}{4.40}} & \best{\score{90.04}{3.93}} & \best{\score{93.77}{6.25}} & \best{\score{90.55}{2.37}} \\
+\midrule
+Legal & GraphRAG  & \score{84.96}{9.72}  & \best{\score{78.74}{10.28}} & \score{88.67}{8.58}  & \score{91.01}{10.90} & \score{88.44}{5.77} \\
+      & LightRAG  & \score{79.63}{11.25} & \score{67.63}{11.86} & \score{86.06}{7.47}  & \score{90.77}{10.17} & \score{86.12}{6.10} \\
+      & RAPTOR & \score{81.43}{9.67} & \score{64.97}{13.91} & \score{88.34}{6.54} & \score{93.29}{9.18} & \score{87.70}{6.16} \\
+      & HippoRAG & \score{82.23}{8.85} & \score{64.28}{11.31} & \score{88.56}{7.64} & \best{\score{93.60}{9.45}} & \score{87.95}{6.39} \\
+      & QAFD-RAG  & \best{\score{86.19}{5.86}} & \score{77.14}{7.42} & \best{\score{90.06}{5.06}} & \score{93.30}{9.66} & \best{\score{89.99}{3.35}} \\
+\bottomrule
+\end{tabular}
+}
+\vspace{-.1cm}
+
+\end{table*}
+
+
+\section{Experimental Evaluation}
+\label{sec:experiments}
+
+We evaluate QAFD-RAG against strong baselines on knowledge graph question-answering and text-to-SQL benchmarks, with a particular emphasis on query-aware retrieval performance and schema linking capabilities. Code is available at \href{https://anonymous.4open.science/r/QAFD-E5B6/}{anonymous repository}.
+
+
+
+
+\subsection{Knowledge Graph Question Answering Results}
+
+\subsubsection{Baselines for KG-QA}
+We compare \textbf{QAFD-RAG} with four recent graph-oriented RAG systems under an identical setup (corpora, prompts, evaluation): 
+\textbf{GraphRAG} \citep{edge2024local}, which clusters retrieved documents via community detection and builds hierarchical contexts; 
+\textbf{LightRAG} \citep{guo2024lightrag}, which performs dual-level retrieval in the indexing graph; 
+\textbf{HippoRAG} \citep{jimenez2024hipporag}, which constructs a passage-level KG and applies Personalized PageRank for single-step multi-hop retrieval; and 
+\textbf{RAPTOR} \citep{sarthi2024raptor}, which forms a hierarchical retrieval tree through recursive clustering and abstractive summarization, enabling multi-level evidence selection.
+
+\subsubsection{LLM Configuration and Hyperparameters}
+Unless otherwise noted, we use \texttt{GPT-4o-mini} for all entity/relation extraction, hierarchical keywording, and cluster summarization, \texttt{text-embedding-3-small} (1536d) for all embeddings, and a fixed configuration of \(40\) seed nodes, diffusion mass \(\alpha = 50\), and hybrid query-aware edge weights (Eq.~\eqref{eqn:weight_hybrid}) with \(a = 1\) and \(b = \tfrac14\). Additional implementation details are provided in Appendix~\ref{app:prompts:qa}.
+
+
+
+\subsubsection{Datasets and Evaluation Protocol}
+We evaluate QAFD-RAG across three major settings. \textbf{General QA} uses ten {UltraDomain} subsets \citep{qian2024memorag} spanning long-context reasoning and implicit inference (Agriculture, Biology, Cooking, History, Legal, Mathematics, Mix, Music, Philosophy, Physics). Answers are scored along five axes—\emph{Comprehensiveness, Diversity, Logicality, Relevance, Coherence}—using GPT-4o on a \(0\!-\!100\) scale, with five independent evaluations per response (Appendix~\ref{app:prompts:qa}). {For \textbf{Long-Document Summarization}, we use {SQuALITY} \citep{wang2022squality}, where answers are question-focused abstractive summaries benchmarked against multiple human-written references; we report \emph{BLEU-1}, \emph{BLEU-2}, \emph{ROUGE-1-F1}, \emph{ROUGE-2-F1}, and \emph{METEOR} (Appendix~\ref{app:squality}).} \textbf{Multi-Hop QA} is evaluated on {HotpotQA} \citep{yang2018hotpotqa}, {2WikiMultiHopQA} \citep{ho2020constructing}, and {{MuSiQue} \citep{trivedi2022musique}} which require combining evidence across documents and explicit chains; we report \emph{Exact Match (EM)} and \emph{F1} using official evaluation scripts (Appendix~\ref{app:datasets}).
+
+
+
+
+
+\begin{table}[t]
+\centering
+\caption{Performance comparison of QAFD-RAG against baseline methods on SQuALITY long-document summarization.}
+\label{tab:squality_automated}
+\rowcolors{1}{white}{gray!15}
+\begin{tabular}{lccccc}
+\hline
+\textbf{{Method}} &
+\textbf{{BLEU-1}} &
+\textbf{{BLEU-2}} &
+\textbf{{ROUGE-1 F1}} &
+\textbf{{ROUGE-2 F1}} &
+\textbf{{METEOR}} \\
+\hline
+
+{GraphRAG}   
+  & {33.91} 
+  & {16.12} 
+  & {26.38}
+  & {4.08} 
+  & {24.38} \\
+
+{HippoRAG}   
+  & {33.22} 
+  & {16.74} 
+  & {27.29}
+  & {3.92} 
+  & {23.41} \\
+
+{RAPTOR}     
+  & {32.10} 
+  & {16.58} 
+  & {25.13} 
+  & {3.49} 
+  & {22.87} \\
+
+{LightRAG}   
+  & {34.17} 
+  & {17.41} 
+  & \textbf{{28.59}}
+  & {4.31} 
+  & {23.27} \\
+
+{QAFD-RAG}
+  & \textbf{{35.44}} 
+  & \textbf{{18.63}} 
+  & {28.43} 
+  & \textbf{{4.79}} 
+  & \textbf{{25.59}} \\
+\hline
+\end{tabular}
+\vspace{-0.25cm}
+\end{table}
+
+
+\subsubsection{Expected Results and Analysis}
+
+On the ten \textsc{UltraDomain} subsets (Tables~\ref{tab:rag_all_in_one_part1}, \ref{tab:rag_all_in_one_part2}), {QAFD-RAG} achieves the strongest overall averages across five axes, with steady gains in \emph{Comprehensiveness}, \emph{Logicality}, and \emph{Coherence}. Baselines show complementary strengths—RAPTOR may excel on \emph{Relevance}/\emph{Coherence} when hierarchical abstraction fits the domain, HippoRAG performs well on \emph{Relevance} with local evidence, and GraphRAG/LightRAG can boost \emph{Diversity} by expanding neighborhoods, often at the cost of \emph{Logicality}. Overall, focusing retrieval on a query-aligned subgraph improves factual alignment without hurting fluency, whereas baselines trade off precision and recall in domain-dependent ways.
+
+
+
+{
+On the SQuALITY benchmark (Table~\ref{tab:squality_automated}), QAFD-RAG achieves the highest performance on the majority of automated metrics—including BLEU-1, BLEU-2, ROUGE-2 F1, and METEOR—indicating more faithful and coherent long-form summaries compared to GraphRAG, HippoRAG, RAPTOR, and LightRAG. 
+While LightRAG now attains the highest ROUGE-1 F1 score, QAFD-RAG's query-aligned retrieval yields a stronger overall metric profile, offering a more stable balance between precision and coverage across diverse narrative questions.
+On HotpotQA, {MuSiQue, and 2WikiMultiHopQA}, QAFD-RAG {achieves the highest \emph{F1} and \emph{EM} scores on HotpotQA and MuSiQue, and remains competitive with HippoRAG on 2WikiMultiHopQA} (Table~\ref{tab:multi-hop}). These improvements in \emph{F1} and \emph{EM} highlight that query-aware diffusion more reliably recovers gold evidence under strict matching. {While HippoRAG also demonstrates strong multi-hop reasoning through personalized PageRank, QAFD-RAG's} query-aligned pruning produces tighter evidence chains and a stable precision–recall balance, enabling {superior or competitive} performance across multi-hop reasoning tasks.
+}
+
+
+
+
+\subsection{Text-to-SQL Results}
+\begin{table}[t]
+\centering
+\caption{
+Performance on Multi-Hop QA (F1, EM).
+% All methods use \texttt{GPT-4o-mini} for entity/relation extraction, keywording, and generation, and \texttt{text-embedding-3-small} for embeddings.
+}
+\label{tab:multi-hop}
+\rowcolors{1}{white}{gray!15}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Method} 
+& \multicolumn{2}{c}{\textbf{HotpotQA}}
+& \multicolumn{2}{c}{\textbf{2WikiMultihopQA}}
+& \multicolumn{2}{c}{\textbf{MuSiQue}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+& \textbf{F1} & \textbf{EM}
+& \textbf{F1} & \textbf{EM}
+& \textbf{F1} & \textbf{EM} \\
+\midrule
+
+GraphRAG  
+ & 33.40 & 14.00
+ & 15.20 & 7.00
+ & 39.40 & 17.60 \\
+
+LightRAG  
+ & 8.80 & 0.00
+ & 8.20 & 1.00
+ & 1.40 & 0.10 \\
+
+RAPTOR
+ & 52.30 & 25.00
+ & 38.80 & 12.00
+ & 28.10 & 10.50 \\
+
+HippoRAG
+ & 58.67 & 45.27
+ & \textbf{70.33} & \textbf{61.16}
+ & 38.33 & 27.55 \\
+
+QAFD-RAG  
+ & \textbf{73.42} & \textbf{58.10}
+ & 69.41 & 59.50
+ & \textbf{47.99} & \textbf{33.50} \\
+
+\bottomrule
+\end{tabular}
+\vspace{-0.25cm}
+\end{table}
+
+
+% \begin{table}[t]
+% \centering
+% \caption{
+% Performance on Multi-Hop QA (F1, EM).
+% All methods use \texttt{GPT-4o-mini} for entity/relation extraction, keywording, and response generation,
+% and \texttt{text-embedding-3-small} for embeddings.
+% Results are reported as the mean $\pm$ standard deviation over 5 runs.
+% }
+% \label{tab:multi-hop}
+% \rowcolors{1}{white}{gray!15}
+% \resizebox{\textwidth}{!}{
+% \begin{tabular}{lcccccc}
+% \toprule
+% \textbf{Method} 
+% & \multicolumn{2}{c}{\textbf{HotpotQA}}
+% & \multicolumn{2}{c}{\textbf{2WikiMultihopQA}}
+% & \multicolumn{2}{c}{\textbf{MuSiQue}} \\
+% \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+% & \textbf{F1} & \textbf{EM}
+% & \textbf{F1} & \textbf{EM}
+% & \textbf{F1} & \textbf{EM} \\
+% \midrule
+
+% Contriever  
+%  & $61.05 \pm 0.34$ & $47.86 \pm 0.24$
+%  & $44.01 \pm 0.34$ & $38.28 \pm 0.29$
+%  & $32.28 \pm 0.53$ & $21.98 \pm 0.36$ \\
+
+% GritLM-7B  
+%  & $71.28 \pm 0.31$ & $56.64 \pm 0.36$
+%  & $58.24 \pm 0.41$ & $51.52 \pm 0.48$
+%  & $44.17 \pm 0.27$ & $30.50 \pm 0.17$ \\
+% \midrule
+% GraphRAG  
+%  & 33.40 & 14.00
+%  & 15.20 & 7.00
+%  & 39.40 & 17.60 \\
+
+% LightRAG  
+%  & 8.80 & 0.00
+%  & 8.20 & 1.00
+%  & 1.40 & 0.10 \\
+
+% RAPTOR
+%  & 52.30 & 25.00
+%  & 38.80 & 12.00
+%  & 28.10 & 10.50 \\
+
+% HippoRAG
+%  & 58.27 & 44.98
+%  & \textbf{70.15} & \textbf{61.85}
+%  & 38.33 & 27.55 \\
+% % HippoRAG
+% %  & 58.27 & 44.98
+% %  & \textbf{70.15} & \textbf{61.85}
+% %  & 38.33 & 27.55 \\
+% QAFD-RAG  
+%  & \textbf{73.42} & \textbf{58.10}
+%  & 69.41 & 59.50
+%  & \textbf{47.99} & \textbf{33.50} \\
+
+% \bottomrule
+% \end{tabular}
+% }
+% \vspace{-0.25cm}
+% \end{table}
+
+
+
+
+
+We compare against methods from different paradigms. \textbf{CHASE-SQL} \citep{pourreza2024chase} uses multi-path LLM reasoning (divide-and-conquer, execution-plan CoT, instance-aware few-shot) with a pairwise-selection agent for SQL generation and ranking. \textbf{DIN-SQL} \citep{pourreza2024din} adopts a decomposition framework with template matching. \textbf{Spider-Agent} \citep{lei2024spider} applies ReAct-style schema exploration and iterative SQL generation. \textbf{CodeS} \citep{CodeS} emphasizes code generation via prompt engineering. \textbf{DAIL-SQL} \citep{gao2023text} improves Text-to-SQL accuracy by selecting and arranging few-shot code examples using masked question–query similarity. All methods are using GPT-4o LLM calls.
+
+\begin{wrapfigure}{R}{0.54\textwidth}
+\begin{minipage}{0.52\textwidth}
+\vspace{-0.25cm}
+\centering
+\captionof{table}{SQL execution accuracy on 135 SQLite and Snowflake test sets.}
+\label{tab:sql_accuracy}
+\rowcolors{1}{white}{gray!15}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Method} & \textbf{SQLite (\%)} & \textbf{Snowflake (\%)} \\
+\midrule
+CHASE-SQL & 11.85 & 5.92 \\
+DIN-SQL & 2.74 & 0.18 \\
+DAIL-SQL & 0.00 & 0.00 \\
+CodeS & 0.00 & 0.00 \\
+Spider-Agent & 21.50 & 16.30 \\
+\hiderowcolors
+\textbf{QAFD-RAG} & \multirow{2}{*}{\textbf{26.70}} & \multirow{2}{*}{\textbf{23.70}} \\
+\textbf{+ SQL-Agent} & & \\
+\showrowcolors
+\bottomrule
+\end{tabular}
+\end{minipage}
+\vspace{-0.25cm}
+\end{wrapfigure}
+
+
+We evaluate on the Spider 2.0 \citep{lei2024spider}, a comprehensive dataset with diverse schema architectures representative of real enterprise environments. The benchmark includes complex SQL queries requiring multi-table reasoning and advanced analytical operations. Our analysis focuses on the \textit{Spider 2.0 Local Test Set}, which contains 135 SQLite and Snowflake instances featuring long join chains and intricate query structures. Table~\ref{tab:sql_accuracy} reports execution accuracy on both test sets. Here, SQL-Agent is a variant of the Spider-Agent \citep{lei2024spider} SQL generator. Unlike Spider-Agent, which relies on a ReAct-style agent for exploration and reasoning, our method converts each database into a knowledge graph and applies QAFD to identify relevant tables and columns. SQL-Agent then uses tailored prompts and QAFD-RAG’s subgraphs for SQL generation. An example prompt is shown in Prompt~\ref{prompt:snowflake:system}. 
+
+
+
+\section{Conclusion, Limitations, and Future Work}
+{
+We presented QAFD-RAG, a training-free framework with query-aware edge reweighting for adaptive graph traversal. Our contributions include: (1) the first principled flow diffusion for graph-based RAG, (2) theoretical guarantees for subgraph recovery, and (3) consistent improvements across benchmarks while reducing LLM calls. QAFD-RAG relies on pre-trained embeddings, which may underperform in domain-specific settings. {Besides, the embedding-based flow diffusion may struggle with explicit logical negation because embeddings capture semantic relatedness rather than logical operators. While QAFD-RAG partially mitigates this through LLM-based keyword extraction (Prompt~\ref{prompt:keyword}) and response filtering (Prompt~\ref{prompt:query:answer}), this remains an important challenge.}
+
+QAFD-RAG's modularity enables drop-in replacement of retrieval components in existing systems: it can replace static Leiden clustering in GraphRAG, enhance Personalized PageRank in HippoRAG with query-aware edge weighting, and extend LightRAG's single-hop retrieval to multi-hop flow diffusion—all without retraining while providing theoretical guarantees.  Future work includes learning edge weights from query–answer pairs and extending to temporal/multi-modal graphs. Future work should also explore contrastive embeddings or hybrid symbolic–neural approaches that encode logical distinctions during graph traversal.}
+
+
+
+\bibliography{rag_ref_clean}
+\bibliographystyle{iclr2026_conference}
+
+
+\newpage
+\appendix
+\part*{Appendix}
+\addcontentsline{toc}{part}{Appendix}
+\startcontents[part]  % Start tracking contents for this part
+\printcontents[part]{}{1}{\section*{Contents}\vspace{-1em}}  % Print the TOC
+
+
+\newpage
+\renewcommand{\thesection}{A\arabic{section}}
+\vspace{-.2cm}
+\section{Extended Related Work}\label{sec:app:related}
+
+\subsection{Retrieval-Augmented Generation.}
+LLMs remain prone to hallucinations and a lack of domain knowledge \citep{hallucination-survey,domain-knowledge-survey}. Text-based RAG reduces these issues by supplementing LLMs with unstructured external data \citep{lewis2020retrieval,guu2020retrieval}. These systems employ sparse or dense retrieval \citep{alon2022neuro,schick2023toolformer,jiang2023active,cheng2024lift,hofstatter2023fid,li2024llama2vec,zhang2024arl2}, but most treat text as flat segments, missing critical context and inter-document relationships \citep{edge2024graphrag,guo2024lightrag}.
+
+KG-RAG enhances interpretability and factuality by leveraging structured knowledge graphs \citep{yasunaga2021kg-rag,gao2021kg-rag,li2024subgraphrag,he2025g}. These systems utilize curated \citep{wen2023mindmap,dehghan2024ewek} or optimized \citep{fang2024reano,panda2024holmes} graphs to retrieve entity and relational context, typically extracting local subgraphs relevant to a query \citep{bordes2015large,talmor2018web,gu2021beyond}. However, most KG-RAG methods focus on single-hop or shallow queries \citep{joshi2017triviaqa,yang2018hotpotqa,kwiatkowski2019natural,ho2020constructing} and struggle with scale and multi-step reasoning.
+
+Among training-intensive approaches, QA-GNN \citep{yasunaga2021qagnn} combines pre-trained language models and knowledge graphs by using LM-based relevance scoring to select pertinent KG nodes, followed by joint graph neural reasoning for accurate and interpretable question answering. \citet{xiong2019improving} proposed knowledge-aware neural retrievers for incomplete KBs. Other works such as SubgraphRAG \citep{li2024subgraphrag} train end-to-end retrieval modules to extract relevant KG subgraphs for downstream LLM reasoning. Several studies have also integrated knowledge graph structure directly into transformers for enhanced QA \citep{hu2022oreo}, and KnowGPT \citep{zhang2023knowgpt} leverages KG-based prompting for large language models. {GNN-RAG~\citep{mavromatis2024gnn} trains GNNs to score answer candidates and retrieve shortest paths, while RoG~\citep{luo2024reasoning} uses LLM prompting to generate relation paths. Both methods incorporate query semantics but require training/finetuning, lack theoretical guarantees, and operate over static graph structures during retrieval.} However, these methods require substantial supervised data and retraining, in contrast to our training-free, query-aware flow diffusion framework with statistical guarantees.
+
+Recent work has explored training-free KG-RAG methods, building text-associated graphs to support more complex and multi-hop queries \citep{edge2024graphrag,guo2024lightrag}. For instance, GraphRAG \citep{edge2024graphrag} applies community detection to cluster entities, while LightRAG \citep{guo2024lightrag} uses multi-stage retrieval and ego-network aggregation. PathRAG \citep{chen2025pathrag} further improves graph-based RAG by retrieving key relational paths rather than redundant neighborhood information, using flow-based pruning to identify reliable paths and strategic prompt organization to enhance LLM responses. However, all aforementioned methods still struggle to precisely align query intent with relevant regions of the graph, making it difficult to identify semantically coherent reasoning subgraphs. Furthermore, existing RAG approaches generally lack statistical or optimization guarantees, as well as complexity analysis, for their retrieval mechanisms.
+
+\subsection{Graph Diffusion and Flow Methods}
+Graph diffusion describes the process of spreading mass from one or more seed nodes to neighboring nodes along graph edges. The empirical and theoretical performance of local diffusion methods is typically evaluated in the context of local graph clustering. Local graph clustering was introduced by \citet{SH13} using a random-walk algorithm, with \citet{ACL06} later employing personalized PageRank. Most works analyze these methods via output conductance \citep{ACL06,AP09,SH13,ALM13,AGPT2016,PKDJ17,WFHM2017,FWY20,LG20}. Statistical analysis appeared in \citet{HFM2021} for $\ell_1$-regularized PageRank \citep{FKSCM2017}, though attributed graphs remain unaddressed. 
+
+Community/cluster detection methods that combine structure and node or edge attributes \citep{YML13,jia2017node,zhe2019community,sun2020network} benefit from this integration but require global processing, making them unsuitable for local clustering. Contextual random graph models have been employed for attributed community detection \citep{DSMM18,YS2021,BTB22,AFW22}, node separability \citep{BFJ2021,FLYBJ22,BFJ23}, and analysis of graph convolutions and optimal classifiers \citep{wu2023an,wei2022understanding,baranwal2023optimality}. Related anomaly detection \citep{arias2008searching,arias2011detection,sharpnack2013near,qian2014efficient} and estimation \citep{chitra2021quantifying} methods focus on scalar data and global processing, contrasting with our local, attribute-aware approach.
+
+
+
+\subsection{QAFD-RAG's Positioning within Graph-Based RAG Approaches}
+
+To our knowledge, none of these works connect the graph structure to the query. Our work is the first to provide a principled framework that links a given query to the corresponding subgraph in a knowledge graph, and the first to develop and statistically analyze query-aware flow diffusion in general contextual random graph models with formal recovery guarantees. 
+
+{Beyond these theoretical contributions, QAFD-RAG's modular design positions it as a complementary retrieval component for existing graph-based RAG systems, requiring no retraining while providing formal guarantees. Specifically:}
+
+{\textbf{GraphRAG.} GraphRAG~\citep{edge2024graphrag} relies on static community detection (Leiden algorithm) to precompute hierarchical clusters and generate community summaries for retrieval. QAFD-RAG offers an alternative through dynamic, query-time subgraph discovery tailored to each query's semantics, eliminating the computational overhead of community summary generation while adapting retrieval to query-specific needs.}
+
+{\textbf{HippoRAG.} HippoRAG~\citep{jimenez2024hipporag} uses Personalized PageRank (PPR) for graph traversal from seed nodes. QAFD-RAG provides a principled alternative through query-aware edge reweighting (Equations (4)-(5)). While PPR provides graph-based signals, it lacks query-aware edge modulation—our method's key innovation that suppresses irrelevant paths while amplifying semantically aligned connections, backed by formal recovery guarantees (Theorem~\ref{thm:recovery}).}
+
+{\textbf{LightRAG.} LightRAG~\citep{guo2024lightrag} employs dual-level keyword extraction with single-hop neighborhood aggregation. QAFD-RAG extends this paradigm by enabling multi-hop flow diffusion from extracted keywords as seed nodes, discovering reasoning paths that span multiple hops—precisely the capability that LightRAG's current single-hop approach lacks—while preserving its efficient indexing structure.}
+
+{This positioning demonstrates QAFD-RAG's role as a foundational component that addresses key limitations in existing graph-based RAG approaches through principled, theoretically-grounded retrieval.}
+
+\section{Extended Experiments}
+
+
+
+\subsection{Question Answering (QA)}
+
+\subsubsection{Additional Numerical Results for General Question Answering}
+\label{app:add_results}
+Table~\ref{tab:rag_all_in_one_part2} presents comprehensive results across five additional UltraDomain datasets—Mathematics, Mix, Music, Philosophy, and Physics—evaluating QAFD-RAG against GraphRAG, LightRAG, RAPTOR, and HippoRAG across all five GPT-4o-scored dimensions (Comprehensiveness, Diversity, Logicality, Relevance, and Coherence). 
+
+QAFD-RAG achieves the best performance across all dimensions in four out of five datasets (Mathematics, Mix, Philosophy, and Physics), demonstrating consistent superiority with scores typically 3–7 points higher than the strongest baseline. For example, on Physics, QAFD-RAG achieves 89.51 Comprehensiveness compared to GraphRAG's 86.33, and 95.61 Relevance compared to RAPTOR's 94.46. On Music, QAFD-RAG leads in four dimensions (Comprehensiveness: 87.95, Diversity: 83.40, Logicality: 90.56, Coherence: 90.94), with GraphRAG marginally ahead only on Relevance (94.14 vs. 94.08). These results validate QAFD-RAG's robustness across diverse domains spanning technical (Mathematics, Physics), creative (Music), conceptual (Philosophy), and mixed content, consistently outperforming state-of-the-art graph-based RAG methods through query-aware flow diffusion and dynamic edge reweighting.
+
+\begin{table*}[t]
+% \vspace{-5pt}
+\centering
+\caption{Comparison of QAFD-RAG and baselines across five GPT-4o–scored dimensions (0–100).
+Rows are grouped by dataset; columns are metrics. Each cell shows mean ($\pm$ std) over 5 independent evaluations. 
+Best scores per dataset/metric are bolded. \textit{(continued)}.}
+% \vspace{-10pt}
+\label{tab:rag_all_in_one_part2}
+\rowcolors{1}{white}{gray!15}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llrrrrr}
+\toprule
+\textbf{Dataset} & \textbf{Method} & \textbf{Comprehensive.} & \textbf{Diversity} & \textbf{Logicality} & \textbf{Relevance} & \textbf{Coherence} \\
+
+\midrule
+Mathematics & GraphRAG  & \score{84.30}{9.52} & \score{77.46}{10.68} & \score{88.91}{8.29} & \score{92.65}{10.34} & \score{89.04}{7.52} \\
+            & LightRAG  & \score{80.93}{8.44} & \score{74.07}{10.40} & \score{86.30}{6.20} & \score{90.77}{8.26}  & \score{86.29}{4.56} \\
+            & RAPTOR & \score{81.18}{9.75} & \score{73.73}{12.34} & \score{87.30}{6.46} & \score{91.88}{8.73} & \score{87.70}{4.57} \\
+            & HippoRAG & \score{80.77}{5.31} & \score{73.05}{9.06} & \score{87.05}{4.66} & \score{92.34}{5.53} & \score{87.23}{3.68} \\
+            & QAFD-RAG  & \best{\score{87.30}{4.94}} & \best{\score{82.56}{6.09}} & \best{\score{90.04}{5.15}} & \best{\score{93.36}{7.24}} & \best{\score{90.37}{3.16}} \\
+\midrule
+Mix & GraphRAG  & \score{82.76}{11.41} & \score{74.94}{11.68} & \score{88.45}{6.95} & \score{92.81}{8.65} & \score{88.90}{3.34} \\
+    & LightRAG  & \score{78.72}{13.12} & \score{70.97}{13.39} & \score{85.72}{7.00} & \score{90.37}{9.36} & \score{86.26}{4.68} \\
+    & RAPTOR & \score{81.97}{5.50} & \score{73.09}{7.75} & \score{87.90}{3.71} & \score{93.16}{3.47} & \score{87.81}{3.28} \\
+    & HippoRAG & \score{80.15}{5.20} & \score{71.71}{6.12} & \score{86.55}{3.97} & \score{92.11}{3.56} & \score{86.83}{3.35} \\
+    & QAFD-RAG  & \best{\score{87.15}{3.46}} & \best{\score{81.15}{4.86}} & \best{\score{90.70}{2.93}} & \best{\score{94.36}{4.50}} & \best{\score{90.36}{2.07}} \\
+\midrule
+Music & GraphRAG  & \score{85.32}{6.46} & \score{79.37}{7.92} & \score{90.02}{4.63} & \best{\score{94.14}{7.01}} & \score{89.80}{3.25} \\
+      & LightRAG  & \score{81.14}{8.54} & \score{75.08}{10.13} & \score{86.64}{6.29} & \score{91.29}{8.41} & \score{87.34}{4.36} \\
+      % & PathRAG   & \score{87.02}{4.46} & \score{82.32}{4.92} & \score{90.11}{4.66} & \score{93.90}{6.34} & \score{90.48}{3.14} \\
+      & RAPTOR & \score{81.44}{8.20} & \score{74.55}{11.26} & \score{87.81}{4.36} & \score{93.24}{3.91} & \score{88.14}{3.54} \\
+      & HippoRAG & \score{80.95}{6.00} & \score{74.46}{8.33} & \score{87.22}{3.98} & \score{92.47}{4.76} & \score{87.53}{3.67} \\
+      & QAFD-RAG  & \best{\score{87.95}{3.99}} & \best{\score{83.40}{4.47}} & \best{\score{90.56}{3.77}} & \score{94.08}{5.46} & \best{\score{90.94}{2.39}} \\
+\midrule
+Philosophy & GraphRAG  & \score{84.61}{8.41} & \score{78.36}{8.90} & \score{88.67}{6.90} & \score{93.53}{8.05} & \score{88.83}{6.59} \\
+           & LightRAG  & \score{80.92}{8.88} & \score{74.36}{9.63} & \score{85.74}{6.57} & \score{90.85}{7.32} & \score{86.44}{4.61} \\
+           & RAPTOR & \score{82.30}{5.97} & \score{75.54}{7.46} & \score{87.30}{4.60} & \score{92.83}{4.65} & \score{87.83}{3.45} \\
+           & HippoRAG & \score{80.93}{5.46} & \score{74.12}{6.75} & \score{86.66}{4.52} & \score{92.03}{4.69} & \score{87.42}{3.38} \\
+           & QAFD-RAG  & \best{\score{86.78}{4.11}} & \best{\score{81.91}{4.69}} & \best{\score{89.35}{4.25}} & \best{\score{93.63}{5.91}} & \best{\score{89.91}{2.70}} \\
+\midrule
+
+Physics & GraphRAG  & \score{86.33}{7.32} & \score{79.10}{7.84} & \score{90.29}{7.68} & \score{94.73}{7.71} & \score{89.99}{7.37} \\
+        & LightRAG  & \score{84.45}{4.39} & \score{76.38}{6.19} & \score{89.13}{4.37} & \score{93.67}{5.39} & \score{88.65}{2.76} \\
+        % & PathRAG   & \score{88.77}{3.20} & \score{83.31}{4.28} & \best{\score{91.82}{2.75}} & \score{95.60}{2.77} & \score{91.60}{1.94} \\
+        & RAPTOR & \score{84.18}{3.98} & \score{75.31}{6.27} & \score{89.32}{3.52} & \score{94.46}{2.81} & \score{89.22}{2.92} \\
+        & HippoRAG & \score{82.81}{3.63} & \score{73.66}{5.81} & \score{88.66}{3.07} & \score{94.09}{2.43} & \score{88.69}{2.54} \\
+        & QAFD-RAG  & \best{\score{89.51}{3.14}} & \best{\score{84.21}{3.89}} & \textbf{\score{91.77}{3.26}} & \best{\score{95.61}{2.74}} & \best{\score{91.67}{2.14}} \\
+\bottomrule
+\end{tabular}
+}
+% \vspace{-5pt}
+\end{table*}
+
+
+
+
+
+% \begin{table}[t]
+% \centering
+% \caption{{Comparison of QAFD-RAG and baselines across five GPT-4o–mini-scored dimensions (0–100) on SQuALITY Dataset (\%).}}
+% \label{tab:squality_winrate}
+% \small
+
+% \rowcolors{1}{white}{gray!15}
+% \begin{tabular}{lccccc}
+% \hline
+% \textbf{{Method}} &
+% \textbf{{Comprehensive}} &
+% \textbf{{Diversity}} &
+% \textbf{{Logicality}} &
+% \textbf{{Relevance}} &
+% \textbf{{Coherence}} \\
+% \hline
+
+% {{NaiveRAG}}        & {{35.2}} & {{29.2}} & {{34.4}} & {{31.4}} & {{37.2}} \\
+% {{HyDE}}            & {{37.2}} & {{33.2}} & {{35.6}} & {{40.4}} & {{40.0}} \\
+% {{G-retriever}}     & {{35.2}} & {{38.4}} & {{40.2}} & {{40.0}} & {{37.2}} \\
+% {{HippoRAG}}        & {{43.0}} & {{27.2}} & {{47.2}} & {{46.6}} & {{42.6}} \\
+% {{GraphRAG}}        & {{42.0}} & {{38.4}} & {{42.0}} & {{42.4}} & {{41.6}} \\
+% {{LightRAG}}        & {{44.0}} & {{43.2}} & {{44.8}} & {{45.6}} & {{44.4}} \\
+% \textbf{{QAFD-RAG}} & {{--}}   & {{--}}   & {{--}}   & {{--}}   & {{--}}   \\
+% \hline
+% \end{tabular}
+% \end{table}
+
+\subsubsection{Sensitivity Analysis for QAFD-RAG}
+
+
+
+To assess the robustness of QAFD-RAG under different configurations, we conduct a sensitivity analysis on three key hyperparameters on the Mix dataset in our framework: the number of seed nodes used for QAFD, the initial mass parameter $\alpha$ in the QAFD process, and the choice of edge weight formulation that governs propagation dynamics. We define the tuning ranges as follows:
+
+\begin{itemize}[nosep]
+    \item[-] Number of seed nodes: $\{20, 30, 40, 50, 60\}$
+    \item[-] $\alpha$ (mass initialization): $\{5, 10, 20, 50, 100\}$
+    \item[-] Query-aware edge weight: three distinct formulations reflecting different query-to-node affinity strategies (as presented in Eqn~\eqref{eqn:weight_mean}, \eqref{eqn:weight_product}, and \eqref{eqn:weight_hybrid}).
+\end{itemize}
+
+When analyzing a single hyperparameter, the others are held constant at their default values: $\alpha=50$, the number of seed nodes is 20, and the default query-aware edge weight function is the hybrid formulation. 
+
+
+
+\begin{figure*}[thbp]
+    \centering
+    \includegraphics[width=1\textwidth]{figs/sensitivity_analysis.pdf}
+    \caption{Sensitivity of QAFD-RAG to the number of seed nodes (left), initial mass $\alpha$ (middle), and edge weight choice (right), evaluated across five dimensions on the Mix dataset.} 
+    \label{fig:sensitivity}
+\end{figure*}
+
+
+Figure~\ref{fig:sensitivity} shows that overall performance is stable across the tested ranges, confirming the robustness of QAFD-RAG. Among all metrics, only relevance exhibits a noticeable dependency on the number of seed nodes, slightly improving as fewer seed nodes are introduced, suggesting that 20 seed nodes are already sufficient for most evaluation dimensions. In contrast, $\alpha=50$ yields the best overall balance across metrics; both very small and very large values tend to slightly degrade performance, likely due to insufficient or overly diffused mass concentration during propagation. Surprisingly, the choice of edge weight function has a relatively minor effect—all three variants yield comparable results across metrics, with only slight differences in relevance and logicality.
+
+
+
+These findings indicate that QAFD-RAG is not overly sensitive to hyperparameter settings and performs robustly across a wide range of configurations, requiring minimal tuning in practice.
+
+
+
+
+\subsubsection{{Runtime and Efficiency of QAFD-RAG for General QA} }
+
+\begin{table}[t]
+\centering
+\caption{{Total runtime (in seconds) for graph-based RAG on the full Mix dataset.}}
+\label{tab:runtime}
+\rowcolors{1}{white}{gray!15}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Method} & \textbf{QAFD-RAG} & \textbf{LightRAG} & \textbf{GraphRAG} \\
+\midrule
+\textbf{Total Time (s)} & 8948.81 & 9236.38 & 50968.59 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+{
+Table~\ref{tab:runtime} shows that {QAFD-RAG} matches or outperforms {LightRAG} in wall-clock time and is substantially faster than {GraphRAG}.
+The efficiency gains primarily come from indexing: instead of performing global or hierarchical summarization, QAFD-RAG processes only the subgraph retrieved at query time.
+The diffusion step adds negligible overhead because edge weights are computed on demand and traversal is nearly linear.
+Overall, these properties provide a favorable balance of accuracy and efficiency.
+}
+
+
+
+\subsubsection{{Embedding Model Sensitivity Analysis}}
+\label{sec:embedding_sensitivity}
+{
+To assess QAFD-RAG's robustness to embedding quality, we evaluate the framework across five diverse embedding models on the Mix dataset from UltraDomain. We compare: (i) OpenAI's \texttt{text-embedding-3-small} (1536-dim) and \texttt{text-embedding-3-large} (3072-dim), representing cloud-based proprietary embeddings; (ii) Jina AI's \texttt{jina-embeddings-v3}~\citep{sturua2024jina} (1024-dim), an open-source local model; (iii) NVIDIA's \texttt{nv-embed-v2}~\citep{lee2024nv} (4096-dim), optimized for retrieval tasks; and (iv) \texttt{GritLM-7B}~\citep{muennighoff2024generative} (4096-dim), a unified generative-embedding model. All other hyperparameters remain fixed across experiments.
+
+Table~\ref{tab:embedding_comparison} presents results across five evaluation dimensions. QAFD-RAG demonstrates consistent performance across all embedding models, with Comprehensiveness scores ranging from 85.82 to 88.12 and Relevance scores from 91.98 to 95.12. Notably, \texttt{text-embedding-3-large} achieves the best performance on Comprehensiveness, Diversity, and Relevance, while \texttt{nv-embed-v2} excels on Logicality and Coherence. However, the overlapping standard deviations across models indicate that differences are modest. 
+
+Importantly, \texttt{jina-v3}, despite being the lowest-dimensional model (1024-dim) and fully local, achieves competitive results—only 2-3 points below the best performing models on most metrics. This demonstrates that QAFD-RAG's query-aware flow diffusion mechanism is robust to embedding variations and can operate effectively with resource-constrained or privacy-preserving local embeddings. The consistent performance across diverse architectures (cloud vs. local, 1024-dim to 4096-dim) validates that our theoretical framework successfully leverages semantic similarity regardless of the specific embedding space.}
+
+\begin{table}[t]
+\centering
+\caption{{Embedding sensitivity analysis: QAFD-RAG performance across five embedding models on the Mix dataset. All numbers are mean (± stdev) over 5 runs.}}
+\label{tab:embedding_comparison}
+\rowcolors{1}{white}{gray!15}
+\resizebox{1\textwidth}{!}{
+\begin{tabular}{lccccc}
+\toprule
+\textbf{{Embedding Model}} &
+\textbf{{Comprehensive.}} &
+\textbf{{Diversity}} &
+\textbf{{Logicality}} &
+\textbf{{Relevance}} &
+\textbf{{Coherence}} \\
+\midrule
+{text-embedding-3-small (1536d)} &
+{87.15 (±3.46)} &
+{81.15 (±4.86)} &
+{90.70 (±2.93)} &
+{94.36 (±4.50)} &
+{90.36 (±2.07)} \\
+{text-embedding-3-large (3072d)} &
+{\textbf{88.12 (±3.32)}} &
+{\textbf{83.08 (±4.71)}} &
+{91.28 (±2.85)} &
+{\textbf{95.12 (±4.35)}} &
+{90.85 (±2.01)} \\
+{jina-v3 (1024d)} &
+{85.82 (±3.58)} &
+{80.18 (±5.02)} &
+{89.18 (±3.05)} &
+{91.98 (±4.68)} &
+{87.94 (±2.15)} \\
+{NVIDIA-nv-embed-v2 (4096d)} &
+{87.85 (±3.41)} &
+{82.45 (±4.78)} &
+{\textbf{91.58 (±2.81)}} &
+{94.78 (±4.42)} &
+{\textbf{91.45 (±1.98)}} \\
+{GritLM-7B (4096d)} &
+{87.32 (±3.51)} &
+{81.64 (±4.91)} &
+{89.82 (±2.97)} & 
+{93.52 (±4.55)} & 
+{90.28 (±2.10)} \\ 
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+
+
+\subsubsection{{Long-Document Summarization: SQuALITY Evaluation Details}}
+\label{app:squality}
+
+{
+We evaluate on all 250 questions from the \textsc{SQuALITY} training dataset \citep{wang2022squality}, which contains narrative passages paired with comprehension questions and multiple human-written reference answers per question.
+We compute BLEU-1 and BLEU-2 using unigram and bigram modified precisions with geometric averaging. BLEU-$n$ is defined as
+\[
+\text{BLEU-}n := \exp\!\left( \sum_{i=1}^{n} w_i \log p_i \right),
+\]
+where $p_i$ is the $i$-gram precision and $(w_1,\ldots,w_n)$ are the weights. For BLEU-1 we use $(1,0,0,0)$; for BLEU-2 we use $(0.5,0.5,0,0)$. ROUGE-1 F1 and ROUGE-2 F1 report F1 overlap of unigrams and bigrams using Porter stemming. 
+
+METEOR combines unigram precision (P) and recall (R) with a fragmentation penalty:
+$$\text{METEOR} := F_{\text{mean}} \cdot \left(1 - \gamma \cdot \left(\frac{\text{chunks}}{\text{matches}}\right)^\beta\right),$$
+where harmonic mean $F_{\text{mean}} := P \cdot R/(\alpha P + (1-\alpha)R)$, chunks denotes contiguous matched segments and matches denotes total matched unigrams. We use Natural Language Toolkit (NLTK) defaults: $\alpha=0.9$, $\beta=3.0$, and $\gamma=0.5$. All metrics use lowercased, word-tokenized text with BLEU/METEOR computed against all references.
+
+A knowledge graph is constructed once from all narrative documents and reused across queries. All experiments use hybrid retrieval mode with diffusion parameter $\alpha=10$, a 40-node source budget, and minimum flow threshold $0.01$. Answers are produced with GPT-4o-mini using greedy decoding and full caching. 
+}
+
+% \subsection{SQuALITY Evaluation Prompt}
+% \label{app:prompts:squality}
+
+% \begin{tcolorbox}[colback=gray!5,colframe=gray!75]
+% \small
+% \texttt{Evaluate the following response based on five criteria. Rate each from 0--100.}
+
+% \texttt{Question: \{question\}}
+
+% \texttt{Response: \{response\}}
+
+% \texttt{Criteria: Comprehensiveness, Diversity, Logicality, Relevance, Coherence}
+
+% \texttt{JSON format: \{"comprehensiveness": [score], "diversity": [score], "logicality": [score], "relevance": [score], "coherence": [score]\}}
+% \end{tcolorbox}
+
+
+\subsection{Text-to-SQL}
+
+\subsubsection{Hyperparameter Settings}
+We report the full set of QAFD-RAG hyperparameters used in our implementation. The most critical parameters are the \emph{source mass} and the \emph{target capacity}. The source mass is adaptively set based on the degree of the source node, following local clustering strategies in \cite{fountoulakis2020p}. Specifically, we define $
+m_s = \alpha \sum_{j \in P} T_j$, where $P$ is the set of nodes on the shortest path from source to target. The multiplier $\alpha = 10$ controls the initial injected mass; larger values ensure sufficient propagation across the graph. If no path exists between source and target, we apply a fallback rule: $m_s = \sum_{i \in \mathcal{V}} T_i$. Each node, including the target, is assigned a uniform sink capacity $T_i = 1$ and initialized with zero mass. During diffusion, nodes absorb incoming flow up to their capacity, with excess redistributed until convergence.  
+
+Other hyperparameters regulate the iterative behavior of the algorithm, to which it is generally robust. The convergence threshold in Algorithm~\ref{alg:single_seed_query_diffusion} is set to $\epsilon = 0.05$, terminating when total excess mass falls below this threshold. To safeguard against non-convergence, we cap iterations at $N_{\max} = 10^6$ and check convergence every 100 steps. For stability during edge reweighting, a constant $10^{-10}$ is added to all computations.
+
+\subsubsection{Examples of Schema Identified by QAFD-RAG for Spider2's Queries}\label{sec:graphs}
+
+
+%
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.35\textwidth]{figs/schema_with_path0.png}
+    \hfill
+    \includegraphics[width=0.64\textwidth]{figs/react-spider-agent.png}
+\caption{
+    \textbf{Left:} \textit{Schema path identified by QAFD-RAG for SQL generation on query \texttt{local039}~\citep{lei2025spider}.}
+    \textbf{Right:} \textit{Stepwise schema exploration for the same query using Spider-Agent (ReAct)~\citep{lei2025spider}.}
+    QAFD-RAG discovers the full reasoning path in one pass, sharply reducing LLM calls. In contrast, Spider-Agent incrementally explores the schema, requiring 14 calls and higher latency. This comparison highlights QAFD-RAG’s efficiency and accuracy on complex multi-hop queries.
+}
+    \label{fig:QAFD-RAG:pagila:sidebyside}
+\end{figure}
+
+
+
+The core efficiency of QAFD-RAG stems from its ability to globally reason over the schema graph through flow diffusion, directly identifying the most relevant multi-hop paths between schema elements implicated by the query. As illustrated in Figure~\ref{fig:QAFD-RAG:pagila:sidebyside}, QAFD-RAG, unlike Spider-Agent and other ReAct-style methods—which must sequentially probe the schema, issuing a separate LLM call for each reasoning step, table, or join—performs a single, structured optimization to simultaneously discover all semantically relevant paths. This eliminates redundant exploration and dramatically reduces both the number of LLM calls and overall inference time, especially for queries requiring long or complex join paths. Consequently, QAFD-RAG delivers scalable inference for large enterprise databases while maintaining or even improving accuracy.  
+
+% \subsubsection{Error Distribution Analysis}
+% \begin{figure}[t]
+%     \centering
+%     \includegraphics[width=0.65\textwidth]{figs/barfig74.png}
+%     \vspace{-0.1cm}
+%     \caption{Error category comparison on 74 queries with gold SQLs. QAFD-RAG + SQL-Agent reduces nearly all error types.}
+%     \label{fig:pies}
+%     \vspace{-0.3cm}
+% \end{figure}
+
+% We next analyze error distributions across query examples to evaluate the robustness of our approach. Using 74 test cases with gold SQLs, we compare error categories following definitions in \cite[Section 4.2]{lei2024spider}. Figure~\ref{fig:pies} shows a stacked bar chart comparing Spider-Agent with QAFD-RAG + SQL-Agent.  
+
+% QAFD-RAG + SQL-Agent consistently reduces nearly all error types, including \textit{wrong schema linking} (73 $\rightarrow$ 69 errors), \textit{erroneous data analysis} (95 $\rightarrow$ 90), \textit{join errors} (22 $\rightarrow$ 18), and \textit{condition filter errors} (29 $\rightarrow$ 22). This confirms QAFD-RAG’s effectiveness in mitigating schema, analysis, and syntax-related errors. Across both methods, however, \textit{erroneous data analysis} and \textit{wrong schema linking} remain the dominant error types. Overall, QAFD-RAG + SQL-Agent achieves reductions across all categories, yielding more reliable SQL generation.
+
+
+
+
+% \begin{table*}[t]
+% \centering
+% \resizebox{0.95\textwidth}{!}{%
+% \begin{tabular}{l|ccccc}
+% \toprule
+% \textbf{Method} & 
+% \makecell{\textbf{Query} \\ \textbf{Aware}} & 
+% \makecell{\textbf{Statistical} \\ \textbf{Guarantees}} & 
+% \makecell{\textbf{Sublinear} \\ \textbf{Runtime}} & 
+% \makecell{\textbf{Training} \\ \textbf{Free}} & 
+% \makecell{\textbf{Multi-hop} \\ \textbf{Reasoning}} \\
+% \midrule
+% GraphRAG~\citep{edge2024local} & \xmark & \xmark & \xmark & \xmark & \xmark \\
+% LightRAG~\citep{guo2024lightrag} & \xmark & \xmark & \xmark & \xmark & \xmark \\
+% PathRAG~\citep{chen2025pathrag} & \xmark & \xmark & \xmark & \xmark & \xmark \\
+% RAPTOR~\citep{sarthi2024raptor} & \xmark & \xmark & \cmark & \cmark & \cmark \\
+% HippoRAG~\citep{jimenez2024hipporag} & \xmark & \xmark & \cmark & \cmark & \cmark \\
+% QAFD-RAG (Ours) & \cmark & \cmark & \cmark & \cmark & \cmark \\
+% \bottomrule
+% \end{tabular}%
+% }
+% \caption{Feature comparison of baseline methods and QAFD-RAG.}
+% \label{tab:features}
+% \end{table*}
+
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=12cm]{figs/schema_optimal_paths_local141_gpt-4o_2}
+\end{center}
+\caption{QAFD-RAG retrieved schema for Query-Local141 in the AdventureWorks database KG \citep{lei2025spider}.}
+\label{fig:A1:schema_optimal_paths_local141_gpt-4o}
+%\vspace{-.5cm}
+\end{figure}
+
+
+
+We provide an additional example to illustrate the advantages of our framework in uncovering meaningful schema paths, using Query-Local141 from the AdventureWorks database \citep{lei2025spider}.
+%
+\begin{example}[\textbf{Query-Local141}]
+ How did each salesperson's annual total sales compare to their annual sales quota? Provide the difference between their total sales and the quota for each year, organized by salesperson and year   
+\end{example}
+Figure~\ref{fig:A1:schema_optimal_paths_local141_gpt-4o} visualizes the relevant portion of the complex database schema as a graph, highlighting two distinct schema path decompositions: one corresponding to the sales quota (green path) and the other to the total sales (orange path). These paths not only capture the necessary schema linking but also reveal the underlying reasoning required to answer the query, as seen from the traversal across key nodes such as \texttt{SalesQuota}, \texttt{totaldue}, \texttt{orderdate}, and identifiers such as  \texttt{BusinessEntityID} and \texttt{salespersonid}.
+
+While Spider-Agent fails on this complex multi-hop reasoning query, QAFD-RAG effectively leverages the discovered paths to solve the problem, demonstrating the power of path-based schema linking and reasoning for compositional SQL logic.
+
+
+\subsubsection{{LLM Efficiency and Schema Linking Performance}}
+
+\begin{table}[t]
+\centering
+\caption{{LLM call efficiency across SQLite and Snowflake. Lower is better.}}
+\label{tab:llm_efficiency}  % ← LABEL RIGHT AFTER CAPTION
+\rowcolors{1}{white}{gray!15}
+{
+\begin{tabular}{lcc}
+\toprule
+\textbf{Method} & \textbf{SQLite LLM Calls} & \textbf{Snowflake LLM Calls} \\
+\midrule
+Spider-Agent & 724 & 1482 \\
+\textbf{QAFD-RAG + SQL-Agent} & \textbf{493} & \textbf{674} \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+
+\begin{table}[t]
+\centering
+\caption{{Schema linking performance (precision, recall, F1). Higher is better.}}
+\label{tab:schema_linking}  % ← FIXED LABEL
+\rowcolors{1}{white}{gray!15}
+{
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Method} 
+& \multicolumn{3}{c}{\textbf{SQLite}} 
+& \multicolumn{3}{c}{\textbf{Snowflake}} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7}
+& \textbf{Prec} & \textbf{Rec} & \textbf{F1} 
+& \textbf{Prec} & \textbf{Rec} & \textbf{F1} \\
+\midrule
+Spider-Agent & 0.81 & 0.75 & 0.78 & 0.35 & 0.35 & 0.35 \\
+\textbf{QAFD-RAG} & \textbf{0.82} & \textbf{0.76} & \textbf{0.79} & \textbf{0.60} & \textbf{0.59} & \textbf{0.60} \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+{
+Table~\ref{tab:llm_efficiency} demonstrates that QAFD-RAG + SQL-Agent significantly reduces LLM call overhead, using 31.9\% fewer LLM calls on SQLite and 54.5\% fewer calls on Snowflake compared to the standard Spider-Agent approach. Overall, QAFD-RAG + SQL-Agent consistently outperforms baselines across both environments.
+}
+
+{
+Finally, Table~\ref{tab:schema_linking} presents detailed schema linking performance measured by precision, recall, and F1-score. It demonstrates the core advantage of QAFD-RAG in identifying relevant schema elements (tables and columns) for the given queries, explaining both its accuracy improvements and efficiency gains over Spider-Agent.
+}
+
+
+\subsubsection{{Embedding Model Sensitivity for Text-to-SQL}}
+\label{sec:embedding_sensitivity_text2sql}
+{
+To evaluate QAFD-RAG's robustness to embedding quality in the Text-to-SQL domain, we assess schema linking performance across five diverse embedding models on the Local category (SQLite databases). We compare: (i) OpenAI's \texttt{text-embedding-3-small} (1536-dim) and \texttt{text-embedding-3-large} (3072-dim), representing cloud-based proprietary embeddings; (ii) Jina AI's \texttt{jina-embeddings-v3}~\citep{sturua2024jina} (1024-dim), an open-source local model; (iii) NVIDIA's \texttt{nv-embed-v2}~\citep{lee2024nv} (4096-dim), optimized for retrieval tasks; and (iv) \texttt{GritLM-7B}~\citep{muennighoff2024generative} (4096-dim), a unified generative-embedding model. All other hyperparameters remain fixed across experiments.
+
+Table~\ref{tab:embedding_text2sql_local} presents schema linking results. QAFD-RAG demonstrates consistent performance across all embedding models, with precision scores ranging from 0.80 to 0.83, recall from 0.76 to 0.81, and F1 scores from 0.78 to 0.82. Notably, \texttt{nv-embed-v2} achieves the best performance across all metrics (0.83/0.81/0.82), which is specifically optimized for retrieval tasks, followed closely by \texttt{text-embedding-3-large} (0.82/0.77/0.79) and \texttt{GritLM} (0.82/0.78/0.80).
+
+Importantly, \texttt{jina-v3}, despite being the lowest-dimensional model (1024-dim) and fully local, achieves competitive results—only 0.04 points below the best model in F1 score. This demonstrates that QAFD-RAG's query-aware flow diffusion mechanism is robust to embedding variations and can operate effectively with resource-constrained or privacy-preserving local embeddings. The consistent performance across diverse architectures (cloud vs. local, 1024-dim to 4096-dim, ranging from 0.78 to 0.82 F1) validates that our framework successfully leverages semantic similarity for schema linking regardless of the specific embedding space, making it practical for deployment in varied infrastructure environments.
+}
+
+\begin{table}[t]
+\centering
+
+\caption{{Embedding sensitivity analysis for Text-to-SQL (Local category): QAFD-RAG performance across five embedding models.}}
+\label{tab:embedding_text2sql_local}
+\rowcolors{1}{white}{gray!15}
+{
+\begin{tabular}{lccc}
+\toprule
+\textbf{Embedding Model} &
+\textbf{Precision} &
+\textbf{Recall} &
+\textbf{F1-Score} \\
+\midrule
+text-embedding-3-small (1536d) &
+0.82 &
+0.76 &
+0.79 \\
+text-embedding-3-large (3072d) &
+0.82 &
+0.77 &
+0.79 \\
+jina-v3 (1024d) &
+0.80 &
+0.76 &
+0.78 \\
+NVIDIA-nv-embed-v2 (4096d) &
+\textbf{0.83} &
+\textbf{0.81} &
+\textbf{0.82} \\
+GritLM-7B (4096d) &
+0.82 &
+0.78 &
+0.80 \\ 
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\section{Proof of Main Results}\label{sec:app:proofs}
+
+\subsection{Proof of Lemma \ref{lem:locality}}
+
+\begin{proof}
+
+The proof follows from the structure of the push-relabel algorithm and properties of the dual formulation.
+
+Algorithm~\ref{alg:single_seed_query_diffusion} only increases $x_u$ when node $u$ has excess mass $m_u > T_u$. By the complementary slackness conditions of the dual problem \eqref{eqn:subquery_dual_optimization}, if $x_u^{(k)*} = 0$ at the optimum, then the corresponding constraint is inactive, meaning $m_u \leq T_u$ at optimality. Since the algorithm maintains the invariant that mass can only flow from nodes with excess to their neighbors, and the algorithm starts with $\mathbf{x}^0 = \mathbf{0}$, any node $u$ with $x_u^{(k)*} = 0$ will never have excess mass during the algorithm's execution. Therefore, $x_u^t = 0$ for all iterations $t$, proving $\operatorname{supp}(\mathbf{x}^t) \subseteq \operatorname{supp}(\mathbf{x}^{(k)*})$.
+
+The source mass $\boldsymbol{\Delta}^{(k)}$ determines the total amount of "flow" injected into the system. Each unit of flow that reaches a node $u$ contributes at least a minimum amount to $x_u$ (bounded by the algorithm's push operations). Since mass is conserved and each node in the support must receive some positive flow to have $x_u > 0$, the number of nodes that can be in the support is upper bounded by the total mass $\|\boldsymbol{\Delta}^{(k)}\|_1$. Formally, if $|\operatorname{supp}(\mathbf{x}^{(k)*})| > \|\boldsymbol{\Delta}^{(k)}\|_1$, then the average flow per supported node would be less than 1, but the discrete nature of the push operations and capacity constraints ensure each supported node receives at least a minimum quantum of flow, leading to a contradiction.
+
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{lem:complexity}}
+\begin{proof}
+The proof follows the framework of coordinate descent analysis for flow diffusion problems \citep{fountoulakis2020p}, adapted to handle query-aware edge weights. We analyze the expected decrease in the objective function at each iteration.
+
+For simplicity, let $F(\mathbf{x}) = \frac{1}{2}\mathbf{x}^T\mathbf{L}(q_k)\mathbf{x} + \mathbf{x}^T(\mathbf{T} - \boldsymbol{\Delta}^{(k)})$ be the dual objective from \eqref{eqn:subquery_dual_optimization}, where $\mathbf{L}(q_k) = \mathbf{B}^T\bar{\mathbf{W}}(q_k)\mathbf{B}$ is the query-aware weighted Laplacian. At iteration $t$, Algorithm~\ref{alg:single_seed_query_diffusion} selects a node $u$ with excess mass $m_u > T_u$ uniformly at random and performs a push operation. The mass vector maintains the relationship $\mathbf{m} = \boldsymbol{\Delta}^{(k)} - \mathbf{L}(q_k)\mathbf{x}$, so the gradient is $\nabla F(\mathbf{x}) = \mathbf{L}(q_k)\mathbf{x} + (\mathbf{T} - \boldsymbol{\Delta}^{(k)}) = \mathbf{T} - \mathbf{m}$. When node $u$ is selected, the excess mass is $\text{excess} = m_u - T_u > 0$, which corresponds to $\frac{\partial F}{\partial x_u} = T_u - m_u < 0$. The algorithm increases $x_u$ by $\frac{\text{excess}}{w_u}$ where $w_u = \sum_{v \sim u} \bar{w}(q_k, u, v)$, and redistributes the excess to neighbors.
+
+The key insight is that this corresponds to a coordinate descent step. The expected decrease in the objective function is
+\begin{align}
+\mathbb{E}[F(\mathbf{x}^{t+1}) - F(\mathbf{x}^t)] &= -\mathbb{E}\left[\frac{(\text{excess})^2}{2w_u}\right] \cdot \mathbb{P}(\text{node } u \text{ is selected})
+\end{align}
+Since nodes are selected uniformly from the excess set, and by Lemma~\ref{lem:locality}, all iterates have support contained in $\operatorname{supp}(\mathbf{x}^{(k)*})$, we have 
+\begin{align}
+\mathbb{E}[F(\mathbf{x}^{t+1}) - F(\mathbf{x}^t)] &\leq -\frac{1}{|\operatorname{supp}(\mathbf{x}^{(k)*})|} \cdot \frac{\eta^{(k)}}{2\gamma^{(k)}} \cdot \|\mathbf{T} - \mathbf{m}^t\|_1^2
+\end{align}
+where we use $\eta^{(k)} \leq \bar{w}(q_k, u, v)$ for edges in the optimal support (minimum weight); $\sum_{v \sim u} \bar{w}(q_k, u, v) \leq \gamma^{(k)}$ for nodes in the optimal support (maximum weighted degree); and The excess mass at each node is bounded by the gradient components.
+
+The total excess mass is $\|\mathbf{T} - \mathbf{m}^t\|_1$, and by the optimality conditions, this relates to the suboptimality as
+\begin{align}
+F(\mathbf{x}^t) - F(\mathbf{x}^{(k)*}) \leq C \cdot \|\mathbf{T} - \mathbf{m}^t\|_1
+\end{align}
+for some constant $C$ depending on the problem parameters.
+Combining these bounds and using the fact that $|\operatorname{supp}(\mathbf{x}^{(k)*})| \leq \|\boldsymbol{\Delta}^{(k)}\|_1$ from Lemma~\ref{lem:locality}, we get
+\begin{align}
+\mathbb{E}[F(\mathbf{x}^{t+1}) - F(\mathbf{x}^{(k)*})] &\leq \left(1 - \frac{\eta^{(k)}}{C \cdot \|\boldsymbol{\Delta}^{(k)}\|_1 \cdot \gamma^{(k)}}\right) \mathbb{E}[F(\mathbf{x}^t) - F(\mathbf{x}^{(k)*})]
+\end{align}
+This gives exponential convergence with rate $\frac{\eta^{(k)}}{\|\boldsymbol{\Delta}^{(k)}\|_1 \cdot \gamma^{(k)}}$. To achieve $\mathbb{E}[F(\mathbf{x}^{\tau^{(k)}})] - F(\mathbf{x}^{(k)*}) \leq \xi$, we need
+\begin{align}
+\tau^{(k)} = O\left(\|\boldsymbol{\Delta}^{(k)}\|_1 \frac{\gamma^{(k)}}{\eta^{(k)}} \log \frac{1}{\xi}\right).
+\end{align}
+The query-aware nature enters through the weights $\bar{w}(q_k, u, v)$ in the definitions of $\gamma^{(k)}$ and $\eta^{(k)}$, meaning the convergence rate adapts to the semantic structure induced by the query, while maintaining the same algorithmic guarantees as classical flow diffusion.
+\end{proof}
+
+
+\subsection{Proof of Lemma~\ref{thm:edge-separation}}
+
+\begin{proof}
+Note that for any nodes $u, v \in \mathcal{V}$ and $k \in [K]$, we have
+\begin{subequations}\label{eqn:quad}
+\begin{align}
+    \|\mathbf{e}_u - \mathbf{e}_{q_k}\|^2 &= \|\boldsymbol{\mu}_u - \boldsymbol{\mu}_{q_k}\|^2 + \|\mathbf{z}_u - \mathbf{z}_{q_k}\|^2 + 2\langle \boldsymbol{\mu}_u - \boldsymbol{\mu}_{q_k}, \mathbf{z}_u - \mathbf{z}_{q_k}\rangle, \label{eq:decomp1} \\
+    \|\mathbf{e}_u - \mathbf{e}_v\|^2 &= \|\boldsymbol{\mu}_u - \boldsymbol{\mu}_v\|^2 + \|\mathbf{z}_u - \mathbf{z}_v\|^2 + 2\langle \boldsymbol{\mu}_u - \boldsymbol{\mu}_v, \mathbf{z}_u - \mathbf{z}_v\rangle. \label{eq:decomp2}
+\end{align}    
+\end{subequations}
+
+To analyze the concentration of $\|\mathbf{e}_u - \mathbf{e}_{q_k}\|^2$, note that
+$
+\|\mathbf{z}_u - \mathbf{z}_{q_k}\|^2 = \sum_{\ell=1}^d (z_{u\ell} - z_{q_k\ell})^2.
+$
+Each term $(z_{u\ell} - z_{q_k\ell})^2 - \mathbb{E}[(z_{u\ell} - z_{q_k\ell})^2]$ is sub-exponential with parameter at most $C\sigma_\ell^2$ for some absolute constant $C$ (see, e.g., \cite[Theorem 2.7.7]{vershynin2018high}). Applying Bernstein's inequality for sums of independent sub-exponential random variables and setting $t = C_1 \hat{\sigma}^2 \log |\mathcal{V}|$, we obtain
+\begin{subequations}
+\begin{equation}
+\|\mathbf{z}_u - \mathbf{z}_{q_k}\|^2 \leq 2 \sum_{\ell=1}^d \sigma_\ell^2 + C_1 \hat{\sigma}^2 \log |\mathcal{V}|
+\end{equation}
+with probability at least $1 - 2|\mathcal{V}|^{-c'}$, where $\hat{\sigma} = \max_{1 \leq \ell \leq d} \sigma_\ell$ and $c'>0$ is a constant.
+
+For the cross term, observe that
+\[
+\langle \boldsymbol{\mu}_u - \boldsymbol{\mu}_{q_k},\, \mathbf{z}_u - \mathbf{z}_{q_k} \rangle = \sum_{\ell=1}^d (\mu_{u\ell} - \mu_{q_k\ell})(z_{u\ell} - z_{q_k\ell})
+\]
+is a sum of independent, mean-zero sub-Gaussian random variables. By standard sub-Gaussian tail bounds (e.g., Hoeffding's inequality), for any $C_2 > 0$,
+\[
+\mathbb{P}\left(
+\left| \langle \boldsymbol{\mu}_u - \boldsymbol{\mu}_{q_k},\, \mathbf{z}_u - \mathbf{z}_{q_k} \rangle \right|
+> C_2 \hat{\sigma} \sqrt{\log |\mathcal{V}|} \|\boldsymbol{\mu}_u - \boldsymbol{\mu}_{q_k}\|
+\right) \leq 2 |\mathcal{V}|^{-c''}
+\]
+for some constant $c''>0$.
+Hence,  
+\begin{equation}
+\left| \langle \boldsymbol{\mu}_u - \boldsymbol{\mu}_{q_k},\, \mathbf{z}_u - \mathbf{z}_{q_k} \rangle \right|\leq C_2\hat{\sigma}\sqrt{\log |\mathcal{V}|} \|\boldsymbol{\mu}_u - \boldsymbol{\mu}_{q_k}\|
+\end{equation}    
+with probability at least $ 1-2|\mathcal{V}|^{-c''}$.
+\end{subequations}
+
+Therefore, with high probability,
+\begin{align*}
+    \|\mathbf{e}_u - \mathbf{e}_{q_k}\|^2
+    &\leq \|\boldsymbol{\mu}_u - \boldsymbol{\mu}_{q_k}\|^2
+    + 2 \sum_{\ell=1}^d \sigma_\ell^2
+    + C_1 \hat{\sigma}^2 \log |\mathcal{V}| \\
+    &\quad + 2 C_2 \hat{\sigma} \sqrt{\log |\mathcal{V}|} \|\boldsymbol{\mu}_u - \boldsymbol{\mu}_{q_k}\|.
+\end{align*}
+
+Following a similar argument, we derive bounds for $\|\mathbf{z}_u - \mathbf{z}_v\|^2$ and $\langle \boldsymbol{\mu}_u - \boldsymbol{\mu}_v, \mathbf{z}_u - \mathbf{z}_v\rangle$. Thus, for $u, v \in \mathcal{R}_k$, since $\boldsymbol{\mu}_u = \boldsymbol{\mu}_v = \boldsymbol{\mu}_{q_k}$, the decomposition in \eqref{eqn:quad} simplifies, and we obtain, with probability at least $1 - O(|\mathcal{V}|^{-2})$
+\begin{align*}
+    \bar{w}(q_k, u, v) &\geq w(u, v)\exp\left(- (\gamma_1 + \gamma_2 + \gamma_3) \cdot O(\hat{\sigma}^2 d)\right) \\
+    &= w(u, v)\exp(-o(1)) = w(u, v)(1-o(1)).
+\end{align*}
+This proves Item (i) in the lemma. 
+
+On the other hand, if $u \in \mathcal{R}_k$ and $v \in \mathcal{V} \setminus \mathcal{R}_k$, we have $\min (\|\boldsymbol{\mu}_u - \boldsymbol{\mu}_{v}\|, \|\boldsymbol{\mu}_v - \boldsymbol{\mu}_{q_k}\|) \geq \hat{\mu}$ for some $\hat{\mu}$. Thus, with high probability 
+\begin{align*}
+    \|\mathbf{e}_v - \mathbf{e}_{q_k}\|^2 &\geq \hat{\mu}^2 - 2C_2\hat{\sigma}\sqrt{\log |\mathcal{V}|}\hat{\mu} - O(\hat{\sigma}^2 d) \\
+    &\geq \hat{\mu}^2(1 - o(1)).
+\end{align*}
+From Assumption~\ref{assump:snr}, we get 
+\begin{equation*}
+    \bar{w}(q_k, u, v) \leq w(u, v)\exp(-\gamma_2 \hat{\mu}^2(1 - o(1))) = w(u, v)\exp(-\omega(\log |\mathcal{V}|)).
+\end{equation*}
+Since the results hold uniformly over all pairs of nodes $(u,v)$, applying a union bound over all $O(|\mathcal{V}|^2)$ edges completes the proof.
+\end{proof}
+
+
+
+%%%%%
+\subsection{Proof of Theorem~\ref{thm:recovery}}
+\begin{proof}
+Consider Problem~\eqref{eqn:dual:prob}. Under Assumption~\ref{assump:snr}, the induced subgraph on $\mathcal{R}_k$ is connected. (Otherwise, the alternative probabilistic condition on $\rho_1$ guarantees expansion—and thus connectivity—with high probability by Chernoff bound arguments; see, e.g., \cite[Lemma C.1]{yang2023weighted}.)
+
+Order the nodes in $\mathcal{R}_k$ as $v_1, v_2, \ldots, v_{r_k}$ such that $x_{v_1}^{(k)} \geq x_{v_2}^{(k)} \geq \cdots \geq x_{v_{r_k}}^{(k)}$, and let $x_{v_{r_k}}^{(k)} = 0$ be the minimum.
+As the subgraph on $\mathcal{R}_k$ is connected, there is a subgraph $ (v_1 = u_0,  \ldots, u_m = v_{r_k})$ with $m \leq r_k - 1$, where each $(u_\ell, u_{\ell+1})$ is an edge within $\mathcal{R}_k$. By the KKT conditions, for every edge $(u,v)$ with  $x_u^{(k)} > x_v^{(k)}$, the optimal solution must satisfy
+\[
+    \bar{w}(q_k, u, v) (x_u^{(k)} - x_v^{(k)}) \leq (1+\beta)\sum_{u \in \mathcal{R}_k} T_u.
+\]
+Therefore, along each edge of the subgraph
+\[
+    x_{u_\ell}^{(k)} - x_{u_{\ell+1}}^{(k)} \leq \frac{(1+\beta)}{\bar{w}(q_k, u_\ell, u_{\ell+1})} \sum_{u \in \mathcal{R}_k} T_u
+\]
+for $0 \leq \ell \leq m-1$. 
+
+By the edge separation property in Lemma~\ref{thm:edge-separation}, $\bar{w}(q_k, u_\ell, u_{\ell+1}) \geq w(u_\ell, u_{\ell+1})(1-o(1))$ for intra-$\mathcal{R}_k$ edge. Summing the above along the path, we have
+\begin{align}
+\nonumber
+    x_{v_1}^{(k)} = \sum_{\ell=0}^{m-1} (x_{u_\ell}^{(k)} - x_{u_{\ell+1}}^{(k)}) + x_{v_{r_k}}^{(k)} &\leq \sum_{\ell=0}^{m-1} \frac{(1+\beta)\sum_{u \in \mathcal{R}_k} T_u}{1 - o(1)}\\
+    &\leq \frac{r_k(1+\beta)\sum_{u \in \mathcal{R}_k} T_u}{1 - o(1)}.
+\end{align}
+%where $w_{\min} = \min\{w(u,v) : u,v \in \mathcal{R}_k, (u,v) \in \mathcal{E}\}$.
+
+The total mass injected at sources in $\mathcal{R}_k$ is $(1+\beta)\sum_{u \in \mathcal{R}_k} T_u$. Nodes in $\mathcal{R}_k$ can absorb at most $\sum_{u \in \mathcal{R}_k} T_u$ mass. Therefore, at least $\beta\sum_{u \in \mathcal{R}_k} T_u$ mass must flow out of $\mathcal{R}_k$.
+
+Next, we provide upper bound on the outflow. The total flow leaving $\mathcal{R}_k$ is
+\begin{align}
+\nonumber
+    \text{Outflow} &:= \sum_{u \in \mathcal{R}_k} \sum_{\substack{v \notin \mathcal{R}_k \\ (u,v) \in \mathcal{E}}} \bar{w}(q_k, u, v)(x_u^{(k)} - x_v^{(k)})^+ \leq \sum_{u \in \mathcal{R}_k} x_u^{(k)} \sum_{\substack{v \notin \mathcal{R}_k \\ (u,v) \in \mathcal{E}}} \bar{w}(q_k, u, v)\\
+    &\leq x_{v_1}^{(k)} \sum_{u \in \mathcal{R}_k} \sum_{\substack{v \notin \mathcal{R}_k \\ (u,v) \in \mathcal{E}}} \bar{w}(q_k, u, v).
+\end{align}
+By Lemma~\ref{thm:edge-separation}, $\bar{w}(q_k, u, v) \leq \exp(-\omega(\log|\mathcal{V}|))$ for $u \in \mathcal{R}_k, v \notin \mathcal{R}_k$.
+Let $N_{out}$ be the number of edges from $\mathcal{R}_k$ to $\mathcal{V} \setminus \mathcal{R}_k$. By Chernoff bounds, we have 
+\begin{equation}
+    \textnormal{Prob}(N_{out} > 2\rho_2 r_k(|\mathcal{V}|-r_k)) \leq \exp(-\Omega(\rho_2 r_k(|\mathcal{V}|-r_k))).
+\end{equation}
+Therefore, with high probability
+\begin{align*}
+    \textnormal{Outflow} &\leq \frac{r_k(1+\beta)\sum_{u \in \mathcal{R}_k} T_u}{1 - o(1)} \cdot 2\rho_2 r_k(|\mathcal{V}|-r_k) \cdot \exp(-\omega(\log|\mathcal{V}|))\\
+    &\qquad= (1+\beta)\sum_{u \in \mathcal{R}_k} T_u \cdot \textnormal{poly}(|\mathcal{V}|) \cdot \exp(-\omega(\log|\mathcal{V}|))\\
+    &\qquad= o\left(\beta\sum_{u \in \mathcal{R}_k} T_u\right).
+\end{align*}
+This contradicts the requirement that at least $\beta\sum_{u \in \mathcal{R}_k} T_u$ mass must leave $\mathcal{R}_k$. Thus, our assumption that $x_{v_{r_k}}^{(k)} = 0$ is false, so $x_{v}^{(k)} > 0$ for all $v \in \mathcal{R}_k$, i.e., $\mathcal{R}_k \subseteq \textnormal{supp}(\mathbf{x}^{(k)})$.
+
+Finally, the mass that does leave $\mathcal{R}_k$ must be absorbed at nodes outside $\mathcal{R}_k$. Since each $x_u^{(k)} \leq T_u$ (by the constraints), the sum of $T_u$ over nodes in $\textnormal{supp}(\mathbf{x}^{(k)}) \setminus \mathcal{R}_k$ cannot exceed the total outflow, i.e.,
+\begin{equation*}
+    \sum_{u \in \textnormal{supp}(\mathbf{x}^{(k)}) \setminus \mathcal{R}_k} T_u \leq \beta \sum_{u \in \mathcal{R}_k} T_u.
+\end{equation*}
+This establishes the second part of the theorem. The desired high-probability result then follows by a union bound.
+\end{proof}
+
+% \begin{corollary}[Path Recovery Guarantees] \label{cor:path-scoring}
+% Under the conditions of Theorem~\ref{thm:recovery}, any path $p$ scored by \eqref{eq:path-score-bridge} satisfies: if $p$ passes only through $\mathcal{R}_k$, then $\textnormal{Score}(p) \geq \Omega(1/\textnormal{poly}(|\mathcal{V}|))$; if $p$ includes any node in $\mathcal{V} \setminus \mathcal{R}_k$, then $\textnormal{Score}(p) \leq \exp(-\omega(\log|\mathcal{V}|))$. %This exponential gap enables high-probability recovery of the correct path.
+% \end{corollary}
+% %
+% \begin{proof}
+% Consider first the case where the path $p$ passes only through nodes in $\mathcal{R}_k$. By Lemma~\ref{thm:edge-separation}, each edge weight $\bar{w}_{v_i v_{i+1}}$ on the path is at least $w_{v_i v_{i+1}}(1-o(1))$, as all edges remain within $\mathcal{R}_k$. Moreover, by Theorem~\ref{thm:recovery}, each $x_{v_i}^{(k)} > 0$ for $v_i \in \mathcal{R}_k$, and in fact, the minimum positive value is lower bounded by $\Omega(1/\textnormal{poly}(|\mathcal{V}|))$. Thus, the product in the scoring function over the path yields at least a polynomially small.
+
+% Now consider any path $p$ that contains a node outside of $\mathcal{R}_k$. If the path includes any node $v \notin \mathcal{R}_k$ with $x_v^{(k)} = 0$ (which is the typical case due to the support property proved in Theorem~\ref{thm:recovery}), then the score is immediately zero, since the score is a product over $x_{v_i}^{(k)}$. If, alternatively, the path uses an edge $(i, j)$ with $i \in \mathcal{R}_k$ and $j \notin \mathcal{R}_k$, then by Lemma~\ref{thm:edge-separation}, $\bar{w}_{ij} \leq w_{ij} \exp(-\omega(\log|\mathcal{V}|))$. Even if all flow values along the path are nonzero and at most $O(1)$, the overall score is still upper bounded by $\exp(-\omega(\log|\mathcal{V}|))$, due to the presence of this exponentially small edge weight. Therefore, the score for any path leaving $\mathcal{R}_k$ becomes exponentially small in $n$.
+
+% Thus, the ratio between the score of any path entirely contained in $\mathcal{R}_k$ and that of any path passing through nodes outside $\mathcal{R}_k$ is at least $\exp(\omega(\log|\mathcal{V}|))$, ensuring that the highest scoring paths are those which are entirely contained in $\mathcal{R}_k$. This exponential separation guarantees correct path ranking and identification with high probability, as claimed.
+% \end{proof}
+
+
+\section{Overview of Datasets and Prompts Used in QAFD-RAG for Question Answering}\label{app:prompts:qa}
+
+
+
+
+
+
+
+This section provides the details of datasets and  key prompts used throughout our framework. To ensure fair comparison and eliminate confounding effects due to prompt engineering, we directly adopt the prompt templates introduced in \cite{chen2025pathrag} and \cite{guo2024lightrag} for multiple stages of our pipeline. Specifically, the prompts for knowledge graph indexing, keyword extraction, and RAG-based query answering are reused without modification. For the performance evaluation stage, we also follow \cite{chen2025pathrag} and \cite{guo2024lightrag}’s evaluation setup by prompting the model to rate responses along five predefined dimensions: Comprehensiveness, Diversity, Logicality, Relevance, and Coherence. These standardized definitions and formulations are explicitly included in our evaluation prompts. Using a consistent prompt set across all models ensures the reliability and reproducibility of our experimental results.
+
+
+
+\subsection{Datasets}
+\label{app:datasets}
+
+\begin{table*}[htbp]
+\centering
+\caption{Dataset statistics for the UltraDomain subsets used in our evaluation.}
+\rowcolors{1}{white}{gray!15}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l|cccc}
+\toprule
+\textbf{Dataset} & \textbf{\# of documents} & \textbf{\# of tokens} & \textbf{\# of nodes in the indexing graph} & \textbf{\# of questions} \\
+\midrule
+Agriculture & 12  & 1,949,526 & 23,180 & 100 \\
+Biology     & 27  & 3,275,990 & 42,520 & 220 \\
+Cooking     & 14  & 2,232,441 & 18,985 & 120 \\
+History     & 26  & 5,159,599 & 63,840 & 180 \\
+Legal       & 94  & 4,773,793 & 20,838 & 438 \\
+Mathematics & 20  & 3,640,908 & 32,319 & 160 \\
+Mix         & 61  &   611,161 & 11,371 & 130 \\
+Music       & 29  & 5,038,910 & 58,245 & 200 \\
+Philosophy  & 26  & 3,561,642 & 33,241 & 200 \\
+Physics     & 19  & 2,116,825 & 19,745 & 160 \\
+\bottomrule
+\end{tabular}%
+}
+\label{tab:dataset_description}
+\end{table*}
+
+
+
+\subsection{Entity and Relationship Extraction Prompt}
+
+This prompt is used to extract structured entity and relation information from individual document chunks, forming the nodes and edges of the knowledge graph. The prompt format is directly adopted from \cite{chen2025pathrag}.
+
+\begin{promptbox}{prompt:entity_relationship}{Entity and Relationship Extraction}
+---Goal---
+
+Given a text document that is potentially relevant to this activity and a list of entity types, identify all entities of those types from the text and all relationships among the identified entities.
+Use \{language\} as output language.\\
+
+---Steps---
+\begin{enumerate}[itemsep=5pt]
+    \item Identify all entities. For each identified entity, extract the following information:
+    \begin{enumerate}
+        \item[-] entity\_name: Name of the entity, use the same language as input text. If English, capitalize the name.
+        \item[-] entity\_type: One of the following types: [\{entity\_types\}]
+        \item[-] entity\_description: Comprehensive description of the entity's attributes and activities
+    \end{enumerate}
+    Format each entity as \\
+    \makecell[l]{(``entity''\{tuple\_delimiter\}<entity\_name>\{tuple\_delimiter\}\\<entity\_type>\{tuple\_delimiter\}<entity\_description>)}
+    
+    \item From the entities identified in step 1, identify all pairs of (source\_entity, target\_entity) that are clearly related to each other.
+    For each pair of related entities, extract the following information:
+    \begin{enumerate}
+        \item[-] source\_entity: name of the source entity, as identified in step 1
+        \item[-] target\_entity: name of the target entity, as identified in step 1
+        \item[-] relationship\_description: explanation as to why you think the source entity and the target entity are related to each other
+        \item[-] relationship\_strength: a numeric score indicating the strength of the relationship between the source entity and target entity
+        \item[-] relationship\_keywords: one or more high-level key words that summarize the overarching nature of the relationship, focusing on concepts or themes rather than specific details
+    \end{enumerate}
+    Format each relationship as\\
+    \makecell[l]{(``relationship''\{tuple\_delimiter\}<source\_entity>\{tuple\_delimiter\}<target\_entity>\\\{tuple\_delimiter\}<relationship\_description>\{tuple\_delimiter\}\\<relationship\_keywords>\{tuple\_delimiter\}<relationship\_strength>)}
+    
+    
+    \item Identify high-level keywords that summarize the main concepts, themes, or topics of the entire text. These should capture the overarching ideas present in the document.
+    Format the content-level keywords as
+    
+    (``content\_keywords''\{tuple\_delimiter\}<high\_level\_keywords>)
+    \item Return output in \{language\} as a single list of all the entities and relationships identified in steps 1 and 2. Use **\{record\_delimiter\}** as the list delimiter.
+    \item When finished, output \{completion\_delimiter\}
+\end{enumerate}
+
+\end{promptbox}
+
+
+\subsection{Keyword Extraction Prompt}
+
+This prompt identifies salient concepts and entities from a given query for the purpose of initializing seed nodes during query-aware diffusion. It follows \cite{chen2025pathrag}’s design without any modification.
+
+\begin{promptbox}{prompt:keyword_extraction_kg}{Keyword-Extraction in Knowledge Graph Question Answering}
+---Role---
+
+You are a helpful assistant tasked with identifying both high-level and low-level keywords in the user's query.
+\\
+
+---Goal---
+
+Given the query, list both high-level and low-level keywords. High-level keywords focus on overarching concepts or themes, while low-level keywords focus on specific entities, details, or concrete terms.
+\\
+
+---Instructions---
+\begin{itemize}
+    \item[-] Output the keywords in JSON format.
+    \item[-] The JSON should have two keys:\\
+    
+    \begin{itemize}
+        \item[-] ``high\_level\_keywords'' for overarching concepts or themes.
+        \item[-] ``low\_level\_keywords'' for specific entities or details.
+    \end{itemize}
+    
+\end{itemize}
+\label{prompt:keyword}
+\end{promptbox}
+
+% \subsection{Cluster Summarization Prompt (Query-Aware)}
+
+
+% After performing query-aware flow diffusion, each activated cluster around a seed node is summarized into a condensed textual description. This cluster-level summary is later used in the query answering prompt. This prompt is specific to QAFD-RAG.
+
+
+% \begin{promptbox}{prompt:cluster_summrize}{Query Aware Flow Diffusion Cluster Summarization}
+
+% ---Goal---
+
+% Please analyze the following cluster of entities and their relationships, then provide a concise summary of how they are connected and what this cluster represents.
+% \\
+
+% ---Cluster Information---
+% \begin{itemize}
+%     \item[-] Source Node: \{source\_node\}
+%     \item[-] Cluster Nodes: \{nodes\_text\}
+% \end{itemize}
+
+
+% Please provide a summary that explains:
+% \begin{enumerate}
+%     \item How are these entities related to each other?
+%     \item What concept or theme does this cluster represent?
+%     \item The significance of the connections between these entities.
+%     \item How does the source node connect to the other entities in this cluster?
+% \end{enumerate}
+
+% Keep the summary concise but informative, focusing on the relationships and thematic connections.
+% \end{promptbox}
+
+\subsection{Query Answering Prompt}
+
+This prompt is used to generate the final response from the LLM based on retrieved evidence. We adopt \cite{chen2025pathrag}’s instruction format for fairness in model comparison.
+
+\begin{promptbox}{prompt:rag_response}{RAG-based query answering}
+---Role---
+
+You are a helpful assistant responding to questions about the data in the tables provided.
+\\
+
+---Goal---
+
+Generate a response of the target length and format that responds to the user's question, summarizing all information in the input data tables appropriate for the response length and format, and incorporating any relevant general knowledge.
+If you don't know the answer, just say so. Do not make anything up.
+Do not include information where the supporting evidence for it is not provided.
+\\
+
+---Target response length and format---
+
+\hspace{10pt}\{response\_type\}
+\\
+
+---Data tables---
+
+\hspace{10pt}\{context\_data\}
+\\
+
+Add sections and commentary to the response as appropriate for the length and format. Style the response in markdown.
+\label{prompt:query:answer}
+\end{promptbox}
+
+\subsection{Evaluation Prompt}
+
+This prompt is used to obtain ratings from the LLM across five dimensions: Comprehensiveness, Diversity, Logicality, Relevance, and Coherence. The full dimension definitions are embedded in the prompt and align with those defined in \cite{chen2025pathrag}.
+
+\begin{promptbox}{prompt:evaluation}{Performance Evaluation}
+---Role---
+
+You are an expert tasked with evaluating question answering based on five criteria: Comprehensiveness, Diversity, Logicality, Relevance, and Coherence.
+\\
+
+---Goal---
+
+Evaluate the following response to a question based on five criteria. Rate each criterion from 0 to 100.\\
+
+Question: \{query\}
+
+Response: \{response\}\\
+
+Please evaluate based on these criteria:
+\begin{itemize}
+    \item[-] Comprehensiveness: How much detail does the answer provide to cover all aspects and details of the question?
+    \item[-] Diversity: How varied and rich is the answer in providing different perspectives and insights on the question?
+    \item[-] Logicality: How logically does the answer respond to all parts of the question?
+    \item[-] Relevance: How relevant is the answer to the question, staying focused and addressing the intended topic or issue?
+    \item[-] Coherence: How well does the answer maintain internal logical connections between its parts, ensuring a smooth and consistent structure?
+\end{itemize}
+
+Provide scores in JSON format:\\
+
+\{\{
+\begin{itemize}
+    \item[] "comprehensiveness": [score],
+    \item[] "diversity": [score],
+    \item[] "logicality": [score],
+    \item[] "relevance": [score],
+    \item[] "coherence": [score]
+\end{itemize}
+\}\}
+ \label{prompt:eval:qa}   
+\end{promptbox}
+
+% \subsection{Hyperparameter Sensitivity Analysis}
+
+
+
+
+% \section{Detailed Algorithm Specifications} \label{sec:app:mainalg}
+
+% \begin{promptbox}{prompt:keyword}{Keyword-Extraction}
+% You are an expert keyword extraction system. Given a query q, extract the most relevant and important keywords that capture the core semantic meaning and intent of the query.
+
+% Instructions:
+% 1. Analyze the input query q carefully
+% 2. Identify key concepts, entities, and terms that are central to the query's meaning
+% 3. Extract 3-8 keywords that best represent the query's intent and content
+% 4. Prioritize nouns, proper nouns, and significant verbs/adjectives
+% 5. Avoid common stop words (the, and, or, but, etc.) unless they are contextually important
+% 6. Include domain-specific terminology when relevant
+% 7. Consider both explicit terms and implicit concepts
+% 8. Return keywords in order of importance/relevance
+
+% Output format:
+% - Present keywords as a comma-separated list
+% - Use lowercase unless proper nouns
+% - Keep multi-word phrases together when they represent a single concept
+
+% Example:
+% Query: "What are the best machine learning algorithms for natural language processing tasks?"
+% Keywords: machine learning algorithms, natural language processing, NLP tasks, supervised learning, neural networks, deep learning, text classification
+% \end{promptbox}
+
+% As shown in Prompt~\ref{prompt:keyword}, we implement a systematic approach to keyword extraction that analyzes the semantic content of queries and identifies the most relevant terms for information retrieval and search optimization.
+
+
+\section{Overview of Prompts Used in QAFD-RAG in Text-to-SQL Tasks}\label{app:prompts:text-to-sql}
+
+In the following, we provide a Text-to-SQL planning agent prompt to systematically analyze database graph nodes (tables and columns) in relation to user queries in order to identify graph seed nodes. The agent must decompose each query into subqueries, examine all schema nodes for semantic, structural, and temporal connections, and output a JSON object listing source-target (seed node candidate) pairs for each subquery. A similar prompt can be used for Snowflake graphs with minor modifications.
+
+
+
+\begin{promptbox}{prompt:seednodes:text-to-sql:lite}{Seed Node Selection for SQLite Graph}
+\label{promp:seed}
+\section*{Task Definition}
+You are a Text-to-SQL planner agent. 
+
+Given:
+\begin{itemize}
+\item A user query: \{QUERY\}
+\item A database schema summary (graph) in text format: \{SCHEMA\_SUMMARY\}
+\end{itemize}
+
+Your job is to:
+\begin{enumerate}[itemsep=5pt]
+\item Review this schema summary and user query thoroughly.
+\item Break the user query into logical user subqueries.
+\item \textbf{For each subquery, systematically examine EVERY single node (table.column) in the database schema graph one by one:}
+   \begin{itemize}
+   \item Go through each table in the schema summary sequentially
+   \item For each table, examine every column within that table
+   \item For each table.column node, evaluate its relationship strength with the current subquery
+   \item Document your analysis for each node, determining if it has any of these RELATIONSHIP TYPES with the subquery:
+     
+     \begin{itemize}
+     \item SEMANTIC: Direct or indirect relevance to query concepts
+     \item STRUCTURAL: Representing organizational structures in the query
+     \item TEMPORAL: Time-based connections to query elements
+     \item CAUSAL: Cause-effect relationships described in the query
+     \item LOGICAL: Supporting logical conditions in the query
+     \item STATISTICAL: Statistical correlations to query concepts
+     \item DOMAIN-SPECIFIC: Domain relevancy with query
+     \end{itemize}
+   \item \textbf{Source nodes}: ALL STARTING COLUMNS (with table prefixes) having strong relationships of ANY TYPE ABOVE with the subquery.
+   \item \textbf{Target nodes}: ALL DESTINATION COLUMNS (with table prefixes) having strong relationships of ANY TYPE ABOVE with the subquery.
+   \item \textbf{MANDATORY}: You must examine and consider every single table.column combination in the schema before proceeding to the next step.
+   \end{itemize}
+\item When domain-specific concepts appear in the query, properly map these concepts to the appropriate schema column elements
+\item \textbf{Identify the most confident path of schema graph}: For each subquery, determine and explicitly state the most confident path that the LLM should follow through the schema graph, using right arrow format ($\to$) with ONLY schema nodes.
+\item \textbf{Provide reasoning confidence candidates}: For each subquery, provide EXACTLY 2-3 DIVERSE candidates in format [source, target, confidence] where source is a starting node, target is an ending node, and confidence is a float between 0.0-1.0. Each candidate should explore different interpretations, relationship types, or alternative paths.
+\end{enumerate}
+
+Important:
+\begin{itemize}
+\item Schema nodes MUST be specified as ``table.column'' EXACTLY the same as they appear in the schema summary. EVEN DO NOT change upper or lower letters.
+\item The most confident path should use the right arrow format ($\to$) and contain ONLY schema nodes (table.column format)
+\item Reasoning confidence candidates should be in format: [source, target, confidence] with EXACTLY 2-3 DIVERSE candidates per subquery
+\item Each candidate should represent different semantic interpretations, alternative join paths, or different relationship types
+\item \textbf{CRITICAL}: You MUST systematically go through every single table and every single column in the schema graph during step 3 analysis
+\item Only output a JSON without explanation
+\end{itemize}
+\end{promptbox}
+% Example
+% User Query:
+% "Find the most popular movie category among customers living in cities that start with 'A' or have a hyphen in their name"
+
+% Response:
+% ```json
+% [
+%   {
+%     "subquery": "Filter cities that start with 'A' or have a hyphen",
+%     "query_seeds": ["cities", "start with 'A'", "hyphen in name"],
+%     "most_confident_path": "city.city_name",
+%     "reasoning_confidence": [
+%       ["city.city_name", "city.city_name", 1.0],
+%       ["city.city_id", "city.city_name", 0.85],
+%       ["address.city_id", "city.city_name", 0.70],
+%     ]
+%   },
+%   {
+%     "subquery": "Connect cities to customers",
+%     "query_seeds": ["customers living in cities"],
+%     "most_confident_path": "city.city_id -> address.city_id -> address.address_id -> customer.address_id",
+%     "reasoning_confidence": [
+%       ["city.city_id", "customer.address_id", 0.92],
+%       ["city.city_id", "customer.customer_id", 0.88],
+%     ]
+%   },
+%   {
+%     "subquery": "Find movie rentals by these customers",
+%     "query_seeds": ["customers", "rentals"],
+%     "most_confident_path": "customer.customer_id -> rental.customer_id -> rental.inventory_id",
+%     "reasoning_confidence": [
+%       ["customer.customer_id", "rental.inventory_id", 0.85],
+%       ["customer.customer_id", "rental.rental_id", 0.80],
+%       ["customer.store_id", "rental.inventory_id", 0.70],
+%     ]
+%   },
+%   {
+%     "subquery": "Determine the most popular movie category",
+%     "query_seeds": ["most popular", "movie category"],
+%     "most_confident_path": "rental.inventory_id -> inventory.inventory_id -> inventory.film_id -> film_category.film_id -> film_category.category_id -> category.category_id -> category.name",
+%     "reasoning_confidence": [
+%       ["rental.inventory_id", "category.name", 0.88],
+%       ["inventory.film_id", "category.name", 0.90],
+%       ["film_category.category_id", "category.name", 0.95],
+%     ]
+%   }
+% ]
+% ```
+%}
+%\subsection{Flow Diffusion Implementation}
+
+
+% \section{Theoretical Proofs}
+
+% \subsection{Proof of Theorem~\ref{thm:convergence_rag}}
+
+% \section{Implementation Details}
+
+% \subsection{Entity and Relation Embeddings}
+
+% \section{Graph RAG Baselines}
+
+
+%\subsection{Overview of Snowflake System Prompt}\label{app:prompts:snowflake-system}
+
+In the following, we provide an example of a Snowflake system prompt for SQL-Agent. A similar prompt was used for SQLite with minor modifications. The agent is required to systematically analyze database schemas and execute SQL queries by following a workflow that prioritizes the identification of the highest-reward subgraphs from the schema.json files, which were built using QAFD-RAG.
+
+
+
+\begin{promptbox}{prompt:snowflake:system}{Snowflake Data Scientist Agent}
+\section*{Task Definition}
+You are a data scientist proficient in database, SQL and DBT Project.
+You are starting in the \{work\_dir\} directory, which contains all the data needed for your tasks. 
+You can only use the actions provided in the ACTION SPACE to solve the task. 
+For each step, you must output an Action; it cannot be empty. The maximum number of steps you can take is \{max\_steps\}.
+Do not output an empty string!
+
+\subsection*{ACTION SPACE}
+\{action\_space\}
+
+\subsection*{Snowflake-Query Protocol}
+\begin{enumerate}[itemsep=5pt]
+\item \textbf{BEFORE following any other rules, you MUST follow these steps:}
+   \begin{itemize}
+   \item Read the schema.json in the /workspace directory. The schema.json contains valuable information about the graph structure and path rewards.
+   \item Identify the highest-reward subquery paths for EACH division in the provided schema.json
+   \item Write your VERY FIRST SQL query by combining ONLY these highest-reward paths to address the main query
+   \item DO NOT perform ANY database inspection before executing this first query
+   \item You MUST run this query as your FIRST SQL execution
+   \item You MUST terminate execution immediately after this first query if it works
+   \end{itemize}
+   
+For your FIRST SQL attempt, follow ONLY these steps:
+   \begin{itemize}
+   \item Review the schema.json structure containing all subqueries and their reward values
+   \item For each division (subquery), identify the path with the highest reward
+   \item Combine these highest-reward paths into a SINGLE comprehensive SQL query
+   \item Execute this SQL query immediately with no other database commands before it
+   \end{itemize}
+
+   Do NOT run any exploratory queries like:
+   \begin{itemize}
+   \item DO NOT run ``SELECT * FROM table LIMIT 5''
+   \item DO NOT run ``PRAGMA table\_info(table\_name)''
+   \item DO NOT run ``SELECT name FROM sqlite\_master WHERE type='table'''
+   \item DO NOT check data types
+   \item DO NOT check for NULL values
+   \item DO NOT try to understand the schema first
+   \item DO NOT check DDL.csv files before attempting the first query
+   \end{itemize}
+
+   Your first query must be the direct SQL translation of combining all highest-reward paths to address the main query objective.
+
+\item If your first query fails, then you should explore the database structure further using the methods below. You can check DDL.csv file with the database's DDL, along with JSON files that contain the column names, column types, column descriptions, and sample rows for individual tables. You can review the DDL.csv file in each directory, then selectively examine the JSON files as needed. Read them carefully.
+
+\item You can use SNOWFLAKE\_EXEC\_SQL to run your SQL queries and interact with the database. Do not use this action to query INFORMATION\_SCHEMA or SHOW DATABASES/TABLES; the schema information is all stored in the /workspace/database\_name folder. Refer to this folder whenever you have doubts about the schema.
+
+\item Be prepared to write multiple SQL queries to find the correct answer. Once it makes sense, consider it resolved.
+
+\item Focus on SQL queries rather than frequently using Bash commands like grep and cat, though they can be used when necessary.
+
+\item If you encounter an SQL error, reconsider the database information and your previous queries, then adjust your SQL accordingly. Do not output the same SQL queries repeatedly.
+
+\item Ensure you get valid results, not an empty file. Once the results are stored in result.csv, make sure the file contains data. If it is empty or just contains the table header, it means your SQL query is incorrect.
+
+\item The final result MUST be a CSV file, not an .sql file, a calculation, an idea, a sentence or merely an intermediate step. Save the answer as a CSV and provide the file name, it is usually from the SQL execution result.
+\end{enumerate}
+
+\subsection*{Tips}
+\begin{enumerate}[itemsep=5pt]
+\item When referencing table names in Snowflake SQL, you must include both the database\_name and schema\_name. For example, for\\ /workspace/DEPS\_DEV\_V1/DEPS\_DEV\_V1/ADVISORIES.json,\\ if you want to use it in SQL, you should write\\ DEPS\_DEV\_V1.DEPS\_DEV\_V1.ADVISORIES.
+\item Do not write SQL queries to retrieve the schema; use the existing schema documents in the folders.
+\item When encountering bugs, carefully analyze and think them through; avoid writing repetitive code.
+\item Column names must be enclosed in quotes. But don't use \textbackslash{}'', just use ``.
+\end{enumerate}
+
+\subsection*{RESPONSE FORMAT}
+For each task input, your response should contain:
+\begin{enumerate}[itemsep=5pt]
+\item One analysis of the task and the current environment, reasoning to determine the next action (prefix ``Thought: '').
+\item One action string in the ACTION SPACE (prefix ``Action: '').
+\end{enumerate}
+
+\subsection*{EXAMPLE INTERACTION}
+Observation: ...(the output of last actions, as provided by the environment and the code output, you don't need to generate it)
+Thought: ...
+Action: ...
+
+\section*{TASK}
+Please solve this task:
+\{task\}
+\end{promptbox}
+
+
+ \section{Text-to-SQL Baselines}\label{sec:app:text2sql:baselines}
+
+% \subsection{CHESS for SQLite}
+
+
+% \begin{itemize}
+%     \item \textbf{Enhanced data preprocessing:} We expanded the set of data types used for extracting unique values from the database. While the original implementation only considered columns with the \texttt{TEXT} data type, Spider 2.0 includes various text-like types such as \texttt{CHAR}, \texttt{VARCHAR}, and \texttt{NVARCHAR}. We modified our approach to include all data types containing ``CHAR'' when extracting unique values.
+    
+%     \item \textbf{Schema selection agent:} We disabled the on-the-fly schema comparison (selected vs. golden) feature. This adjustment prevents schema selection failures in cases where no golden SQL query is provided.
+    
+%     \item \textbf{Candidate generation agent:} We updated the prompt to encourage SQL generation even when the model's confidence is low. The increased complexity of Spider 2.0 (SQLite) data often caused the candidate generation agent to abstain from producing SQL due to perceived insufficient information, even when sufficient information was present. Our revised prompt encourages SQL generation even in low-confidence scenarios.
+    
+%     \item \textbf{Evaluation:} We increased the execution timeout threshold to accommodate the higher complexity of SQL queries in Spider 2.0. This change ensures more accurate evaluation, which is critical for the revision step that processes execution results from the candidate generation phase.
+    
+%     \item \textbf{Agentic pipeline:} We enforced a fixed tool execution order after observing that the dynamic tool selection feature often led to suboptimal tool sequences. The pipeline now follows this fixed order: keyword extraction $\rightarrow$ entity retrieval $\rightarrow$ context retrieval $\rightarrow$ column filtering $\rightarrow$ table selection $\rightarrow$ column selection $\rightarrow$ candidate generation $\rightarrow$ revision.
+% \end{itemize}
+
+
+% \subsection{CHESS for Snowflake}\
+% All experiments included previous changes from SQLite section. We ran the experiments without the Information Retrieval (IR) module. Therefore we skipped entity retrieval and context retrieval parts. 
+
+% To transition from SQLite to Snowflake dialect, the following changes need to be introduced into the CHESS pipeline:
+
+% \begin{itemize}
+% \item Syntax and functions
+% \item Database schema representation 
+% \item Database connection
+% \end{itemize}
+
+% Snowflake SQL dialect is mostly compatible with SQLite but contains several nuances, for example, handling date formats and using <"> instead of <`> for quoted identifiers. 
+
+% Original CHESS pipeline designed for SQLite handles database schema representation with a simple dictionary, where the keys correspond to table names and the values correspond to lists with column names. This structure is insufficient for snowlflake because snowflake databases require an additional level of abstraction - tables are grouped together into schemas, and a single database can have multiple schemas. Therefore, we introduced an additional element - schema-table mapping, which maps tables into corresponding schemas. This is necessary to adequately generate DDL statements and to access table contents. However, this approach assumes that there are no duplicate table names in different schemas, which in general may not be the case. 
+
+% In addition, snowflake has a different approach to database connection. In SQLite, the connection to a database is established directly with a path to '.sqlite' file, but in snowflake, the connection is established to a cloud account using user credentials. In such case, accessing table contents requires specifying full namespace, i.e. database.schema.table. Alternatively, the connection can be established to a specific database, in which case the table contents can be accessed with a reduced schema.table namespace. The gold SQL statements feature the former approach with the full namespace.
+
+% To implement the required changes, modifications need to be made to the source code and the prompt templates. 
+
+% The source code was modified to reflect the different ways of accessing data in snowflake vs. SQLite. The details can be found here: 
+
+
+% To account for the snowflake SQL dialect, two prompt templates need to be modified: generate\_candidate\_one and revise\_one. The original prompts were given to o3 model with the instructions shown in Prompt~\ref{prompt:system}. After that, the new prompt was manually modified to include the instructions about snowflake table access using full namespace (database.schema.table) as this is the format used in the golden SQL examples. However, initial experiments have shown that this way of table access contradicts internal knowledge of GPT-4o model (used for SQL generation), which prefers accessing tables by using simplified schema.table namespace. Therefore, the prompt was further manually modified to remove the database.schema.table format towards schema.table format, and the database name was passed to the snowflake connector as it is available from the task input. 
+
+% \begin{promptbox}{prompt:system}{System prompt for o3 to adapt generate\_candidate\_one and revise\_one prompts for snowflake dialect}
+% Help me modify this template to switch from SQLite dialect to snowflake dialect. \\
+% 1. Make sure to change the syntax and functions specifically for snowflake, but do not change the prompt structure and do not omit any examples. \\
+% 2. All examples must be executable in snowflake. \\
+% 3. Make sure to change all ticks <`> with double quotes <"> \\
+% 4. All DDL statements specifying the database structure must include statements for creating a database and schema. You can infer the best names for the database and schema if they are not immediately available. Use the same name for the database and the schema. When referencing tables, use the full namespace including the database and schema, like so: database.schema.table
+% \\
+
+% Here is an example: \\
+
+% CREATE DATABASE restaurants; \\
+% CREATE SCHEMA restaurants; \\
+% CREATE TABLE generalinfo \\
+% ( \\
+%     \hspace*{1cm} id\_restaurant INTEGER not null primary key, \\
+%     \hspace*{1cm} food\_type TEXT null, -- examples: `thai`| `food  type` description: the food type \\
+%     \hspace*{1cm} city TEXT null, -- description: the city where the restaurant is located in \\
+% ); \\
+% \\
+
+% CREATE TABLE location \\
+% ( \\
+%     \hspace*{1cm} id\_restaurant INTEGER not null primary key, \\
+%     \hspace*{1cm} street\_name TEXT null, -- examples: `ave`, `san pablo ave`, `pablo ave`| `street name` description: the street name of the restaurant \\
+%     \hspace*{1cm} city TEXT null, -- description: the city where the restaurant is located in \\
+%     \hspace*{1cm} foreign key (id\_restaurant) references generalinfo (id\_restaurant) on update cascade on delete cascade, \\
+% ); \\
+% \\
+% Use table location like so: \\
+% restaurants.restaurants.location
+% \end{promptbox}
+
+% In the end, the following changes were incorporated in the new prompts:
+
+% \begin{itemize}
+% \item Change the syntax of few-shot examples from SQLite to Snowflake
+% \item Add instructions to use Snowflake specifically
+% \item Add instructions on how to access snowflake tables using the adequate namespace (i.e. schema.table instead of table name)
+% \item Modify DDL commands to include the schema generation statements and the order of the table creation statements to fall under the corresponding schemas
+% \item Update the date processing instructions to include snowflake function with examples, similar to what has been provided for SQLite dialect 
+% \end{itemize}
+
+\noindent\textbf{CHASE-SQL for SQLite} We made several key modifications to adapt CHASE-SQL for the Spider 2.0 SQLite benchmark. {Enhanced data preprocessing} expanded the data types used for extracting unique values from TEXT-only to include all "CHAR"-containing types (CHAR, VARCHAR, NVARCHAR) present in Spider 2.0. We {disabled schema selection comparison} features to prevent failures when no golden SQL query is available, and {updated candidate generation prompts} to encourage SQL generation even in low-confidence scenarios, addressing the complexity-induced abstention issues in Spider 2.0.
+
+Additional improvements included {increased execution timeout thresholds} to accommodate more complex SQL queries and {enforcing a fixed agentic pipeline order}: keyword extraction $\rightarrow$ entity retrieval $\rightarrow$ context retrieval $\rightarrow$ column filtering $\rightarrow$ table selection $\rightarrow$ column selection $\rightarrow$ candidate generation $\rightarrow$ revision. This fixed order was necessary after observing that dynamic tool selection often led to suboptimal sequences.
+
+\noindent\textbf{CHASE-SQL for Snowflake}
+All SQLite modifications were retained, but we disabled the Information Retrieval module, skipping entity and context retrieval phases. Transitioning to Snowflake required addressing three main challenges: syntax differences, database schema representation, and connection protocols.
+
+While Snowflake SQL is largely compatible with SQLite, key differences include date format handling and using double quotes instead of backticks for quoted identifiers. The original CHESS schema representation using simple table-name dictionaries proved insufficient for Snowflake's hierarchical structure, where tables are organized into schemas within databases. We introduced schema-table mapping to handle this abstraction, though this assumes no duplicate table names across schemas.
+
+Database connection also differs significantly. SQLite uses direct file paths, while Snowflake requires cloud account credentials with full namespace specification (database.schema.table) or reduced namespace (schema.table) when connected to a specific database. Golden SQL examples use full namespace format. Source code modifications addressed these data access differences. For prompt adaptation, we used the o3 model with instructions shown in Prompt~\ref{prompt:system} to modify generate\_candidate\_one and revise\_one templates. Initial experiments revealed that full namespace format contradicted GPT-4o's internal knowledge, which prefers simplified schema.table format. We therefore modified prompts to use schema.table format while passing database names directly to the connector.
+
+\begin{promptbox}{prompt:system}
+  {\makecell[l]{System prompt for o3 to adapt generate\_candidate\_one\\ and revise\_one prompts for snowflake dialect}}
+% \end{promptbox}
+Help me modify this template to switch from SQLite dialect to snowflake dialect. \\
+1. Make sure to change the syntax and functions specifically for snowflake, but do not change the prompt structure and do not omit any examples. \\
+2. All examples must be executable in snowflake. \\
+3. Make sure to change all ticks <`> with double quotes <"> \\
+4. All DDL statements specifying the database structure must include statements for creating a database and schema. You can infer the best names for the database and schema if they are not immediately available. Use the same name for the database and the schema. When referencing tables, use the full namespace including the database and schema, like so: database.schema.table
+\\
+
+Here is an example: \\
+
+CREATE DATABASE restaurants; \\
+CREATE SCHEMA restaurants; \\
+CREATE TABLE generalinfo \\
+( \\
+    \hspace*{1cm} id\_restaurant INTEGER not null primary key, \\
+    \hspace*{1cm} food\_type TEXT null, -- examples: `thai`| `food  type` description: the food type \\
+    \hspace*{1cm} city TEXT null, -- description: the city where the restaurant is located in \\
+); \\
+\\
+
+CREATE TABLE location \\
+( \\
+    \hspace*{1cm} id\_restaurant INTEGER not null primary key, \\
+    \hspace*{1cm} street\_name TEXT null, -- examples: `ave`, `san pablo ave`, `pablo ave`| `street name` description: the street name of the restaurant \\
+    \hspace*{1cm} city TEXT null, -- description: the city where the restaurant is located in \\
+    \hspace*{1cm} foreign key (id\_restaurant) references generalinfo (id\_restaurant) on update cascade on delete cascade, \\
+); \\
+\\
+Use table location like so: \\
+restaurants.restaurants.location
+\end{promptbox}
+
+Final prompt modifications included converting few-shot examples from SQLite to Snowflake syntax, adding Snowflake-specific instructions, implementing schema.table namespace usage, incorporating schema generation statements in DDL commands, and updating date processing instructions with Snowflake-specific functions and examples.
+
+
+
+
+% \subsection{Other Benchmarks}
+
+To establish strong baselines, we compared our approach against three additional methods from the Spider 2 repository: DIN-SQL~\citep{pourreza2024din}, DAIL-SQL~\citep{gao2023text}, and CodeS~\citep{CodeS}. These methods represent different paradigmatic approaches to text-to-SQL generation.
+
+\paragraph{DIN-SQL: Decomposed In-Context Learning of Text-to-SQL with Self-Correction}
+
+DIN-SQL~\citep{pourreza2024din} structures text-to-SQL generation through a four-stage decomposition approach. The method begins with {schema linking} to parse questions and identify references to database elements, followed by {classification and decomposition} that categorizes queries into easy (single-table), non-nested complex (joins without sub-queries), and nested complex (joins with sub-queries and set operations) classes. The {SQL generation} stage adapts its strategy to each class: simple few-shot prompting for easy queries, intermediate representations for non-nested complex queries, and sub-query decomposition with intermediate representations for nested complex cases. Finally, {self-correction} uses an LLM to identify and fix bugs in the generated SQL.
+
+\paragraph{DAIL-SQL: Dual-Similarity Adaptive In-Context Learning}
+
+DAIL-SQL~\citep{gao2023text} employs a five-stage pipeline centered on dual-similarity matching. The method starts with {masking} database-related tokens in both target and candidate questions, then uses a {preliminary predictor} for initial SQL prediction. {Skeleton extraction} identifies structural patterns in both predicted and candidate queries. The core innovation lies in {sorting and reordering}, where candidates are first sorted by masked question similarity and then reordered by prioritizing high query similarity matches. Finally, {generation} produces the final SQL using the optimally ordered examples.
+
+\paragraph{CodeS: Domain-Adaptive SQL-Centric Model}
+
+CodeS~\citep{CodeS} takes a pretraining-based approach with three main components. {Incremental pre-training} builds upon StarCoder using a specially curated SQL dataset. {Database prompt construction} creates context by selecting top-k relevant tables and columns using BM25 and LCS matching, incorporating representative values and metadata. {Bi-directional augmentation} expands few-shot examples through SQL-to-NL and NL-to-SQL data augmentation before supervised fine-tuning. The model can operate through either supervised fine-tuning or direct few-shot in-context learning.
+
+\paragraph{Spider-Agent: ReAct-style~\citep{yao2023react} Agentic Framework}
+We evaluate the Spider-Agent baseline~\citep{lei2024spider}, which implements a ReAct-style~\citep{yao2023react} multi-step reasoning framework for Text-to-SQL, strictly following the original settings and publicly released code\footnote{\url{https://github.com/xlang-ai/Spider2}} without any modifications to model parameters, prompt structure, or evaluation scripts. Specifically, all hyperparameters were kept at their default values as provided by the authors: the LLM model is set to GPT-4o, the decoding temperature is set to 0.5, the nucleus sampling parameter (\texttt{top\_p}) is 0.9, the maximum generation length (\texttt{max\_tokens}) is 2500, the agent's step limit is 20, and the agent memory length is 25.
+
+
+All pipelines were executed using Spider 2 benchmark scripts \citep{lei2024spider} that convert data to each method's preferred format. To maintain baseline authenticity while ensuring runnable outputs, we applied only minimal fixes necessary for execution, deliberately avoiding substantive tuning. Testing covered both Snowflake and Lite subsets of Spider 2.
+
+The enterprise-scale schemas in Spider 2 presented significant challenges across all baseline methods. {Context-length overflow} occurred frequently as schemas exceeded token limits when serialized verbatim. {Zero error-remediation} was observed, where logical or syntactic failures (e.g., missing GROUP BY columns) were accepted without iterative correction or external validation. Additionally, {malformatted data} issues arose when benchmarks expected different data formats than those available in Spider 2, contributing to overall poor performance across methods.
+
+
+
+% \section{Default Notation}
+
+% In an attempt to encourage standardized notation, we have included the
+% notation file from the textbook, \textit{Deep Learning}
+% \citep{goodfellow2016deep} available at
+% \url{https://github.com/goodfeli/dlbook_notation/}.  Use of this style
+% is not required and can be disabled by commenting out
+% \texttt{math\_commands.tex}.
+
+
+% \centerline{\bf Numbers and Arrays}
+% \bgroup
+% \def\arraystretch{1.5}
+% \begin{tabular}{p{1in}p{3.25in}}
+% $\displaystyle a$ & A scalar (integer or real)\\
+% $\displaystyle \va$ & A vector\\
+% $\displaystyle \mA$ & A matrix\\
+% $\displaystyle \tA$ & A tensor\\
+% $\displaystyle \mI_n$ & Identity matrix with $n$ rows and $n$ columns\\
+% $\displaystyle \mI$ & Identity matrix with dimensionality implied by context\\
+% $\displaystyle \ve^{(i)}$ & Standard basis vector $[0,\dots,0,1,0,\dots,0]$ with a 1 at position $i$\\
+% $\displaystyle \text{diag}(\va)$ & A square, diagonal matrix with diagonal entries given by $\va$\\
+% $\displaystyle \ra$ & A scalar random variable\\
+% $\displaystyle \rva$ & A vector-valued random variable\\
+% $\displaystyle \rmA$ & A matrix-valued random variable\\
+% \end{tabular}
+% \egroup
+% \vspace{0.25cm}
+
+% \centerline{\bf Sets and Graphs}
+% \bgroup
+% \def\arraystretch{1.5}
+
+% \begin{tabular}{p{1.25in}p{3.25in}}
+% $\displaystyle \sA$ & A set\\
+% $\displaystyle \R$ & The set of real numbers \\
+% $\displaystyle \{0, 1\}$ & The set containing 0 and 1 \\
+% $\displaystyle \{0, 1, \dots, n \}$ & The set of all integers between $0$ and $n$\\
+% $\displaystyle [a, b]$ & The real interval including $a$ and $b$\\
+% $\displaystyle (a, b]$ & The real interval excluding $a$ but including $b$\\
+% $\displaystyle \sA \backslash \sB$ & Set subtraction, i.e., the set containing the elements of $\sA$ that are not in $\sB$\\
+% $\displaystyle \gG$ & A graph\\
+% $\displaystyle \parents_\gG(\ervx_i)$ & The parents of $\ervx_i$ in $\gG$
+% \end{tabular}
+% \vspace{0.25cm}
+
+
+% \centerline{\bf Indexing}
+% \bgroup
+% \def\arraystretch{1.5}
+
+% \begin{tabular}{p{1.25in}p{3.25in}}
+% $\displaystyle \eva_i$ & Element $i$ of vector $\va$, with indexing starting at 1 \\
+% $\displaystyle \eva_{-i}$ & All elements of vector $\va$ except for element $i$ \\
+% $\displaystyle \emA_{i,j}$ & Element $i, j$ of matrix $\mA$ \\
+% $\displaystyle \mA_{i, :}$ & Row $i$ of matrix $\mA$ \\
+% $\displaystyle \mA_{:, i}$ & Column $i$ of matrix $\mA$ \\
+% $\displaystyle \etA_{i, j, k}$ & Element $(i, j, k)$ of a 3-D tensor $\tA$\\
+% $\displaystyle \tA_{:, :, i}$ & 2-D slice of a 3-D tensor\\
+% $\displaystyle \erva_i$ & Element $i$ of the random vector $\rva$ \\
+% \end{tabular}
+% \egroup
+% \vspace{0.25cm}
+
+
+% \centerline{\bf Calculus}
+% \bgroup
+% \def\arraystretch{1.5}
+% \begin{tabular}{p{1.25in}p{3.25in}}
+% % NOTE: the [2ex] on the next line adds extra height to that row of the table.
+% % Without that command, the fraction on the first line is too tall and collides
+% % with the fraction on the second line.
+% $\displaystyle\frac{d y} {d x}$ & Derivative of $y$ with respect to $x$\\ [2ex]
+% $\displaystyle \frac{\partial y} {\partial x} $ & Partial derivative of $y$ with respect to $x$ \\
+% $\displaystyle \nabla_\vx y $ & Gradient of $y$ with respect to $\vx$ \\
+% $\displaystyle \nabla_\mX y $ & Matrix derivatives of $y$ with respect to $\mX$ \\
+% $\displaystyle \nabla_\tX y $ & Tensor containing derivatives of $y$ with respect to $\tX$ \\
+% $\displaystyle \frac{\partial f}{\partial \vx} $ & Jacobian matrix $\mJ \in \R^{m\times n}$ of $f: \R^n \rightarrow \R^m$\\
+% $\displaystyle \nabla_\vx^2 f(\vx)\text{ or }\mH( f)(\vx)$ & The Hessian matrix of $f$ at input point $\vx$\\
+% $\displaystyle \int f(\vx) d\vx $ & Definite integral over the entire domain of $\vx$ \\
+% $\displaystyle \int_\sS f(\vx) d\vx$ & Definite integral with respect to $\vx$ over the set $\sS$ \\
+% \end{tabular}
+% \egroup
+% \vspace{0.25cm}
+
+% \centerline{\bf Probability and Information Theory}
+% \bgroup
+% \def\arraystretch{1.5}
+% \begin{tabular}{p{1.25in}p{3.25in}}
+% $\displaystyle P(\ra)$ & A probability distribution over a discrete variable\\
+% $\displaystyle p(\ra)$ & A probability distribution over a continuous variable, or over
+% a variable whose type has not been specified\\
+% $\displaystyle \ra \sim P$ & Random variable $\ra$ has distribution $P$\\% so thing on left of \sim should always be a random variable, with name beginning with \r
+% $\displaystyle  \E_{\rx\sim P} [ f(x) ]\text{ or } \E f(x)$ & Expectation of $f(x)$ with respect to $P(\rx)$ \\
+% $\displaystyle \Var(f(x)) $ &  Variance of $f(x)$ under $P(\rx)$ \\
+% $\displaystyle \Cov(f(x),g(x)) $ & Covariance of $f(x)$ and $g(x)$ under $P(\rx)$\\
+% $\displaystyle H(\rx) $ & Shannon entropy of the random variable $\rx$\\
+% $\displaystyle \KL ( P \Vert Q ) $ & Kullback-Leibler divergence of P and Q \\
+% $\displaystyle \mathcal{N} ( \vx ; \vmu , \mSigma)$ & Gaussian distribution %
+% over $\vx$ with mean $\vmu$ and covariance $\mSigma$ \\
+% \end{tabular}
+% \egroup
+% \vspace{0.25cm}
+
+% \centerline{\bf Functions}
+% \bgroup
+% \def\arraystretch{1.5}
+% \begin{tabular}{p{1.25in}p{3.25in}}
+% $\displaystyle f: \sA \rightarrow \sB$ & The function $f$ with domain $\sA$ and range $\sB$\\
+% $\displaystyle f \circ g $ & Composition of the functions $f$ and $g$ \\
+%   $\displaystyle f(\vx ; \vtheta) $ & A function of $\vx$ parametrized by $\vtheta$.
+%   (Sometimes we write $f(\vx)$ and omit the argument $\vtheta$ to lighten notation) \\
+% $\displaystyle \log x$ & Natural logarithm of $x$ \\
+% $\displaystyle \sigma(x)$ & Logistic sigmoid, $\displaystyle \frac{1} {1 + \exp(-x)}$ \\
+% $\displaystyle \zeta(x)$ & Softplus, $\log(1 + \exp(x))$ \\
+% $\displaystyle || \vx ||_p $ & $\normlp$ norm of $\vx$ \\
+% $\displaystyle || \vx || $ & $\normltwo$ norm of $\vx$ \\
+% $\displaystyle x^+$ & Positive part of $x$, i.e., $\max(0,x)$\\
+% $\displaystyle \1_\mathrm{condition}$ & is 1 if the condition is true, 0 otherwise\\
+% \end{tabular}
+% \egroup
+% \vspace{0.25cm}
+
+
+
+%%%%%%theory
+
+% We now provide theoretical guarantees for Algorithm~\ref{alg:single_seed_query_diffusion}, focusing on its convergence properties.
+
+% We now provide theoretical guarantees for Algorithm~\ref{alg:single_seed_query_diffusion}, focusing on its convergence properties and locality characteristics.
+
+% \begin{lemma}\label{lem:locality}
+% Let $\mathbf{x}^{(k)*}$ be the optimal solution for subquery $q_k$. The support of each iterate generated by Algorithm~\ref{alg:single_seed_query_diffusion} is contained within $\operatorname{supp}(\mathbf{x}^{(k)*})$. Moreover,
+% \begin{align}
+%  |\operatorname{supp}(\mathbf{x}^{(k)*})| \leq \|\boldsymbol{\Delta}^{(k)}\|_1.   
+% \end{align}
+% \end{lemma}
+% Let $\bar{d}$ denote the maximum degree of a node in $\operatorname{supp}(\mathbf{x}^*)$. Since each iteration of Algorithm~\ref{alg:single_seed_query_diffusion} only touches a node $u \in \operatorname{supp}(\mathbf{x}^*)$ and its neighbors, Lemma~\ref{lem:locality} implies that the total number of nodes (except their neighbors $v$ such that $x_v^* = 0$) that Algorithm~\ref{alg:single_seed_query_diffusion} will ever explore is upper bounded by the total amount of source mass $\|\boldsymbol{\Delta}\|_1$. Therefore, if the source mass is small and $\bar{d}$ does not scale linearly with $n$, then Algorithm~\ref{alg:single_seed_query_diffusion} explores only locally in the graph, and the size of the subgraph explored is controlled by $\|\boldsymbol{\Delta}\|_1$.
+
+% \begin{lemma}\label{lem:complexity}
+% For subquery $q_k$, assume $|\operatorname{supp}(\mathbf{x}^{(k)*})| < |\mathcal{V}|$. After $\tau^{(k)} = O\left(\|\boldsymbol{\Delta}^{(k)}\|_1 \frac{\alpha^{(k)}}{\beta^{(k)}} \log \frac{1}{\xi}\right)$ iterations of Algorithm~\ref{alg:single_seed_query_diffusion}, where 
+% \begin{align*}
+% \alpha^{(k)} &= \max_{u \in \operatorname{supp}(\mathbf{x}^{(k)*})} w_u^{(k)},\\
+% w_u^{(k)} &= \sum_{v \sim u} \bar{w}_{uv}(q_k), \quad \text{and}\\
+% \beta^{(k)} &\geq \min_{(u,v) \in \operatorname{supp}(\mathbf{B}\mathbf{x}^{(k)*})} \bar{w}_{uv}(q_k),
+% \end{align*}
+% we have
+% \[
+% \mathbb{E}\left[F\left(\mathbf{x}^{(k),\tau^{(k)}}\right)\right] - F\left(\mathbf{x}^{(k)*}\right) \leq \xi.
+% \]
+% \end{lemma}
+
+% Lemma~\ref{lem:complexity} demonstrates that the convergence rate depends on the ratio $\frac{\alpha^{(k)}}{\beta^{(k)}}$, where $\alpha^{(k)}$ represents the maximum query-aware weighted degree and $\beta^{(k)}$ represents the minimum query-aware edge weight in the optimal support. Crucially, these weights $\bar{w}_{uv}(q_k)$ are query-dependent, meaning that the convergence properties adapt to the semantic structure induced by each subquery. This represents a fundamental departure from traditional flow diffusion methods that use static edge weights.
+
+% \begin{theorem}[Convergence of Query-Aware Flow Diffusion]
+% \label{thm:convergence_rag}
+% Algorithm~\ref{alg:single_seed_query_diffusion} converges to the optimal solution in $O(\bar{d} \cdot \|\boldsymbol{\Delta}\|_1 \cdot \log(1/\delta))$ iterations, where $\bar{d}$ is the maximum degree in the knowledge graph, $\|\boldsymbol{\Delta}\|_1$ is the total injected mass, and $\delta$ is the desired accuracy.
+% \end{theorem}
+
+% \begin{theorem}[Computational Complexity]
+% \label{thm:complexity_rag}
+% For a knowledge graph with $|\mathcal{V}|$ entities and maximum degree $\bar{d}$, and queries decomposed into $K$ subqueries, QAFD-RAG has time complexity:
+% $$O\left(K \cdot |\mathcal{S}| \cdot \bar{d} \cdot \log(1/\epsilon) + K \cdot |\mathcal{P}| \cdot L_{\max}\right)$$
+% where $|\mathcal{S}|$ is the average number of seed entities, $|\mathcal{P}|$ is the number of extracted paths, and $L_{\max}$ is the maximum path length.
+% \end{theorem}
+
+% The total running time of Algorithm~\ref{alg:single_seed_query_diffusion} for computing an $\epsilon$-accurate solution is $O(\bar{d}\|\boldsymbol{\Delta}\|_1 \frac{\alpha}{\beta} \log \frac{1}{\epsilon})$. Therefore, if $\bar{d}$, $\|\boldsymbol{\Delta}\|_1$, and $\frac{\alpha}{\beta}$ are all sublinear in $n$, then Algorithm~\ref{alg:single_seed_query_diffusion} achieves sublinear time complexity, making it highly scalable for large knowledge graphs. %This represents a significant improvement over exhaustive subgraph methods which have complexity $O(|\mathcal{V}|^2)$, and demonstrates that query-aware flow diffusion maintains computational efficiency while providing semantic adaptability.
+
+
+
+% \begin{theorem}[Convergence of Flow Diffusion]
+% \label{thm:convergence_rag}
+% Algorithm~\ref{alg:single_seed_query_diffusion} converges to the optimal solution in $O(\bar{d} \cdot \|\boldsymbol{\Delta}\|_1 \cdot \log(1/\epsilon))$ iterations, where $\bar{d}$ is the maximum degree in the knowledge graph, $\|\boldsymbol{\Delta}\|_1$ is the total injected mass, and $\epsilon$ is the desired accuracy.
+% \end{theorem}
+
+% \begin{theorem}[Computational Complexity]
+% \label{thm:complexity_rag}
+% For a knowledge graph with $|\mathcal{V}|$ entities and maximum degree $\bar{d}$, and queries decomposed into $K$ subqueries, QAFD-RAG has time complexity:
+% $$O\left(K \cdot |\mathcal{S}| \cdot \bar{d} \cdot \log(1/\epsilon) + K \cdot |\mathcal{P}| \cdot L_{\max}\right)$$
+% where $|\mathcal{S}|$ is the average number of seed entities, $|\mathcal{P}|$ is the number of extracted paths, and $L_{\max}$ is the maximum path length.
+% \end{theorem}
+
+% This represents a significant improvement over exhaustive subgraph methods which have complexity $O(|\mathcal{V}|^2)$.
+
+
+% By Lemma~\ref{lem:complexity}, the total computational complexity for Step~6 of Algorithm~\ref{alg:qa-QAFD-RAG}, when processing $K$ subqueries, is given by
+% \begin{equation}
+% \sum_{k=1}^K O\left(\bar{d}^{(k)} \|\boldsymbol{\Delta}^{(k)}\|_1 \frac{\alpha^{(k)}}{\beta^{(k)}} \log \frac{1}{\xi} + N_{\text{edges}}^{(k)} \cdot C_f \right),
+% \end{equation}
+% where $\bar{d}^{(k)}$ is the maximum degree in the support set for subquery $q_k$, $N_{\text{edges}}^{(k)}$ denotes the number of edges explored during diffusion for subquery $q_k$, and $C_f$ is the computational cost of evaluating the similarity along each edge via the function $f$.
+
+% Typically, $C_f$ involves embedding similarity computations with complexity $O(d)$, where $d$ is the embedding dimension.
+
+% \begin{remark}
+% The locality property (Lemma~\ref{lem:locality}) ensures that $\sum_{k=1}^K N_{\text{edges}}^{(k)} \ll | \mathcal{E}|$ for the total edge set $ \mathcal{E}$ of the schema graph, as each subquery explores only a small relevant subgraph. If the source masses $\|\boldsymbol{\Delta}^{(k)}\|_1$, degree bounds $\bar{d}^{(k)}$, and weight ratios $\frac{\alpha^{(k)}}{\beta^{(k)}}$ are all sublinear in the schema size $| \mathcal{V}|$, then QAFD achieves sublinear time complexity per query, making it highly scalable for large schema graphs. However, standard methods such as CHASE-SQL~\citep{pourreza2024chase} in a schema with $| \mathcal{V}|$ nodes would require $O(| \mathcal{V}|^2)$ only for similarity computations.
+% \end{remark}
+
+
+\section{Usage of Large Language Models (LLMs)}
+We used large language models as a general-purpose writing assistant. Its role was limited to grammar checking, minor stylistic polishing, and improving the clarity of phrasing in some parts of the manuscript. The authors made all substantive contributions to the research and writing.
+
+\end{document}
