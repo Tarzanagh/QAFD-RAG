@@ -9,12 +9,17 @@ Official code for the paper:
 QAFD-RAG uses **query-aware flow diffusion** to retrieve contextually relevant subgraphs from a knowledge graph. Unlike community-based (GraphRAG) or entity-centric (LightRAG) approaches, QAFD-RAG dynamically re-weights edges based on query relevance and propagates flow through the graph to discover multi-hop context with retrieval guarantees.
 
 <p align="center">
-  <img src="docs/figs/GraphRAG.png" width="260" alt="GraphRAG"/>
-  <img src="docs/figs/LightRAG.png" width="260" alt="LightRAG"/>
-  <img src="docs/figs/QAFD-RAG.png" width="260" alt="QAFD-RAG"/>
+  <img src="docs/figs/GraphRAG.png" width="260" alt="GraphRAG"/><br/>
+  <em>GraphRAG</em>
 </p>
 <p align="center">
-  <em>Left:</em> GraphRAG &nbsp;&nbsp;|&nbsp;&nbsp; <em>Center:</em> LightRAG &nbsp;&nbsp;|&nbsp;&nbsp; <em>Right:</em> QAFD-RAG
+  <img src="docs/figs/LightRAG.png" width="260" alt="LightRAG"/><br/>
+  <em>LightRAG</em>
+</p>
+<p align="center">
+  <img src="docs/figs/QAFD-RAG.png" width="260" alt="QAFD-RAG"/><br/>
+  <em>QAFD-RAG</em>
+</p>
 
 ## Quick Start
 
