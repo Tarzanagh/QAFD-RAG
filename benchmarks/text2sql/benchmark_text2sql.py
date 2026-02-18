@@ -97,14 +97,15 @@ class Text2SQLBenchmark:
 
             print_progress(i + 1, total, "Progress")
 
-            # Auto-build KG if schema summary exists
+            # Auto-build KG if schema summary exists (generates from .sqlite if needed)
             if not kg_exists(db):
-                schema_path = get_schema_path(db)
+                from src.text2sql.runner import ensure_db_summary
+                schema_path = ensure_db_summary(db) or get_schema_path(db)
                 if not schema_path:
                     results.append(Text2SQLResult(
                         instance_id=instance_id, db=db, question=question,
                         schema_context="",
-                        success=False, error_message=f"No DB summary for {db}"
+                        success=False, error_message=f"No DB summary or .sqlite file for {db}"
                     ))
                     continue
 

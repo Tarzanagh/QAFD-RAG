@@ -74,10 +74,44 @@ def load_instance(instance_id: str, jsonl_path: Path = DEFAULT_JSONL) -> Optiona
 # Path helpers
 # ---------------------------------------------------------------------------
 
+def get_sqlite_path(db_name: str, summary_dir: Path = DEFAULT_SUMMARY_DIR) -> Optional[Path]:
+    """Get path to SQLite database file. Returns None if not found."""
+    path = summary_dir / f"{db_name}.sqlite"
+    return path if path.exists() else None
+
+
 def get_schema_path(db_name: str, summary_dir: Path = DEFAULT_SUMMARY_DIR) -> Optional[Path]:
     """Get path to DB summary JSON. Returns None if not found."""
     path = summary_dir / f"{db_name}_db_summary.json"
     return path if path.exists() else None
+
+
+def ensure_db_summary(db_name: str, summary_dir: Path = DEFAULT_SUMMARY_DIR) -> Optional[Path]:
+    """
+    Ensure DB summary JSON exists for db_name.
+    If the summary is missing but a .sqlite file is present, auto-generates it.
+
+    Returns:
+        Path to the summary JSON, or None if it cannot be produced.
+    """
+    summary_path = summary_dir / f"{db_name}_db_summary.json"
+    if summary_path.exists():
+        return summary_path
+
+    sqlite_path = get_sqlite_path(db_name, summary_dir)
+    if not sqlite_path:
+        return None
+
+    print(f"DB summary not found. Generating from {sqlite_path}...")
+    try:
+        from src.indexing.extract_db_summary import extract_db_summary_for_schema, save_db_summary
+        db_summary = extract_db_summary_for_schema(str(sqlite_path))
+        save_db_summary(db_summary, str(summary_path))
+        print(f"DB summary saved to {summary_path}")
+        return summary_path
+    except Exception as e:
+        print(f"ERROR: Failed to generate DB summary: {e}")
+        return None
 
 
 def get_kg_dir(db_name: str, kg_base: Path = DEFAULT_KG_DIR) -> Path:
@@ -240,11 +274,11 @@ async def run_instance(
     print(f"DB:        {db_name}")
     print(f"Question:  {question[:100]}{'...' if len(question) > 100 else ''}")
 
-    # 2. Find schema summary
-    schema_path = get_schema_path(db_name)
+    # 2. Find (or auto-generate) schema summary
+    schema_path = ensure_db_summary(db_name) or get_schema_path(db_name)
     if not schema_path and not kg_exists(db_name):
-        print(f"ERROR: No DB summary found at data/text2sql/{db_name}_db_summary.json")
-        print(f"  Place the summary file there and retry.")
+        print(f"ERROR: No DB summary found for '{db_name}'.")
+        print(f"  Place data/text2sql/{db_name}.sqlite or {db_name}_db_summary.json and retry.")
         return None
 
     # 3. Ensure KG exists
