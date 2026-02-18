@@ -6,20 +6,15 @@ Official code for the paper:
 *Zhuoping Zhou, Davoud Ataee Tarzanagh, Sima Didari, Wenjun Hu, Baruch Gutow, Oxana Verkholyak, Masoud Faraki, Heng Hao, Hankyu Moon, Seungjai Min*
 **ICLR 2026**
 
-<p align="center">
-  <img src="docs/figs/QAFD-RAG.png" width="400" alt="QAFD-RAG: Query-aware flow diffusion on a knowledge graph"/>
-</p>
-
 QAFD-RAG uses **query-aware flow diffusion** to retrieve contextually relevant subgraphs from a knowledge graph. Unlike community-based (GraphRAG) or entity-centric (LightRAG) approaches, QAFD-RAG dynamically re-weights edges based on query relevance and propagates flow through the graph to discover multi-hop context with retrieval guarantees.
 
 <p align="center">
-  <img src="docs/figs/GraphRAG.png" width="280" alt="GraphRAG"/>
-  <img src="docs/figs/LightRAG.png" width="280" alt="LightRAG"/>
-  <img src="docs/figs/QAFD-RAG.png" width="280" alt="QAFD-RAG"/>
+  <img src="docs/figs/GraphRAG.png" width="260" alt="GraphRAG"/>
+  <img src="docs/figs/LightRAG.png" width="260" alt="LightRAG"/>
+  <img src="docs/figs/QAFD-RAG.png" width="260" alt="QAFD-RAG"/>
 </p>
 <p align="center">
-  <em>Left:</em> GraphRAG (community detection) &nbsp;&nbsp;|&nbsp;&nbsp; <em>Center:</em> LightRAG (entity-centric) &nbsp;&nbsp;|&nbsp;&nbsp; <em>Right:</em> QAFD-RAG (query-aware flow diffusion)
-</p>
+  <em>Left:</em> GraphRAG &nbsp;&nbsp;|&nbsp;&nbsp; <em>Center:</em> LightRAG &nbsp;&nbsp;|&nbsp;&nbsp; <em>Right:</em> QAFD-RAG
 
 ## Quick Start
 
