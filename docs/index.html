@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QAFD-RAG: Query-Aware Flow Diffusion for Graph-Based RAG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+      --accent-dark: #1d4ed8;
+      --bg: #ffffff;
+      --bg-alt: #f8fafc;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #f1f5f9;
+      --success: #16a34a;
+      --radius: 8px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: var(--bg);
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #3b82f6 100%);
+      color: #fff;
+      padding: 80px 20px 60px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 3rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .hero .venue {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .hero .subtitle {
+      font-size: 1.15rem;
+      max-width: 720px;
+      margin: 0 auto 24px;
+      opacity: 0.92;
+      line-height: 1.7;
+    }
+    .hero .authors {
+      font-size: 0.92rem;
+      opacity: 0.85;
+      max-width: 700px;
+      margin: 0 auto 28px;
+      line-height: 1.8;
+    }
+    .hero .authors a { color: #93c5fd; text-decoration: none; }
+    .hero .authors a:hover { text-decoration: underline; }
+    .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .btn-primary { background: #fff; color: var(--accent); }
+    .btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5); }
+    .btn-outline:hover { border-color: #fff; }
+
+    /* Container */
+    .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+    /* Sections */
+    section { padding: 60px 0; }
+    section:nth-child(even) { background: var(--bg-alt); }
+    section h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      text-align: center;
+      color: var(--text);
+    }
+    section h3 { font-size: 1.2rem; font-weight: 600; margin: 20px 0 12px; }
+
+    /* Abstract */
+    .abstract { font-size: 1.05rem; line-height: 1.8; color: var(--text-muted); text-align: center; max-width: 800px; margin: 0 auto; }
+
+    /* Figures */
+    .figure-row {
+      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+      margin: 32px 0;
+    }
+    .figure-card {
+      text-align: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      flex: 1; min-width: 240px; max-width: 300px;
+    }
+    .figure-card img { width: 100%; border-radius: 4px; }
+    .figure-card .caption {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Pipeline */
+    .pipeline {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .pipeline-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .pipeline-card h3 {
+      color: var(--accent);
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+    }
+    .pipeline-card ol { padding-left: 20px; }
+    .pipeline-card li { margin-bottom: 8px; font-size: 0.95rem; color: var(--text-muted); }
+    .pipeline-card li strong { color: var(--text); }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: var(--bg-alt);
+      font-weight: 600;
+      color: var(--text);
+    }
+    td { color: var(--text-muted); }
+    tr:hover td { background: var(--accent-light); }
+
+    /* Code */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      overflow-x: auto;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    code { font-family: 'SF Mono', 'Fira Code', monospace; }
+
+    /* Benchmark highlight */
+    .benchmark-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .benchmark-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+    }
+    .benchmark-item .task-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .benchmark-item .dataset { font-size: 0.88rem; color: var(--text-muted); }
+    .benchmark-item .metrics { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* Footer */
+    footer {
+      background: #1e293b;
+      color: #94a3b8;
+      padding: 40px 20px;
+      text-align: center;
+      font-size: 0.88rem;
+    }
+    footer a { color: #93c5fd; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .pipeline { grid-template-columns: 1fr; }
+      .figure-card { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="venue">ICLR 2026</div>
+  <h1>QAFD-RAG</h1>
+  <p class="subtitle">
+    Query-Aware Flow Diffusion for Graph-Based Retrieval-Augmented Generation with Retrieval Guarantees
+  </p>
+  <p class="authors">
+    Zhuoping Zhou, <a href="https://github.com/Tarzanagh">Davoud Ataee Tarzanagh</a>, Sima Didari, Wenjun Hu, Baruch Gutow,<br/>
+    Oxana Verkholyak, Masoud Faraki, Heng Hao, Hankyu Moon, Seungjai Min
+  </p>
+  <div class="btn-group">
+    <a class="btn btn-primary" href="https://openreview.net/forum?id=n28wnc2QTc">Paper</a>
+    <a class="btn btn-outline" href="https://github.com/Tarzanagh/QAFD-RAG">Code</a>
+  </div>
+</header>
+
+<!-- Abstract -->
+<section>
+  <div class="container">
+    <h2>About QAFD-RAG</h2>
+    <p class="abstract">
+      QAFD-RAG uses <strong>query-aware flow diffusion</strong> to retrieve contextually relevant subgraphs
+      from a knowledge graph. Unlike community-based (GraphRAG) or entity-centric (LightRAG) approaches,
+      QAFD-RAG dynamically re-weights edges based on query relevance and propagates flow through the graph
+      to discover multi-hop context with <strong>retrieval guarantees</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- Comparison -->
+<section>
+  <div class="container">
+    <h2>Approach Comparison</h2>
+    <div class="figure-row">
+      <div class="figure-card">
+        <img src="figs/GraphRAG.png" alt="GraphRAG" />
+        <div class="caption">GraphRAG<br/><small>Community Detection</small></div>
+      </div>
+      <div class="figure-card">
+        <img src="figs/LightRAG.png" alt="LightRAG" />
+        <div class="caption">LightRAG<br/><small>Entity-Centric</small></div>
+      </div>
+      <div class="figure-card">
+        <img src="figs/QAFD-RAG.png" alt="QAFD-RAG" />
+        <div class="caption">QAFD-RAG (Ours)<br/><small>Query-Aware Flow Diffusion</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Method -->
+<section>
+  <div class="container">
+    <h2>How It Works</h2>
+    <div class="pipeline">
+      <div class="pipeline-card">
+        <h3>Stage 1: Knowledge Graph Construction</h3>
+        <ol>
+          <li><strong>Chunking</strong> &mdash; Documents are split into overlapping token-based chunks.</li>
+          <li><strong>Entity Extraction</strong> &mdash; An LLM identifies entities and relationships from each chunk.</li>
+          <li><strong>Graph Assembly</strong> &mdash; Entities become nodes, relationships become weighted edges, all embedded into vector space.</li>
+        </ol>
+      </div>
+      <div class="pipeline-card">
+        <h3>Stage 2: Query-Aware Retrieval</h3>
+        <ol>
+          <li><strong>Entity Matching</strong> &mdash; Query keywords are matched to KG entities via vector similarity.</li>
+          <li><strong>Flow Diffusion</strong> &mdash; Mass propagates through the graph with query-aware edge re-weighting.</li>
+          <li><strong>Context Assembly</strong> &mdash; Top-ranked nodes and their text chunks form the context for the LLM.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Benchmarks -->
+<section>
+  <div class="container">
+    <h2>Benchmarks</h2>
+    <div class="benchmark-grid">
+      <div class="benchmark-item">
+        <div class="task-name">UltraDomain</div>
+        <div class="dataset">mix.jsonl</div>
+        <div class="metrics">Comprehensiveness, Diversity, Relevance, Logicality, Coherence</div>
+      </div>
+      <div class="benchmark-item">
+        <div class="task-name">Multi-hop QA</div>
+        <div class="dataset">MuSiQue, HotpotQA, 2WikiMultiHopQA</div>
+        <div class="metrics">F1, Exact Match</div>
+      </div>
+      <div class="benchmark-item">
+        <div class="task-name">Text-to-SQL</div>
+        <div class="dataset">Spider2-lite (Pagila, etc.)</div>
+        <div class="metrics">Schema Retrieval Accuracy</div>
+      </div>
+      <div class="benchmark-item">
+        <div class="task-name">Summarization</div>
+        <div class="dataset">SQuALITY</div>
+        <div class="metrics">BLEU, ROUGE, METEOR</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Embedding Models -->
+<section>
+  <div class="container">
+    <h2>Supported Models</h2>
+    <h3>Embedding Models</h3>
+    <table>
+      <thead>
+        <tr><th>Key</th><th>Provider</th><th>Dimensions</th><th>Cost</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>openai-small</code></td><td>OpenAI API</td><td>1,536</td><td>$0.02 / 1M tokens</td></tr>
+        <tr><td><code>openai-large</code></td><td>OpenAI API</td><td>3,072</td><td>$0.13 / 1M tokens</td></tr>
+        <tr><td><code>jina-v3</code></td><td>Local (GPU)</td><td>1,024</td><td>Free</td></tr>
+        <tr><td><code>gritlm</code></td><td>Local (GPU)</td><td>4,096</td><td>Free</td></tr>
+        <tr><td><code>nvidia-nv-embed-v2</code></td><td>Local (GPU)</td><td>4,096</td><td>Free</td></tr>
+      </tbody>
+    </table>
+
+    <h3>LLM Models</h3>
+    <table>
+      <thead>
+        <tr><th>Key</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>gpt-4o-mini</code></td><td>Default. Fast, cost-effective</td></tr>
+        <tr><td><code>gpt-4o</code></td><td>Higher quality, slower</td></tr>
+        <tr><td><code>gpt-oss-120b</code></td><td>Free, open-source</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Quick Start -->
+<section>
+  <div class="container">
+    <h2>Quick Start</h2>
+<pre><code># 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Set your OpenAI API key
+export OPENAI_API_KEY="sk-..."
+
+# 3. Build a knowledge graph
+./run.sh ultradomain --build --max-documents 100
+
+# 4. Run a benchmark
+./run.sh ultradomain --questions 10</code></pre>
+
+    <h3 style="margin-top: 32px;">Python API</h3>
+<pre><code>from src import QAFD_RAG, QueryParam
+
+rag = QAFD_RAG(
+    working_dir="./my_kg",
+    llm_model_name="gpt-4o-mini",
+    embedding_model_key="jina-v3",
+)
+
+# Index documents
+rag.insert(["Document text 1...", "Document text 2..."])
+
+# Query
+answer = rag.query("What is X?", param=QueryParam(mode="hybrid"))
+print(answer)</code></pre>
+  </div>
+</section>
+
+<!-- Citation -->
+<section>
+  <div class="container">
+    <h2>Citation</h2>
+<pre><code>@inproceedings{zhou2026qafd,
+  title={Query-Aware Flow Diffusion for Graph-Based RAG with Retrieval Guarantees},
+  author={Zhuoping Zhou and Davoud Ataee Tarzanagh and Sima Didari and Wenjun Hu and Baruch Gutow and Oxana Verkholyak and Masoud Faraki and Heng Hao and Hankyu Moon and Seungjai Min},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2026}
+}</code></pre>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>
+    QAFD-RAG &bull;
+    <a href="https://openreview.net/forum?id=n28wnc2QTc">Paper</a> &bull;
+    <a href="https://github.com/Tarzanagh/QAFD-RAG">GitHub</a>
+  </p>
+  <p style="margin-top: 8px;">ICLR 2026</p>
+</footer>
+
+</body>
+</html>
