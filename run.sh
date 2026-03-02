@@ -6,6 +6,16 @@ set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")" || { echo "Error: Cannot cd to script directory"; exit 1; }
 
+# Conda environment (has torch, transformers, sentence-transformers, etc.)
+CONDA_ENV="${QAFD_CONDA_ENV:-qafd-rag}"
+PYTHON="conda run --live-stream -n ${CONDA_ENV} python"
+
+# Set NVIDIA library paths (needed for torch with pip-installed CUDA libs)
+NVIDIA_LIB="$(conda info --base)/envs/${CONDA_ENV}/lib/python3.10/site-packages/nvidia"
+if [ -d "$NVIDIA_LIB" ]; then
+    export LD_LIBRARY_PATH="${NVIDIA_LIB}/cudnn/lib:${NVIDIA_LIB}/cublas/lib:${NVIDIA_LIB}/cuda_runtime/lib:${NVIDIA_LIB}/cuda_cupti/lib:${NVIDIA_LIB}/cuda_nvrtc/lib:${NVIDIA_LIB}/cufft/lib:${NVIDIA_LIB}/curand/lib:${NVIDIA_LIB}/cusolver/lib:${NVIDIA_LIB}/cusparse/lib:${NVIDIA_LIB}/nccl/lib:${NVIDIA_LIB}/nvjitlink/lib:${LD_LIBRARY_PATH:-}"
+fi
+
 # Load API key from .env if not already set
 if [ -z "${OPENAI_API_KEY:-}" ]; then
     if [ -f .env ]; then
@@ -16,11 +26,6 @@ if [ -z "${OPENAI_API_KEY:-}" ]; then
         echo "Error: OPENAI_API_KEY not set. Export it or add it to a .env file."
         exit 1
     fi
-fi
-
-if ! command -v python3 &>/dev/null; then
-    echo "Error: python3 not found. Activate your conda/venv environment first."
-    exit 1
 fi
 
 # Show help
@@ -39,7 +44,7 @@ show_help() {
     echo "  --force-build        Force rebuild KG even if exists"
     echo "  --max-documents N    Max documents for KG building"
     echo "  --embedding MODEL    Embedding model (openai-small, openai-large, jina-v3)"
-    echo "  --llm MODEL          LLM model (gpt-4o-mini, gpt-4o, gpt-oss-120b)"
+    echo "  --llm MODEL          LLM model (gpt-4o-mini, gpt-4o, gpt-5-nano, gpt-5-mini, gpt-5, gpt-oss-120b)"
     echo ""
     echo "Summarization-specific Options:"
     echo "  --dataset NAME       Dataset: squality (default: squality)"
@@ -48,13 +53,12 @@ show_help() {
     echo "  --dataset NAME       Dataset: musique, hotpotqa, 2wikimultihopqa"
     echo ""
     echo "Text2SQL-specific Options:"
-    echo "  --db NAME            Database name (e.g., Pagila)"
+    echo "  --benchmark NAME     Benchmark: spider2-lite (default) or bird"
+    echo "  --db NAME            Database name (e.g., Pagila, superhero)"
     echo ""
     echo "Text2SQL End-to-End Pipeline:"
-    echo "  Place your .sqlite file in data/text2sql/<DB>.sqlite"
+    echo "  Place your .sqlite file in data/text2sql/<benchmark>/databases/<DB>/<DB>.sqlite"
     echo "  The DB summary (JSON) is auto-generated on first run."
-    echo "  Or generate it manually:"
-    echo "  python -m src.indexing.extract_db_summary --db-path data/text2sql/Pagila.sqlite"
     echo ""
     echo "Examples:"
     echo "  # Build KG"
@@ -70,8 +74,10 @@ show_help() {
     echo "  ./run.sh multihop --dataset hotpotqa --questions 100"
     echo "  ./run.sh multihop --dataset 2wikimultihopqa --questions 100"
     echo "  ./run.sh text2sql --questions 5 --db Pagila"
+    echo "  ./run.sh text2sql --benchmark bird --questions 5 --db superhero"
     echo ""
-    echo "  # Use local GPT-OSS model (free)"
+    echo "  # Use a local OpenAI-compatible model"
+    echo "  export LOCAL_LLM_BASE_URL='http://localhost:8000/v1'"
     echo "  ./run.sh ultradomain --questions 10 --llm gpt-oss-120b"
     echo "  ./run.sh multihop --dataset musique --questions 10 --llm gpt-oss-120b"
 }
@@ -79,19 +85,19 @@ show_help() {
 case "${1:-help}" in
     ultradomain)
         shift
-        python3 benchmarks/ultradomain/benchmark_ultradomain.py "$@"
+        $PYTHON benchmarks/ultradomain/benchmark_ultradomain.py "$@"
         ;;
     text2sql)
         shift
-        python3 benchmarks/text2sql/benchmark_text2sql.py "$@"
+        $PYTHON benchmarks/text2sql/benchmark_text2sql.py "$@"
         ;;
     summarization)
         shift
-        python3 benchmarks/summarization/benchmark_summarization.py "$@"
+        $PYTHON benchmarks/summarization/benchmark_summarization.py "$@"
         ;;
     multihop)
         shift
-        python3 benchmarks/multihop/benchmark_multihop.py "$@"
+        $PYTHON benchmarks/multihop/benchmark_multihop.py "$@"
         ;;
     help|--help|-h)
         show_help

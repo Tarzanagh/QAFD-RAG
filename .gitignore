@@ -27,6 +27,9 @@ env/
 .DS_Store
 Thumbs.db
 
+# Downloaded datasets (auto-fetched from HuggingFace)
+data/multihop/*.json
+
 # Run logs and results (regenerable)
 run_all_embeddings.log
 results/

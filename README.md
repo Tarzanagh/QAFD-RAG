@@ -17,18 +17,20 @@ QAFD-RAG uses **query-aware flow diffusion** to retrieve contextually relevant s
 ## Quick Start
 
 ```bash
-# 1. Install dependencies
+# 1. Create conda environment and install dependencies
+conda create -n qafd-rag python=3.10 -y
+conda activate qafd-rag
 pip install -r requirements.txt
 
-# 2. Set your OpenAI API key
+# 2. Set your OpenAI API key (required for default embedding and LLM)
 export OPENAI_API_KEY="sk-..."
 
-# 3. Build a knowledge graph
+# 3. Build a knowledge graph and run a benchmark
 ./run.sh ultradomain --build --max-documents 100
-
-# 4. Run a benchmark
 ./run.sh ultradomain --questions 10
 ```
+
+> **Note:** The default embedding model is `openai-small` (OpenAI text-embedding-3-small) and the default LLM is `gpt-4o-mini`. Both require `OPENAI_API_KEY`. To use free local embeddings instead, see [Local Embedding Models](#local-embedding-models).
 
 ## Project Structure
 
@@ -69,7 +71,7 @@ QAFD-RAG/
 │   ├── multihop/                    # Multi-hop reasoning
 │   ├── text2sql/                    # Natural language to SQL
 │   └── summarization/               # Document summarization
-├── data/                            # Datasets
+├── data/                            # Datasets (auto-downloaded from HuggingFace)
 ├── docs/figs/                       # Figures for README
 ├── kg/                              # Built knowledge graphs
 ├── ICLR2026/                        # Paper source (LaTeX)
@@ -82,12 +84,12 @@ QAFD-RAG/
 |------|----------|---------|
 | **UltraDomain** | mix.jsonl | Quality scores (comprehensiveness, diversity, relevance, logicality, coherence) |
 | **Multi-hop QA** | MuSiQue, HotpotQA, 2WikiMultiHopQA | F1, Exact Match |
-| **Text-to-SQL** | Spider2-lite (Pagila, etc.) | Schema retrieval accuracy |
+| **Text-to-SQL** | Spider2-lite, Bird | Schema retrieval precision/recall |
 | **Summarization** | SQuALITY | BLEU, ROUGE, METEOR, quality scores |
 
 ## Usage
 
-All benchmarks are run through `./run.sh`:
+All benchmarks are run through `./run.sh` (automatically uses the `qafd-rag` conda env with CUDA support):
 
 ```bash
 ./run.sh <task> [options]
@@ -111,6 +113,7 @@ All benchmarks are run through `./run.sh`:
 ./run.sh multihop --dataset hotpotqa --questions 100
 ./run.sh multihop --dataset 2wikimultihopqa --questions 100
 ./run.sh text2sql --questions 5 --db Pagila
+./run.sh text2sql --benchmark bird --questions 5 --db superhero
 ```
 
 ### Common Options
@@ -122,7 +125,7 @@ All benchmarks are run through `./run.sh`:
 | `--force-build` | Rebuild KG even if it exists |
 | `--max-documents N` | Limit documents for KG construction |
 | `--embedding MODEL` | Embedding model (see table below) |
-| `--llm MODEL` | LLM model (`gpt-4o-mini`, `gpt-4o`, `gpt-oss-120b`) |
+| `--llm MODEL` | LLM model (`gpt-4o-mini`, `gpt-4o`, `gpt-5-nano`, `gpt-5-mini`, `gpt-5`, `gpt-oss-120b`) |
 
 ### Task-Specific Options
 
@@ -130,26 +133,63 @@ All benchmarks are run through `./run.sh`:
 |--------|------|-------------|
 | `--dataset NAME` | multihop | `musique`, `hotpotqa`, `2wikimultihopqa` |
 | `--dataset NAME` | summarization | `squality` (default) |
-| `--db NAME` | text2sql | Database name (e.g., `Pagila`) |
+| `--benchmark NAME` | text2sql | `spider2-lite` (default), `bird` |
+| `--db NAME` | text2sql | Database name (e.g., `Pagila`, `superhero`) |
 | `--mode MODE` | multihop, summarization | `local`, `global`, `hybrid` (default: `hybrid`) |
+
+## Data
+
+Datasets are automatically downloaded from HuggingFace on first run:
+
+| Task | Source | Reference |
+|------|--------|-----------|
+| **UltraDomain** | [TommyChien/UltraDomain](https://huggingface.co/datasets/TommyChien/UltraDomain) | mix.jsonl |
+| **Multi-hop QA** | [osunlp/HippoRAG_2](https://huggingface.co/datasets/osunlp/HippoRAG_2) | MuSiQue, HotpotQA, 2WikiMultiHopQA |
+| **Summarization** | [pszemraj/SQuALITY-v1.3](https://huggingface.co/datasets/pszemraj/SQuALITY-v1.3) | SQuALITY |
+| **Text-to-SQL** | Included (`data/text2sql/`) | Spider2-lite (Pagila) + Bird (superhero) with auto-generated DB summaries |
 
 ## Configuration
 
 ### Embedding Models
 
-| Key | Provider | Dimensions | Cost |
-|-----|----------|-----------|------|
-| `openai-small` | OpenAI API | 1536 | $0.02/1M tokens |
-| `openai-large` | OpenAI API | 3072 | $0.13/1M tokens |
-| `jina-v3` | Local (GPU) | 1024 | Free |
-| `gritlm` | Local (GPU) | 4096 | Free |
-| `nvidia-nv-embed-v2` | Local (GPU) | 4096 | Free |
+| Key | Model | Provider | Dimensions | Cost |
+|-----|-------|----------|-----------|------|
+| `openai-small` | text-embedding-3-small | OpenAI API | 1536 | $0.02/1M tokens |
+| `openai-large` | text-embedding-3-large | OpenAI API | 3072 | $0.13/1M tokens |
+| `jina-v3` | jinaai/jina-embeddings-v3 | Local (GPU) | 1024 | Free |
+| `gritlm` | GritLM/GritLM-7B | Local (GPU) | 4096 | Free |
+| `nvidia-nv-embed-v2` | nvidia/NV-Embed-v2 | Local (GPU) | 4096 | Free |
 
-Use with `--embedding <key>`, e.g.:
+The default embedding is **`openai-small`** which requires `OPENAI_API_KEY`.
+
+Use `--embedding <key>` to select a model:
 
 ```bash
 ./run.sh ultradomain --questions 10 --embedding jina-v3
 ```
+
+### Local Embedding Models
+
+Local embeddings (`jina-v3`, `gritlm`, `nvidia-nv-embed-v2`) run on your GPU and do not require an API key for embeddings. They are downloaded automatically from HuggingFace on first use.
+
+**Requirements:**
+- CUDA-capable GPU with sufficient VRAM (8GB+ recommended)
+- Models are cached in `~/.cache/huggingface/`
+
+**Usage with local embeddings (no OpenAI API needed for embeddings):**
+
+```bash
+# Use Jina v3 (1024-dim, lightweight, good quality)
+./run.sh ultradomain --questions 10 --embedding jina-v3
+
+# Use GritLM (4096-dim, unified embedding+generation)
+./run.sh multihop --dataset musique --questions 10 --embedding gritlm
+
+# Use NVIDIA NV-Embed-v2 (4096-dim, 32K context, high quality)
+./run.sh ultradomain --questions 10 --embedding nvidia-nv-embed-v2
+```
+
+> **Note:** Even with local embeddings, an LLM API key is still required for entity extraction (KG building) and answer generation. Set `OPENAI_API_KEY` or use `--llm gpt-oss-120b` for a free open-source LLM.
 
 ### LLM Models
 
@@ -157,7 +197,10 @@ Use with `--embedding <key>`, e.g.:
 |-----|-------------|
 | `gpt-4o-mini` | Default. Fast, cost-effective |
 | `gpt-4o` | Higher quality, slower |
-| `gpt-oss-120b` | Free, open-source |
+| `gpt-5-nano` | GPT-5 Nano. Fastest, most affordable GPT-5 variant |
+| `gpt-5-mini` | GPT-5 Mini. Balanced speed and quality |
+| `gpt-5` | GPT-5. Highest quality |
+| `gpt-oss-120b` | Free, open-source (local) |
 
 ## Python API
 

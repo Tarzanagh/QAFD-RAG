@@ -2,9 +2,9 @@
 Prompt parser for QAFD cluster output.
 
 Converts KG query clusters into formatted schema documentation
-(CREATE TABLE statements with sample rows).
+(CREATE TABLE statements with constraints and sample rows).
 
-Ported from CoFD-M/methods/CoFD/prompt_parser.py
+Matches the CoFD-M prompt.txt format for text2sql pipelines.
 """
 
 import json
@@ -65,6 +65,8 @@ def extract_tables_from_clusters(clusters_data: List[Dict[str, Any]]) -> Dict[st
                         "description": description,
                         "rank": entity.get("rank", 0),
                     }
+                elif description and not table_info[entity_name].get("description"):
+                    table_info[entity_name]["description"] = description
 
             elif entity_type == "column" and "." in entity_name:
                 parts = entity_name.split(".", 1)
@@ -108,7 +110,7 @@ def format_as_simple(
                 output.append(f"  - {col_name}: {desc}")
 
         if add_sample_rows and schema_data:
-            samples = get_sample_rows(table_name, schema_data)
+            samples = _get_sample_rows_json(table_name, schema_data)
             if samples:
                 output.append(samples)
 
@@ -120,7 +122,7 @@ def format_as_create_table(
     schema_data: Optional[Dict] = None,
     add_sample_rows: bool = True,
 ) -> str:
-    """Format as CREATE TABLE statements."""
+    """Format as CREATE TABLE statements (CoFD-M prompt.txt format)."""
     output = []
 
     sorted_tables = sorted(
@@ -134,7 +136,7 @@ def format_as_create_table(
         output.append(create_stmt)
 
         if add_sample_rows and schema_data:
-            samples = get_sample_rows(table_name, schema_data)
+            samples = _get_sample_rows_json(table_name, schema_data)
             if samples:
                 output.append(samples)
 
@@ -148,72 +150,76 @@ def _generate_create_table(
     table_info: Dict,
     schema_data: Optional[Dict] = None,
 ) -> str:
-    """Generate a single CREATE TABLE statement."""
-    columns = []
+    """
+    Generate CREATE TABLE matching CoFD-M prompt.txt format:
+
+    -- table_name
+    CREATE TABLE `table_name` (
+      `col` TYPE NOT NULL,
+      `col2` TYPE PRIMARY KEY,
+      ,FOREIGN KEY (`col`) REFERENCES `other_table`(`other_col`),
+      ,CHECK (`col` BETWEEN min AND max)
+    );
+    """
+    rag_columns = table_info.get("columns", {})
     table_desc = table_info.get("description", "")
+
+    col_defs = []
+    constraints = []
 
     if schema_data and "tables" in schema_data:
         schema_table = _find_table_in_schema(table_name, schema_data)
 
         if schema_table and "columns" in schema_table:
-            for col in schema_table["columns"]:
-                col_name = col.get("name", "")
-                col_type = col.get("type", "TEXT")
+            schema_col_lookup = {
+                col.get("name", ""): col for col in schema_table["columns"]
+            }
 
-                cluster_desc = ""
-                if col_name in table_info.get("columns", {}):
-                    cluster_desc = table_info["columns"][col_name].get("description", "")
+            for col_name in rag_columns:
+                schema_col = schema_col_lookup.get(col_name, {})
+                col_type = schema_col.get("type", "TEXT")
 
-                columns.append(
-                    {
-                        "name": col_name,
-                        "type": col_type,
-                        "description": cluster_desc or col.get("description", ""),
-                        "is_pk": col.get("is_primary_key", False),
-                        "not_null": col.get("not_null", False),
-                    }
-                )
+                col_line = f"  `{col_name}` {col_type}"
+                if schema_col.get("is_primary_key"):
+                    col_line += " PRIMARY KEY"
+                elif schema_col.get("not_null"):
+                    col_line += " NOT NULL"
 
-            if not table_desc and schema_table.get("description"):
-                table_desc = schema_table["description"]
+                col_defs.append(col_line)
 
-    if not columns:
-        for col_name, col_info in table_info.get("columns", {}).items():
-            columns.append(
-                {
-                    "name": col_name,
-                    "type": "TEXT",
-                    "description": col_info.get("description", ""),
-                    "is_pk": False,
-                    "not_null": False,
-                }
-            )
+                # FK constraint
+                if schema_col.get("is_foreign_key") and schema_col.get("references_table"):
+                    ref_table = schema_col["references_table"]
+                    ref_col = schema_col.get("references_column", col_name)
+                    constraints.append(
+                        f"  ,FOREIGN KEY (`{col_name}`) REFERENCES `{ref_table}`(`{ref_col}`)"
+                    )
 
-    lines = []
-
-    if table_desc:
-        lines.append(f"-- {table_name}: {table_desc}")
-
-    lines.append(f"CREATE TABLE {table_name} (")
-
-    if columns:
-        col_lines = []
-        for col in columns:
-            col_line = f"    {col['name']} {col['type']}"
-
-            if col.get("is_pk"):
-                col_line += " PRIMARY KEY"
-            elif col.get("not_null"):
-                col_line += " NOT NULL"
-
-            if col.get("description"):
-                col_line += f"  -- {col['description']}"
-
-            col_lines.append(col_line)
-
-        lines.append(",\n".join(col_lines))
+                # CHECK constraint with min/max range
+                col_min = schema_col.get("min")
+                col_max = schema_col.get("max")
+                if col_min is not None and col_max is not None and col_min != col_max:
+                    if isinstance(col_min, str):
+                        constraints.append(
+                            f"  ,CHECK (`{col_name}` BETWEEN '{col_min}' AND '{col_max}')"
+                        )
+                    else:
+                        constraints.append(
+                            f"  ,CHECK (`{col_name}` BETWEEN {col_min} AND {col_max})"
+                        )
     else:
-        lines.append("    -- No columns found")
+        # No schema_data — use RAG info only
+        for col_name in rag_columns:
+            col_defs.append(f"  `{col_name}` TEXT")
+
+    lines = [f"-- {table_name}"]
+    lines.append(f"CREATE TABLE `{table_name}` (")
+
+    if col_defs or constraints:
+        all_lines = col_defs + constraints
+        lines.append(",\n".join(all_lines))
+    else:
+        lines.append("  -- No columns found")
 
     lines.append(");")
 
@@ -235,8 +241,17 @@ def _find_table_in_schema(table_name: str, schema_data: Dict) -> Optional[Dict]:
     return None
 
 
-def get_sample_rows(table_name: str, schema_data: Dict) -> str:
-    """Get formatted sample rows from schema data."""
+def _get_sample_rows_json(table_name: str, schema_data: Dict) -> str:
+    """
+    Get sample rows in JSON format (CoFD-M prompt.txt style).
+
+    /* Sample rows:
+    [
+      {"col1": val1, "col2": val2},
+      {"col1": val3, "col2": val4}
+    ]
+    */
+    """
     table_data = _find_table_in_schema(table_name, schema_data)
     if not table_data:
         return ""
@@ -250,70 +265,41 @@ def get_sample_rows(table_name: str, schema_data: Dict) -> str:
     if not sample_rows:
         return ""
 
-    lines = [f"/* Sample rows from {table_name}: */"]
+    rows_as_dicts = []
 
-    # Dict-of-lists format (common in db_summary.json)
+    # Dict-of-lists format
     if isinstance(sample_rows, dict):
         col_names = list(sample_rows.keys())
         max_rows = max(
             (len(v) for v in sample_rows.values() if isinstance(v, list)),
             default=0,
         )
-        if max_rows == 0:
-            return ""
-
-        lines.append(f"/* {' | '.join(col_names[:10])} */")
-
         for i in range(min(3, max_rows)):
-            row_values = []
-            for col in col_names[:10]:
+            row = {}
+            for col in col_names:
                 col_data = sample_rows.get(col, [])
                 if isinstance(col_data, list) and i < len(col_data):
                     val = col_data[i]
-                    if val is None:
-                        row_values.append("NULL")
-                    elif isinstance(val, str):
-                        row_values.append(val[:50] if len(val) > 50 else val)
-                    else:
-                        row_values.append(str(val))
+                    if isinstance(val, str) and len(val) > 80:
+                        val = val[:77] + "..."
+                    row[col] = val
                 else:
-                    row_values.append("NULL")
-            lines.append(f"/* {' | '.join(row_values)} */")
+                    row[col] = None
+            rows_as_dicts.append(row)
 
-        return "\n".join(lines)
-
-    # List-of-dicts or list-of-tuples format
+    # List-of-dicts format
     elif isinstance(sample_rows, list) and sample_rows:
-        first_row = sample_rows[0]
+        for row in sample_rows[:3]:
+            if isinstance(row, dict):
+                cleaned = {}
+                for k, v in row.items():
+                    if isinstance(v, str) and len(v) > 80:
+                        v = v[:77] + "..."
+                    cleaned[k] = v
+                rows_as_dicts.append(cleaned)
 
-        if isinstance(first_row, dict):
-            col_names = list(first_row.keys())
-            lines.append(f"/* {' | '.join(col_names[:10])} */")
+    if not rows_as_dicts:
+        return ""
 
-            for row in sample_rows[:3]:
-                values = []
-                for col in col_names[:10]:
-                    val = row.get(col, "NULL")
-                    if val is None:
-                        values.append("NULL")
-                    elif isinstance(val, str):
-                        values.append(val[:50] if len(val) > 50 else val)
-                    else:
-                        values.append(str(val))
-                lines.append(f"/* {' | '.join(values)} */")
-
-        elif isinstance(first_row, (list, tuple)):
-            if "columns" in table_data:
-                col_names = [c.get("name", f"col{i}") for i, c in enumerate(table_data["columns"])]
-            else:
-                col_names = [f"col{i}" for i in range(len(first_row))]
-
-            lines.append(f"/* {' | '.join(col_names[:10])} */")
-
-            for row in sample_rows[:3]:
-                values = [str(v) if v is not None else "NULL" for v in row[:10]]
-                lines.append(f"/* {' | '.join(values)} */")
-
-        return "\n".join(lines)
-
-    return ""
+    json_str = json.dumps(rows_as_dicts, indent=2, ensure_ascii=False, default=str)
+    return f"/* Sample rows:\n{json_str}\n*/"

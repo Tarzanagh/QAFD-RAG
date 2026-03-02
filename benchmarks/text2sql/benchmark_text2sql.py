@@ -58,7 +58,7 @@ class Text2SQLResult:
     instance_id: str
     db: str
     question: str
-    schema_context: str
+    create_table: str
     success: bool = True
     error_message: str = ""
 
@@ -84,6 +84,7 @@ class Text2SQLBenchmark:
     async def run_benchmark(self, questions: List[Dict], question_count: int = 5) -> List[Text2SQLResult]:
         """Run text2sql benchmark using the generic runner."""
         from src.text2sql.runner import kg_exists, get_schema_path, ensure_kg, query_kg, get_kg_dir
+        from src.text2sql.prompt_parser import parse_qafd_clusters
 
         results = []
         total = min(question_count, len(questions))
@@ -104,7 +105,7 @@ class Text2SQLBenchmark:
                 if not schema_path:
                     results.append(Text2SQLResult(
                         instance_id=instance_id, db=db, question=question,
-                        schema_context="",
+                        create_table="",
                         success=False, error_message=f"No DB summary or .sqlite file for {db}"
                     ))
                     continue
@@ -116,7 +117,7 @@ class Text2SQLBenchmark:
                 except Exception as e:
                     results.append(Text2SQLResult(
                         instance_id=instance_id, db=db, question=question,
-                        schema_context="",
+                        create_table="",
                         success=False, error_message=f"KG build failed: {e}"
                     ))
                     continue
@@ -124,50 +125,87 @@ class Text2SQLBenchmark:
             working_dir = get_kg_dir(db)
 
             try:
-                schema_context = await query_kg(
+                # Get raw clusters (same as CoFD-M pipeline)
+                clusters = await query_kg(
                     question, working_dir,
                     embedding_model=self.embedding_model,
                     llm_model=self.llm_model,
-                    return_raw=False,
+                    return_raw=True,
                 )
+
+                # Load db_summary for types, PK/FK, sample rows
+                schema_data = None
+                schema_path = get_schema_path(db)
+                if schema_path:
+                    with open(schema_path, 'r') as sf:
+                        schema_data = json.load(sf)
+
+                # Format as CREATE TABLE (with types, PK/FK, constraints, sample rows)
+                if isinstance(clusters, list):
+                    create_table_str = parse_qafd_clusters(
+                        clusters,
+                        add_sample_rows=True,
+                        schema_data=schema_data,
+                        format_type="create_table",
+                    )
+                else:
+                    create_table_str = str(clusters)
 
                 results.append(Text2SQLResult(
                     instance_id=instance_id, db=db, question=question,
-                    schema_context=str(schema_context),
+                    create_table=create_table_str,
                     success=True
                 ))
 
             except Exception as e:
                 results.append(Text2SQLResult(
                     instance_id=instance_id, db=db, question=question,
-                    schema_context="",
+                    create_table="",
                     success=False, error_message=str(e)
                 ))
 
         return results
 
-    def save_results(self, results: List[Text2SQLResult], db_name: str = None, filename: str = None):
-        """Save results to JSON"""
-        if filename is None:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            if db_name:
-                results_dir = QAFD_RAG_HOME / "results" / "text2sql" / db_name
-            else:
-                results_dir = QAFD_RAG_HOME / "results" / "text2sql"
-            results_dir.mkdir(parents=True, exist_ok=True)
-            filename = str(results_dir / f"text2sql_benchmark_{timestamp}.json")
+    def save_results(self, results: List[Text2SQLResult], db_name: str = None):
+        """Save results as two separate files: eval metrics and generated responses"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        if db_name:
+            results_dir = QAFD_RAG_HOME / "results" / "text2sql" / db_name
+        else:
+            results_dir = QAFD_RAG_HOME / "results" / "text2sql"
+        results_dir.mkdir(parents=True, exist_ok=True)
 
-        data = {
+        eval_file = str(results_dir / f"text2sql_{timestamp}_eval.json")
+
+        success_count = sum(1 for r in results if r.success)
+
+        # --- Eval file: success/fail stats ---
+        eval_data = {
             "timestamp": datetime.now().isoformat(),
-            "embedding_model": self.embedding_model,
-            "llm_model": self.llm_model,
-            "results": [asdict(r) for r in results]
+            "llm": self.llm_model,
+            "embedding": self.embedding_model,
+            "total_questions": len(results),
+            "success_count": success_count,
+            "fail_count": len(results) - success_count,
+            "failed_instances": [
+                {"instance_id": r.instance_id, "db": r.db, "error": r.error_message}
+                for r in results if not r.success
+            ],
         }
 
-        with open(filename, 'w') as f:
-            json.dump(data, f, indent=2)
+        with open(eval_file, 'w', encoding='utf-8') as f:
+            json.dump(eval_data, f, indent=2, ensure_ascii=False)
 
-        print(f"\nResults saved to: {filename}")
+        # --- Responses: one prompts txt per instance ---
+        for r in results:
+            if not r.success or not r.create_table:
+                continue
+            prompt_file = results_dir / f"{r.instance_id}_prompts.txt"
+            with open(prompt_file, 'w', encoding='utf-8') as f:
+                f.write(r.create_table)
+
+        print(f"  Eval saved:      {eval_file}")
+        print(f"  Prompts saved:   {results_dir}/<instance_id>_prompts.txt\n")
 
 
 async def main():
@@ -178,9 +216,12 @@ async def main():
     parser.add_argument("--embedding", type=str, default="openai-small",
                         choices=["openai-small", "openai-large", "jina-v3", "gritlm", "nvidia-nv-embed-v2"])
     parser.add_argument("--llm", type=str, default="gpt-4o-mini",
-                        choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b"])
+                        choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b", "gpt-5", "gpt-5-mini", "gpt-5-nano"])
     parser.add_argument("--db", type=str, default=None,
-                        help="Filter by database name (e.g. Pagila)")
+                        help="Filter by database name (e.g. Pagila, superhero)")
+    parser.add_argument("--benchmark", type=str, default="spider2-lite",
+                        choices=["spider2-lite", "bird"],
+                        help="Benchmark dataset (default: spider2-lite)")
 
     args = parser.parse_args()
 
@@ -191,12 +232,17 @@ async def main():
 
     benchmark = Text2SQLBenchmark(api_key, args.embedding, args.llm)
 
-    data_path = str(QAFD_RAG_HOME / "data" / "text2sql" / "spider2-lite.jsonl")
+    jsonl_files = {
+        "spider2-lite": QAFD_RAG_HOME / "data" / "text2sql" / "spider2-lite" / "spider2-lite.jsonl",
+        "bird": QAFD_RAG_HOME / "data" / "text2sql" / "bird" / "bird.jsonl",
+    }
+    data_path = str(jsonl_files[args.benchmark])
     db_filter = [args.db] if args.db else None
     questions = benchmark.load_questions(data_path, db_filter)
 
     print_header("QAFD-RAG Text2SQL Benchmark")
     print_config({
+        "Benchmark": args.benchmark,
         "Questions": f"{min(args.questions, len(questions))} / {len(questions)}",
         "DB Filter": str(db_filter[0]) if db_filter else "all",
         "Embedding": args.embedding,

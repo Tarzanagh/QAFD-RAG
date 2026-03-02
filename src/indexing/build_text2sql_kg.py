@@ -7,8 +7,8 @@ The DB summary is assumed to already exist (generated separately).
 
 Usage:
     # By schema path + DB name (direct):
-    python -m src.indexing.build_text2sql_kg --schema data/text2sql/Pagila_db_summary.json --db-name Pagila
-    python -m src.indexing.build_text2sql_kg --schema data/text2sql/Pagila_db_summary.json --db-name Pagila --rebuild
+    python -m src.indexing.build_text2sql_kg --schema data/text2sql/databases/sqlite/Pagila/Pagila_db_summary.json --db-name Pagila
+    python -m src.indexing.build_text2sql_kg --schema data/text2sql/databases/sqlite/Pagila/Pagila_db_summary.json --db-name Pagila --rebuild
 
     # By instance ID (reads spider2-lite.jsonl to resolve DB name + schema):
     python -m src.indexing.build_text2sql_kg --instance-id local038
@@ -90,11 +90,16 @@ async def build_text2sql_kg(
     print("\n[Step 1] Initializing QAFD_RAG...")
     try:
         from src import QAFD_RAG
-        from src.llm import gpt_4o_mini_complete, gpt_4o_complete
+        from src.llm import (gpt_4o_mini_complete, gpt_4o_complete, gpt_oss_120b_complete,
+                              gpt_5_complete, gpt_5_mini_complete, gpt_5_nano_complete)
 
         llm_funcs = {
             "gpt-4o-mini": gpt_4o_mini_complete,
             "gpt-4o": gpt_4o_complete,
+            "gpt-oss-120b": gpt_oss_120b_complete,
+            "gpt-5": gpt_5_complete,
+            "gpt-5-mini": gpt_5_mini_complete,
+            "gpt-5-nano": gpt_5_nano_complete,
         }
         llm_func = llm_funcs.get(llm_model, gpt_4o_mini_complete)
 
@@ -167,7 +172,7 @@ def main():
                         choices=["openai-small", "openai-large", "jina-v3"],
                         help="Embedding model (default: jina-v3)")
     parser.add_argument("--llm", default="gpt-4o-mini",
-                        choices=["gpt-4o-mini", "gpt-4o"],
+                        choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b", "gpt-5", "gpt-5-mini", "gpt-5-nano"],
                         help="LLM model (default: gpt-4o-mini)")
     parser.add_argument("--output-dir", default=None, help="Override output directory")
     parser.add_argument("--rebuild", action="store_true", help="Force rebuild")
@@ -195,7 +200,7 @@ def main():
         if not schema_path:
             resolved = get_schema_path(db_name)
             if not resolved:
-                print(f"ERROR: No DB summary found: data/text2sql/{db_name}_db_summary.json")
+                print(f"ERROR: No DB summary found: data/text2sql/databases/sqlite/{db_name}/{db_name}_db_summary.json")
                 sys.exit(1)
             schema_path = str(resolved)
 

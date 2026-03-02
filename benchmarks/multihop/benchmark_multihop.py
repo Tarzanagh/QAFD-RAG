@@ -106,6 +106,8 @@ class BenchmarkResult:
     f1_scores: List[float] = None
     exact_match_scores: List[float] = None
     responses: List[str] = None
+    questions: List[str] = None
+    gold_answers: List[List[str]] = None
     error_message: str = ""
 
 
@@ -192,17 +194,37 @@ class MultiHopBenchmark:
             "gpt-4o-mini": llm.gpt_4o_mini_complete,
             "gpt-4o": llm.gpt_4o_complete,
             "gpt-oss-120b": llm.gpt_oss_120b_complete,
+            "gpt-5": llm.gpt_5_complete,
+            "gpt-5-mini": llm.gpt_5_mini_complete,
+            "gpt-5-nano": llm.gpt_5_nano_complete,
         }
         return llm_funcs.get(self.llm_model, llm.gpt_4o_mini_complete)
 
+    def _ensure_data_file(self, filename: str) -> str:
+        """Return path to data file, downloading from HuggingFace if missing."""
+        data_dir = os.path.join(QAFD_RAG_HOME, "data", "multihop")
+        filepath = os.path.join(data_dir, filename)
+        if not os.path.exists(filepath):
+            print(f"  Downloading {filename} from osunlp/HippoRAG_2...", end=" ", flush=True)
+            from huggingface_hub import hf_hub_download
+            os.makedirs(data_dir, exist_ok=True)
+            hf_hub_download(
+                repo_id="osunlp/HippoRAG_2",
+                filename=filename,
+                repo_type="dataset",
+                local_dir=data_dir,
+            )
+            print("done")
+        return filepath
+
     def _load_dataset(self) -> List[Dict]:
-        dataset_path = os.path.join(QAFD_RAG_HOME, "data", "multihop", self.config["data_file"])
+        dataset_path = self._ensure_data_file(self.config["data_file"])
         with open(dataset_path, 'r', encoding='utf-8') as f:
             samples = json.load(f)
         return samples
 
     def _load_corpus(self) -> List[str]:
-        corpus_path = os.path.join(QAFD_RAG_HOME, "data", "multihop", self.config["corpus_file"])
+        corpus_path = self._ensure_data_file(self.config["corpus_file"])
         with open(corpus_path, 'r', encoding='utf-8') as f:
             corpus = json.load(f)
         docs = [f"{doc['title']}\n{doc['text']}" for doc in corpus]
@@ -364,7 +386,9 @@ class MultiHopBenchmark:
             exact_match_std=float(np.std(em_scores)) if em_scores else 0,
             f1_scores=f1_scores,
             exact_match_scores=em_scores,
-            responses=responses
+            responses=responses,
+            questions=questions,
+            gold_answers=gold_answers,
         )
 
         self.print_results(result)
@@ -389,21 +413,72 @@ class MultiHopBenchmark:
         print()
 
     def save_results(self, result: BenchmarkResult):
-        """Save results to JSON file"""
+        """Save results as two separate files: eval metrics and generated responses"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         results_dir = os.path.join(QAFD_RAG_HOME, "results", "multihop")
         os.makedirs(results_dir, exist_ok=True)
-        filename = os.path.join(results_dir, f"{self.dataset}_{timestamp}.json")
 
-        data = {
+        eval_file = os.path.join(results_dir, f"{self.dataset}_{timestamp}_eval.json")
+        output_file = os.path.join(results_dir, f"{self.dataset}_{timestamp}_responses.json")
+
+        # --- Eval file: metrics and timing ---
+        eval_data = {
             "timestamp": datetime.now().isoformat(),
-            "result": asdict(result)
+            "model": result.model_name,
+            "llm": self.llm_model,
+            "embedding": self.embedding_model,
+            "dataset": result.dataset_name,
+            "performance": {
+                "total_questions": result.total_questions,
+                "success_count": result.success_count,
+                "kg_build_time": result.kg_build_time,
+                "query_time": result.query_time,
+                "total_time": result.total_time,
+                "avg_time_per_question": result.avg_time_per_question,
+            },
+            "metrics": {
+                "f1_score_mean": result.f1_score_mean,
+                "f1_score_std": result.f1_score_std,
+                "exact_match_mean": result.exact_match_mean,
+                "exact_match_std": result.exact_match_std,
+            },
+            "per_question_f1": result.f1_scores,
+            "per_question_em": result.exact_match_scores,
+            "error": result.error_message,
         }
 
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        with open(eval_file, 'w', encoding='utf-8') as f:
+            json.dump(eval_data, f, indent=2, ensure_ascii=False)
 
-        print(f"  Results saved: {filename}\n")
+        # --- Responses file: questions + generated answers + gold answers ---
+        output_entries = []
+        if result.responses:
+            for i, response in enumerate(result.responses):
+                entry = {
+                    "id": i + 1,
+                    "question": result.questions[i] if result.questions else "",
+                    "generated_answer": response,
+                    "gold_answers": result.gold_answers[i] if result.gold_answers else [],
+                    "f1": result.f1_scores[i] if result.f1_scores else None,
+                    "exact_match": result.exact_match_scores[i] if result.exact_match_scores else None,
+                }
+                output_entries.append(entry)
+
+        output_data = {
+            "timestamp": datetime.now().isoformat(),
+            "model": result.model_name,
+            "llm": self.llm_model,
+            "embedding": self.embedding_model,
+            "dataset": result.dataset_name,
+            "num_responses": len(output_entries),
+            "responses": output_entries,
+        }
+
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(output_data, f, indent=2, ensure_ascii=False)
+
+        print(f"  Eval saved:      {eval_file}")
+        print(f"  Responses saved: {output_file}\n")
 
 
 async def main():
@@ -419,7 +494,7 @@ async def main():
     parser.add_argument("--embedding", type=str, default="openai-small",
                         choices=["openai-small", "openai-large", "jina-v3", "gritlm", "nvidia-nv-embed-v2"])
     parser.add_argument("--llm", type=str, default="gpt-4o-mini",
-                        choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b"])
+                        choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b", "gpt-5", "gpt-5-mini", "gpt-5-nano"])
     parser.add_argument("--mode", type=str, default="hybrid",
                         choices=["local", "global", "hybrid"])
     parser.add_argument("--max-source-nodes", type=int, default=20)

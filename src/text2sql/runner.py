@@ -15,7 +15,6 @@ Usage:
     python -m src.text2sql.runner --db Pagila --list
 """
 
-import os
 import sys
 import json
 import asyncio
@@ -27,9 +26,17 @@ from typing import Dict, List, Any, Optional
 QAFD_RAG_HOME = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(QAFD_RAG_HOME))
 
-DEFAULT_JSONL = QAFD_RAG_HOME / "data" / "text2sql" / "spider2-lite.jsonl"
-DEFAULT_SUMMARY_DIR = QAFD_RAG_HOME / "data" / "text2sql"
+DEFAULT_JSONL = QAFD_RAG_HOME / "data" / "text2sql" / "spider2-lite" / "spider2-lite.jsonl"
+DEFAULT_TEXT2SQL_DIR = QAFD_RAG_HOME / "data" / "text2sql"
 DEFAULT_KG_DIR = QAFD_RAG_HOME / "kg" / "text2sql"
+
+# Search paths for databases (benchmark/backend/db_name)
+_DB_SEARCH_PATHS = [
+    ("spider2-lite", "sqlite"),
+    ("spider2-lite", "bigquery"),
+    ("spider2-lite", "snowflake"),
+    ("bird", "databases"),
+]
 
 
 # ---------------------------------------------------------------------------
@@ -74,19 +81,47 @@ def load_instance(instance_id: str, jsonl_path: Path = DEFAULT_JSONL) -> Optiona
 # Path helpers
 # ---------------------------------------------------------------------------
 
-def get_sqlite_path(db_name: str, summary_dir: Path = DEFAULT_SUMMARY_DIR) -> Optional[Path]:
+def get_db_dir(db_name: str, base: Path = DEFAULT_TEXT2SQL_DIR) -> Optional[Path]:
+    """
+    Find the database directory for db_name.
+
+    Searches across spider2-lite (sqlite/bigquery/snowflake) and bird/databases.
+    Returns the first match, or None.
+    """
+    for benchmark, backend in _DB_SEARCH_PATHS:
+        candidate = base / benchmark / backend / db_name
+        if candidate.is_dir():
+            return candidate
+    return None
+
+
+def get_sqlite_path(db_name: str, base: Path = DEFAULT_TEXT2SQL_DIR) -> Optional[Path]:
     """Get path to SQLite database file. Returns None if not found."""
-    path = summary_dir / f"{db_name}.sqlite"
-    return path if path.exists() else None
+    db_dir = get_db_dir(db_name, base)
+    if db_dir:
+        path = db_dir / f"{db_name}.sqlite"
+        if path.exists():
+            return path
+    return None
 
 
-def get_schema_path(db_name: str, summary_dir: Path = DEFAULT_SUMMARY_DIR) -> Optional[Path]:
-    """Get path to DB summary JSON. Returns None if not found."""
-    path = summary_dir / f"{db_name}_db_summary.json"
-    return path if path.exists() else None
+def get_schema_path(db_name: str, base: Path = DEFAULT_TEXT2SQL_DIR) -> Optional[Path]:
+    """Get path to DB summary JSON. Returns None if not found.
+
+    Searches for common naming conventions:
+      - {db_name}_db_summary.json
+      - {db_name}_bigquery_summary.json
+    """
+    db_dir = get_db_dir(db_name, base)
+    if db_dir:
+        for pattern in (f"{db_name}_db_summary.json", f"{db_name}_bigquery_summary.json"):
+            path = db_dir / pattern
+            if path.exists():
+                return path
+    return None
 
 
-def ensure_db_summary(db_name: str, summary_dir: Path = DEFAULT_SUMMARY_DIR) -> Optional[Path]:
+def ensure_db_summary(db_name: str, base: Path = DEFAULT_TEXT2SQL_DIR) -> Optional[Path]:
     """
     Ensure DB summary JSON exists for db_name.
     If the summary is missing but a .sqlite file is present, auto-generates it.
@@ -94,14 +129,15 @@ def ensure_db_summary(db_name: str, summary_dir: Path = DEFAULT_SUMMARY_DIR) -> 
     Returns:
         Path to the summary JSON, or None if it cannot be produced.
     """
-    summary_path = summary_dir / f"{db_name}_db_summary.json"
-    if summary_path.exists():
-        return summary_path
+    schema_path = get_schema_path(db_name, base)
+    if schema_path:
+        return schema_path
 
-    sqlite_path = get_sqlite_path(db_name, summary_dir)
+    sqlite_path = get_sqlite_path(db_name, base)
     if not sqlite_path:
         return None
 
+    summary_path = sqlite_path.parent / f"{db_name}_db_summary.json"
     print(f"DB summary not found. Generating from {sqlite_path}...")
     try:
         from src.indexing.extract_db_summary import extract_db_summary_for_schema, save_db_summary
@@ -145,7 +181,8 @@ async def ensure_kg(
         Path to the KG working directory
     """
     from src import QAFD_RAG
-    from src.llm import gpt_4o_mini_complete, gpt_4o_complete, gpt_oss_120b_complete
+    from src.llm import (gpt_4o_mini_complete, gpt_4o_complete, gpt_oss_120b_complete,
+                          gpt_5_complete, gpt_5_mini_complete, gpt_5_nano_complete)
 
     working_dir = get_kg_dir(db_name)
 
@@ -156,7 +193,10 @@ async def ensure_kg(
     print(f"Building KG for {db_name} from {schema_path}...")
     working_dir.mkdir(parents=True, exist_ok=True)
 
-    llm_funcs = {"gpt-4o-mini": gpt_4o_mini_complete, "gpt-4o": gpt_4o_complete, "gpt-oss-120b": gpt_oss_120b_complete}
+    llm_funcs = {
+        "gpt-4o-mini": gpt_4o_mini_complete, "gpt-4o": gpt_4o_complete, "gpt-oss-120b": gpt_oss_120b_complete,
+        "gpt-5": gpt_5_complete, "gpt-5-mini": gpt_5_mini_complete, "gpt-5-nano": gpt_5_nano_complete,
+    }
     llm_func = llm_funcs.get(llm_model, gpt_4o_mini_complete)
 
     rag = QAFD_RAG(
@@ -206,9 +246,13 @@ async def query_kg(
         Raw cluster data (list) or formatted context string
     """
     from src import QAFD_RAG, QueryParam
-    from src.llm import gpt_4o_mini_complete, gpt_4o_complete, gpt_oss_120b_complete
+    from src.llm import (gpt_4o_mini_complete, gpt_4o_complete, gpt_oss_120b_complete,
+                          gpt_5_complete, gpt_5_mini_complete, gpt_5_nano_complete)
 
-    llm_funcs = {"gpt-4o-mini": gpt_4o_mini_complete, "gpt-4o": gpt_4o_complete, "gpt-oss-120b": gpt_oss_120b_complete}
+    llm_funcs = {
+        "gpt-4o-mini": gpt_4o_mini_complete, "gpt-4o": gpt_4o_complete, "gpt-oss-120b": gpt_oss_120b_complete,
+        "gpt-5": gpt_5_complete, "gpt-5-mini": gpt_5_mini_complete, "gpt-5-nano": gpt_5_nano_complete,
+    }
     llm_func = llm_funcs.get(llm_model, gpt_4o_mini_complete)
 
     rag = QAFD_RAG(
@@ -278,7 +322,7 @@ async def run_instance(
     schema_path = ensure_db_summary(db_name) or get_schema_path(db_name)
     if not schema_path and not kg_exists(db_name):
         print(f"ERROR: No DB summary found for '{db_name}'.")
-        print(f"  Place data/text2sql/{db_name}.sqlite or {db_name}_db_summary.json and retry.")
+        print(f"  Place data/text2sql/databases/sqlite/{db_name}/{db_name}.sqlite and retry.")
         return None
 
     # 3. Ensure KG exists
@@ -351,7 +395,7 @@ def main():
     )
     parser.add_argument(
         "--llm", default="gpt-4o-mini",
-        choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b"],
+        choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b", "gpt-5", "gpt-5-mini", "gpt-5-nano"],
         help="LLM model (default: gpt-4o-mini)"
     )
     parser.add_argument(

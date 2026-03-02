@@ -1,0 +1,39 @@
+{
+  "tables": {
+    "bigquery-public-data.austin_311.311_service_requests": {
+      "name": "bigquery-public-data.austin_311.311_service_requests",
+      "columns": [
+        {"name": "unique_key", "type": "STRING", "is_primary_key": true, "pk_origin": "heuristic", "is_foreign_key": false, "description": "The service request tracking number."},
+        {"name": "complaint_description", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Service request type"},
+        {"name": "source", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Contact method Service request was received from."},
+        {"name": "status", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Service request status."},
+        {"name": "status_change_date", "type": "TIMESTAMP", "is_primary_key": false, "is_foreign_key": false, "description": "Date of last Service request status change."},
+        {"name": "created_date", "type": "TIMESTAMP", "is_primary_key": false, "is_foreign_key": false, "description": "Date Service request was created."},
+        {"name": "last_update_date", "type": "TIMESTAMP", "is_primary_key": false, "is_foreign_key": false, "description": "Date Service request was updated."},
+        {"name": "close_date", "type": "TIMESTAMP", "is_primary_key": false, "is_foreign_key": false, "description": "Date Service request was closed."},
+        {"name": "incident_address", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Service location of Service request."},
+        {"name": "street_number", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Parsed location information. Street number."},
+        {"name": "street_name", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Parsed location information. Street name."},
+        {"name": "city", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Parsed location information. City."},
+        {"name": "incident_zip", "type": "INT64", "is_primary_key": false, "is_foreign_key": false, "description": "Parsed location information. Zip code."},
+        {"name": "county", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Parsed location information. County."},
+        {"name": "state_plane_x_coordinate", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "State plane X coordinate."},
+        {"name": "state_plane_y_coordinate", "type": "FLOAT64", "is_primary_key": false, "is_foreign_key": false, "description": "State plane Y coordinate."},
+        {"name": "latitude", "type": "FLOAT64", "is_primary_key": false, "is_foreign_key": false, "description": "Service request location latitude coordinate."},
+        {"name": "longitude", "type": "FLOAT64", "is_primary_key": false, "is_foreign_key": false, "description": "Service request location longitude coordinate."},
+        {"name": "location", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Service request location latitude and longitude coordinates."},
+        {"name": "council_district_code", "type": "INT64", "is_primary_key": false, "is_foreign_key": false, "description": "Council district corresponding to Service request location."},
+        {"name": "map_page", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Service request location corresponding map page."},
+        {"name": "map_tile", "type": "STRING", "is_primary_key": false, "is_foreign_key": false, "description": "Service request location corresponding map tile."}
+      ],
+      "samples": {
+        "unique_key": ["18-00004837", "18-00004838"],
+        "complaint_description": ["Loose Dog", "Animal Control - Assistance Request"],
+        "status": ["Closed", "Closed"],
+        "city": ["Austin", "Austin"]
+      },
+      "foreign_keys": []
+    }
+  },
+  "relationships": []
+}

@@ -96,16 +96,22 @@ async def openai_complete_if_cache(
     logger.debug(f"System prompt: {system_prompt}")
     
     if "response_format" in kwargs:
-        kwargs.pop("response_format", None)
+        # Use JSON mode for OpenAI models, strip for local models
+        if any(prefix in model.lower() for prefix in ["gpt-4", "gpt-5"]):
+            kwargs["response_format"] = {"type": "json_object"}
+        else:
+            kwargs.pop("response_format", None)
 
     if "gpt-5" in model.lower():
+        # GPT-5 uses reasoning tokens that count against max_completion_tokens.
+        # Need ~2000+ total (reasoning + output) for reliable responses.
         if "max_tokens" in kwargs:
             max_tokens_value = kwargs.pop("max_tokens")
-            kwargs["max_completion_tokens"] = max(max_tokens_value, 500)
+            kwargs["max_completion_tokens"] = max(max_tokens_value, 2000)
             logger.debug(f"Converted max_tokens to max_completion_tokens for GPT-5")
         elif "max_completion_tokens" not in kwargs:
-            kwargs["max_completion_tokens"] = 1000
-            logger.debug(f"Set default max_completion_tokens=1000 for GPT-5")
+            kwargs["max_completion_tokens"] = 4000
+            logger.debug(f"Set default max_completion_tokens=4000 for GPT-5")
     
     response = await openai_async_client.chat.completions.create(
         model=model, messages=messages, **kwargs
@@ -136,7 +142,7 @@ class GPTKeywordExtractionFormat(BaseModel):
 async def gpt_4o_mini_complete(
     prompt, system_prompt=None, history_messages=[], keyword_extraction=False, **kwargs
 ) -> str:
-    keyword_extraction = kwargs.pop("keyword_extraction", None)
+    keyword_extraction = keyword_extraction or kwargs.pop("keyword_extraction", False)
     if keyword_extraction:
         kwargs["response_format"] = GPTKeywordExtractionFormat
     return await openai_complete_if_cache(
@@ -151,7 +157,7 @@ async def gpt_4o_mini_complete(
 async def gpt_4o_complete(
     prompt, system_prompt=None, history_messages=[], keyword_extraction=False, **kwargs
 ) -> str:
-    keyword_extraction = kwargs.pop("keyword_extraction", None)
+    keyword_extraction = keyword_extraction or kwargs.pop("keyword_extraction", False)
     if keyword_extraction:
         kwargs["response_format"] = GPTKeywordExtractionFormat
     return await openai_complete_if_cache(
@@ -166,7 +172,7 @@ async def gpt_4o_complete(
 async def gpt_5_complete(
     prompt, system_prompt=None, history_messages=[], keyword_extraction=False, **kwargs
 ) -> str:
-    keyword_extraction = kwargs.pop("keyword_extraction", None)
+    keyword_extraction = keyword_extraction or kwargs.pop("keyword_extraction", False)
     if keyword_extraction:
         kwargs["response_format"] = GPTKeywordExtractionFormat
     return await openai_complete_if_cache(
@@ -181,13 +187,13 @@ async def gpt_5_complete(
 async def gpt_5_mini_complete(
     prompt, system_prompt=None, history_messages=[], keyword_extraction=False, **kwargs
 ) -> str:
-    keyword_extraction = kwargs.pop("keyword_extraction", None)
+    keyword_extraction = keyword_extraction or kwargs.pop("keyword_extraction", False)
     if keyword_extraction:
         kwargs["response_format"] = GPTKeywordExtractionFormat
-    
+
     if "max_tokens" in kwargs:
         kwargs["max_completion_tokens"] = kwargs.pop("max_tokens")
-    
+
     return await openai_complete_if_cache(
         "gpt-5-mini",
         prompt,
@@ -201,10 +207,10 @@ async def gpt_5_nano_complete(
     prompt, system_prompt=None, history_messages=[], keyword_extraction=False, **kwargs
 ) -> str:
     """GPT-5 Nano - smallest, fastest, most affordable GPT-5 model"""
-    keyword_extraction = kwargs.pop("keyword_extraction", None)
+    keyword_extraction = keyword_extraction or kwargs.pop("keyword_extraction", False)
     if keyword_extraction:
         kwargs["response_format"] = GPTKeywordExtractionFormat
-    
+
     # GPT-5 models use max_completion_tokens instead of max_tokens
     if "max_tokens" in kwargs:
         kwargs["max_completion_tokens"] = kwargs.pop("max_tokens")
@@ -219,78 +225,47 @@ async def gpt_5_nano_complete(
 
 
 # ============================================================================
-# LOCAL MODEL FUNCTIONS - Qwen3 Coder
+# LOCAL / CUSTOM MODEL FUNCTIONS
 # ============================================================================
-
-async def qwen3_coder_80_complete(
-    prompt, 
-    system_prompt=None, 
-    history_messages=[], 
-    **kwargs
-) -> str:
-    """Complete using Qwen3-Coder-80 on local vLLM server at 105.144.47.81:8002"""
-    kwargs.pop("keyword_extraction", None)
-    kwargs.pop("response_format", None)
-    kwargs.pop("hashing_kv", None)
-    
-    return await openai_complete_if_cache(
-        model="llm_base_model",
-        prompt=prompt,
-        system_prompt=system_prompt,
-        history_messages=history_messages,
-        base_url="http://105.144.47.81:8002/v1",
-        api_key="dummy",
-        **kwargs,
-    )
+# Configure via environment variables:
+#   LOCAL_LLM_BASE_URL  - Base URL for your vLLM / OpenAI-compatible server
+#   LOCAL_LLM_API_KEY   - API key (use "dummy" for local servers)
+#   LOCAL_LLM_MODEL     - Model name served by the endpoint
 
 
-# ============================================================================
-# LOCAL MODEL FUNCTIONS - GPT-OSS
-# ============================================================================
-
-async def gpt_oss_120b_80_complete(
-    prompt, system_prompt=None, history_messages=[], **kwargs
-) -> str:
-    """Complete using GPT-OSS-120B (local node 105.144.47.80:8008)"""
-    kwargs.pop("keyword_extraction", None)
-    kwargs.pop("response_format", None)
-    kwargs.pop("hashing_kv", None)
-    
-    return await openai_complete_if_cache(
-        model="llm_base_model",
-        prompt=prompt,
-        system_prompt=system_prompt,
-        history_messages=history_messages,
-        base_url="http://105.144.47.80:8008/v1",
-        api_key="dummy",
-        **kwargs,
-    )
-
-
-async def gpt_oss_120b_81_complete(
-    prompt, system_prompt=None, history_messages=[], **kwargs
-) -> str:
-    """Complete using GPT-OSS-120B (local node 105.144.47.81:8004)"""
-    kwargs.pop("keyword_extraction", None)
-    kwargs.pop("response_format", None)
-    kwargs.pop("hashing_kv", None)
-    
-    return await openai_complete_if_cache(
-        model="llm_base_model",
-        prompt=prompt,
-        system_prompt=system_prompt,
-        history_messages=history_messages,
-        base_url="http://105.144.47.81:8004/v1",
-        api_key="dummy",
-        **kwargs,
-    )
+def _get_local_llm_config():
+    """Get local LLM configuration from environment variables."""
+    base_url = os.environ.get("LOCAL_LLM_BASE_URL")
+    if not base_url:
+        raise ValueError(
+            "LOCAL_LLM_BASE_URL not set. "
+            "Export it, e.g.: export LOCAL_LLM_BASE_URL='http://localhost:8000/v1'"
+        )
+    return {
+        "base_url": base_url,
+        "api_key": os.environ.get("LOCAL_LLM_API_KEY", "dummy"),
+        "model": os.environ.get("LOCAL_LLM_MODEL", "llm_base_model"),
+    }
 
 
 async def gpt_oss_120b_complete(
     prompt, system_prompt=None, history_messages=[], **kwargs
 ) -> str:
-    """Alias that routes to gpt_oss_120b_81_complete"""
-    return await gpt_oss_120b_81_complete(prompt, system_prompt, history_messages, **kwargs)
+    """Complete using a local OpenAI-compatible server (configured via env vars)."""
+    kwargs.pop("keyword_extraction", None)
+    kwargs.pop("response_format", None)
+    kwargs.pop("hashing_kv", None)
+
+    cfg = _get_local_llm_config()
+    return await openai_complete_if_cache(
+        model=cfg["model"],
+        prompt=prompt,
+        system_prompt=system_prompt,
+        history_messages=history_messages,
+        base_url=cfg["base_url"],
+        api_key=cfg["api_key"],
+        **kwargs,
+    )
 
 
 # ============================================================================

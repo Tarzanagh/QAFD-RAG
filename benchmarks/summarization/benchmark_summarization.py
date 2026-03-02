@@ -66,6 +66,9 @@ class BenchmarkResult:
     metrics: Dict[str, float] = None  # BLEU, ROUGE, METEOR
     quality_scores: Dict[str, List[float]] = None  # Comprehensiveness, Diversity, etc.
     error_message: str = ""
+    responses: List[str] = None  # Generated summaries
+    questions: List[str] = None  # Original questions
+    reference_answers: List[List[str]] = None  # Reference answers per question
 
 class SQuALITYBenchmark:
     def __init__(self, api_key: str, embedding_model: str = "openai-small", llm_model: str = "gpt-4o-mini"):
@@ -82,6 +85,9 @@ class SQuALITYBenchmark:
             "gpt-4o-mini": llm.gpt_4o_mini_complete,
             "gpt-4o": llm.gpt_4o_complete,
             "gpt-oss-120b": llm.gpt_oss_120b_complete,
+            "gpt-5": llm.gpt_5_complete,
+            "gpt-5-mini": llm.gpt_5_mini_complete,
+            "gpt-5-nano": llm.gpt_5_nano_complete,
         }
         return llm_funcs.get(self.llm_model, llm.gpt_4o_mini_complete)
 
@@ -182,6 +188,10 @@ class SQuALITYBenchmark:
             print(f"  Evaluating quality ({len(responses)} responses)...")
             quality_scores = await self._evaluate_quality(dataset, responses, evaluator)
             
+            # Collect questions and reference answers for output
+            questions_list = [dataset[i]["question"] for i in range(len(responses))]
+            references_list = [dataset[i].get("all_answers", [dataset[i]["answer"]]) for i in range(len(responses))]
+
             return BenchmarkResult(
                 model_name="QAFD_RAG",
                 dataset_name=dataset_name,
@@ -191,9 +201,12 @@ class SQuALITYBenchmark:
                 query_time=query_time,
                 num_questions=len(responses),
                 metrics=metrics,
-                quality_scores=quality_scores
+                quality_scores=quality_scores,
+                responses=responses,
+                questions=questions_list,
+                reference_answers=references_list,
             )
-            
+
         except Exception as e:
             print(f"  ERROR: {str(e)}")
             import traceback
@@ -524,12 +537,15 @@ JSON format:
         print()
     
     def save_results(self, result: BenchmarkResult, dataset_name: str = "squality"):
-        """Save results"""
+        """Save results as two separate files: eval metrics and generated responses"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         results_dir = os.path.join(QAFD_RAG_HOME, "results", "summarization", dataset_name)
         os.makedirs(results_dir, exist_ok=True)
-        filename = os.path.join(results_dir, f"{dataset_name}_{timestamp}.json")
-        
+
+        eval_file = os.path.join(results_dir, f"{dataset_name}_{timestamp}_eval.json")
+        output_file = os.path.join(results_dir, f"{dataset_name}_{timestamp}_responses.json")
+
+        # --- Eval file: metrics, quality scores, timing ---
         quality_averages = {}
         quality_stds = {}
         if result.quality_scores:
@@ -538,10 +554,12 @@ JSON format:
                 if scores:
                     quality_averages[criterion] = sum(scores) / len(scores)
                     quality_stds[criterion] = statistics.stdev(scores) if len(scores) > 1 else 0.0
-        
-        data = {
+
+        eval_data = {
             "timestamp": datetime.now().isoformat(),
             "model": result.model_name,
+            "llm": self.llm_model,
+            "embedding": self.embedding_model,
             "success": result.success,
             "performance": {
                 "num_questions": result.num_questions,
@@ -556,11 +574,36 @@ JSON format:
             "quality_raw": result.quality_scores,
             "error": result.error_message
         }
-        
-        with open(filename, 'w') as f:
-            json.dump(data, f, indent=2)
-        
-        print(f"\nResults saved: {filename}")
+
+        with open(eval_file, 'w') as f:
+            json.dump(eval_data, f, indent=2)
+
+        # --- Responses file: questions + generated summaries + references ---
+        output_entries = []
+        if result.responses:
+            for i, response in enumerate(result.responses):
+                entry = {
+                    "id": i + 1,
+                    "question": result.questions[i] if result.questions else "",
+                    "generated_summary": response,
+                    "reference_answers": result.reference_answers[i] if result.reference_answers else [],
+                }
+                output_entries.append(entry)
+
+        output_data = {
+            "timestamp": datetime.now().isoformat(),
+            "model": result.model_name,
+            "llm": self.llm_model,
+            "embedding": self.embedding_model,
+            "num_responses": len(output_entries),
+            "responses": output_entries,
+        }
+
+        with open(output_file, 'w') as f:
+            json.dump(output_data, f, indent=2, ensure_ascii=False)
+
+        print(f"\nEval saved:      {eval_file}")
+        print(f"Responses saved: {output_file}")
 
 async def main():
     """Main entry point"""
@@ -593,7 +636,7 @@ async def main():
                        choices=["openai-small", "openai-large", "jina-v3", "gritlm", "nvidia-nv-embed-v2"],
                        help="Embedding model (default: openai-small)")
     parser.add_argument("--llm", type=str, default="gpt-4o-mini",
-                       choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b"],
+                       choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b", "gpt-5", "gpt-5-mini", "gpt-5-nano"],
                        help="LLM model (default: gpt-4o-mini)")
     parser.add_argument("--dataset", type=str, default="squality",
                        help="Dataset name (default: squality)")

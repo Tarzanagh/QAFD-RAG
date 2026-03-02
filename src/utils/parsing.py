@@ -178,6 +178,185 @@ def pack_user_ass_to_openai_messages(*args: str) -> List[dict]:
     ]
 
 
+def extract_all_blocks(content: str, code_format: str = None) -> List[str]:
+    """
+    Extract code/text blocks from an LLM response.
+
+    Tries three strategies in order:
+      1. <Answer>...</Answer> XML tags
+      2. <sql>...</sql> XML tags
+      3. Markdown code fences (```sql ... ```)
+
+    Ported from CoFD-M/methods/CoFD/utils.py.
+    """
+    blocks = []
+
+    possible_patterns = [
+        ("<Answer>", "</Answer>"),
+        ("<Answer>", "<Answer>"),
+        ("<answer>", "</answer>"),
+    ]
+
+    if code_format == "json":
+        for start_tag, end_tag in possible_patterns:
+            if start_tag in content and end_tag in content:
+                extracted = content.split(start_tag)[1].split(end_tag)[0].strip()
+                blocks.append(extracted)
+        return blocks
+
+    if code_format == "text":
+        if "<Answer>" in content and "</Answer>" in content:
+            extracted = content.split("<Answer>")[1].split("</Answer>")[0].strip()
+            blocks.append(extracted)
+        return blocks
+
+    for start_tag, end_tag in possible_patterns:
+        if start_tag in content and end_tag in content:
+            try:
+                extracted = content.split(start_tag)[1].split(end_tag)[0].strip()
+                blocks.append(extracted)
+                return blocks
+            except Exception:
+                continue
+
+    if code_format == "sql" and not blocks:
+        xml_matches = re.findall(
+            r'<sql>\s*(.*?)\s*</sql>', content, re.DOTALL | re.IGNORECASE
+        )
+        if xml_matches:
+            blocks.extend([m.strip() for m in xml_matches if m.strip()])
+            if blocks:
+                return blocks
+
+    start = 0
+    while True:
+        search_pattern = f"```{code_format}" if code_format else "```"
+        block_start = content.find(search_pattern, start)
+        if block_start == -1:
+            break
+        block_end = content.find("```", block_start + len(search_pattern))
+        if block_end == -1:
+            break
+        block = content[block_start + len(search_pattern):block_end].strip()
+        blocks.append(block)
+        start = block_end + len("```")
+
+    return blocks
+
+
+def extract_schema_from_context(schema_context: str) -> dict:
+    """
+    Extract tables and columns from QAFD-RAG text2sql schema_context output.
+
+    Parses the CSV entity blocks to find entities with entity_type 'column'
+    or 'complete_table', deduplicates across local/global sections.
+
+    Returns:
+        dict with 'tables' (list of str) and 'columns' (list of 'table.column' str)
+    """
+    import csv
+    from io import StringIO
+
+    tables = set()
+    columns = set()
+
+    # Extract all CSV blocks from the context
+    csv_blocks = extract_all_blocks(schema_context, "csv")
+
+    for block in csv_blocks:
+        # Skip non-entity blocks (relationship summaries, sources, etc.)
+        if "entity_type" not in block:
+            continue
+
+        reader = csv.DictReader(StringIO(block))
+        for row in reader:
+            entity_type = row.get("entity_type", "").strip()
+            entity = row.get("entity", "").strip().strip('"')
+
+            if entity_type == "complete_table":
+                tables.add(entity)
+            elif entity_type == "column":
+                columns.add(entity)
+
+    return {
+        "tables": sorted(tables),
+        "columns": sorted(columns),
+    }
+
+
+def extract_schema_from_clusters(clusters: list) -> dict:
+    """
+    Extract tables and columns from raw QAFD-RAG cluster data.
+
+    Each cluster has an 'entities' (or 'nodes') list with entity_type and entity fields.
+
+    Returns:
+        dict with 'tables' (list of str) and 'columns' (list of 'table.column' str)
+    """
+    tables = set()
+    columns = set()
+
+    for cluster in clusters:
+        entities = cluster.get("entities", cluster.get("nodes", []))
+        for entity in entities:
+            entity_type = entity.get("entity_type", entity.get("type", "")).strip()
+            entity_name = entity.get("entity", "").strip().strip('"')
+
+            if entity_type == "complete_table":
+                tables.add(entity_name)
+            elif entity_type == "column" and "." in entity_name:
+                columns.add(entity_name)
+
+    return {
+        "tables": sorted(tables),
+        "columns": sorted(columns),
+    }
+
+
+def extract_schema_from_create_table(create_table_text: str) -> dict:
+    """
+    Extract tables and columns from CREATE TABLE statements.
+
+    Parses:
+        CREATE TABLE `table_name` (
+          `col1` TYPE ...,
+          `col2` TYPE ...
+        );
+
+    Returns:
+        dict with 'tables' (list of str) and 'columns' (list of 'table.column' str)
+    """
+    tables = set()
+    columns = set()
+
+    current_table = None
+    for line in create_table_text.splitlines():
+        stripped = line.strip()
+
+        # Match CREATE TABLE `name` or CREATE TABLE name
+        table_match = re.match(r'CREATE\s+TABLE\s+`?(\w+)`?\s*\(', stripped, re.IGNORECASE)
+        if table_match:
+            current_table = table_match.group(1)
+            tables.add(current_table)
+            continue
+
+        # Match column definition: `col_name` TYPE ...
+        if current_table and stripped.startswith('`'):
+            col_match = re.match(r'`(\w+)`\s+\w+', stripped)
+            if col_match:
+                col_name = col_match.group(1)
+                columns.add(f"{current_table}.{col_name}")
+
+        # End of CREATE TABLE
+        if stripped.startswith(');'):
+            current_table = None
+
+    return {
+        "tables": sorted(tables),
+        "columns": sorted(columns),
+    }
+
+
 __all__ = [
     "locate_json_string_body_from_string",
     "convert_response_to_json",
@@ -186,4 +365,8 @@ __all__ = [
     "is_float_regex",
     "safe_unicode_decode",
     "pack_user_ass_to_openai_messages",
+    "extract_all_blocks",
+    "extract_schema_from_context",
+    "extract_schema_from_clusters",
+    "extract_schema_from_create_table",
 ]

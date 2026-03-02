@@ -66,6 +66,7 @@ class BenchmarkResult:
     total_time: float = 0.0
     quality_scores: Dict[str, List[float]] = None
     responses: List[str] = None
+    questions: List[str] = None
     error_message: str = ""
 
 class RAGBenchmark:
@@ -105,6 +106,9 @@ class RAGBenchmark:
             "gpt-4o-mini": llm.gpt_4o_mini_complete,
             "gpt-4o": llm.gpt_4o_complete,
             "gpt-oss-120b": llm.gpt_oss_120b_complete,
+            "gpt-5": llm.gpt_5_complete,
+            "gpt-5-mini": llm.gpt_5_mini_complete,
+            "gpt-5-nano": llm.gpt_5_nano_complete,
         }
         return llm_funcs.get(self.llm_model, llm.gpt_4o_mini_complete)
 
@@ -147,11 +151,13 @@ class RAGBenchmark:
             print(f"\n  Running queries...")
             start_time = time.time()
             responses = []
+            questions_list = []
             total_questions = min(question_count, len(dataset))
             for i in range(total_questions):
                 print_progress(i + 1, total_questions, "Progress")
 
                 question = dataset[i]["input"]
+                questions_list.append(question)
                 query_param = QueryParam(
                     mode="hybrid",
                     max_source_nodes=40,
@@ -167,7 +173,8 @@ class RAGBenchmark:
                 dataset_name=dataset_name,
                 success=True,
                 total_time=insertion_time + query_time,
-                responses=responses
+                responses=responses,
+                questions=questions_list,
             )
 
         except Exception as e:
@@ -424,28 +431,72 @@ Provide scores in JSON format:
                     print(f"\n  {'Overall Average':<25} {overall_avg:.2f}")
             print()
 
-    def save_results(self, all_results: Dict[str, List[BenchmarkResult]], filename: str = None):
-        """Save results to JSON file"""
-        if filename is None:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            results_dir = os.path.join(QAFD_RAG_HOME, "results", "ultradomain")
-            os.makedirs(results_dir, exist_ok=True)
-            filename = os.path.join(results_dir, f"qafd_ultradomain_benchmark_{timestamp}.json")
+    def save_results(self, all_results: Dict[str, List[BenchmarkResult]]):
+        """Save results as two separate files: eval metrics and generated responses"""
+        import statistics
 
-        data = {
-            "timestamp": datetime.now().isoformat(),
-            "benchmark_type": "UltraDomain",
-            "datasets": DATASETS,
-            "results": {
-                dataset_name: [asdict(result) for result in results]
-                for dataset_name, results in all_results.items()
-            }
-        }
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        results_dir = os.path.join(QAFD_RAG_HOME, "results", "ultradomain")
+        os.makedirs(results_dir, exist_ok=True)
 
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        for dataset_name, results in all_results.items():
+            eval_file = os.path.join(results_dir, f"{dataset_name}_{timestamp}_eval.json")
+            output_file = os.path.join(results_dir, f"{dataset_name}_{timestamp}_responses.json")
 
-        print(f"\nResults saved to: {filename}")
+            for result in results:
+                # --- Eval file: metrics and timing ---
+                quality_summary = {}
+                if result.quality_scores:
+                    for criterion, scores in result.quality_scores.items():
+                        if scores:
+                            avg = sum(scores) / len(scores)
+                            std = statistics.stdev(scores) if len(scores) > 1 else 0.0
+                            quality_summary[criterion] = {"mean": avg, "std": std}
+
+                eval_data = {
+                    "timestamp": datetime.now().isoformat(),
+                    "model": result.model_name,
+                    "llm": self.llm_model,
+                    "embedding": self.embedding_model,
+                    "dataset": dataset_name,
+                    "success": result.success,
+                    "performance": {
+                        "total_time": result.total_time,
+                    },
+                    "quality_scores": quality_summary,
+                    "quality_raw": result.quality_scores,
+                    "error": result.error_message,
+                }
+
+                with open(eval_file, 'w', encoding='utf-8') as f:
+                    json.dump(eval_data, f, indent=2, ensure_ascii=False)
+
+                # --- Responses file: questions + generated answers ---
+                output_entries = []
+                if result.responses:
+                    for i, response in enumerate(result.responses):
+                        entry = {
+                            "id": i + 1,
+                            "question": result.questions[i] if result.questions else "",
+                            "generated_answer": response,
+                        }
+                        output_entries.append(entry)
+
+                output_data = {
+                    "timestamp": datetime.now().isoformat(),
+                    "model": result.model_name,
+                    "llm": self.llm_model,
+                    "embedding": self.embedding_model,
+                    "dataset": dataset_name,
+                    "num_responses": len(output_entries),
+                    "responses": output_entries,
+                }
+
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    json.dump(output_data, f, indent=2, ensure_ascii=False)
+
+            print(f"  Eval saved:      {eval_file}")
+            print(f"  Responses saved: {output_file}\n")
 
 async def main():
     """Main entry point"""
@@ -459,7 +510,7 @@ async def main():
                         choices=["openai-small", "openai-large", "jina-v3", "gritlm", "nvidia-nv-embed-v2"],
                         help="Embedding model (default: openai-small)")
     parser.add_argument("--llm", type=str, default="gpt-4o-mini",
-                        choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b"],
+                        choices=["gpt-4o-mini", "gpt-4o", "gpt-oss-120b", "gpt-5", "gpt-5-mini", "gpt-5-nano"],
                         help="LLM model for response generation (default: gpt-4o-mini)")
     parser.add_argument("--build", action="store_true",
                         help="Build KG only (no benchmark)")

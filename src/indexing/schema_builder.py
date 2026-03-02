@@ -1,6 +1,7 @@
 import json
 import asyncio
 import re
+import time as _time
 from typing import Dict, List, Any, Optional
 from ..base import BaseGraphStorage, BaseVectorStorage
 from ..utils import logger, compute_mdhash_id
@@ -111,32 +112,45 @@ class DatabaseSchemaBuilder:
         self._tables_info_cache = tables_info  # Cache for weight enhancement
         
         # Step 2: Insert tables and columns as entities WITH MINIMAL DESCRIPTIONS
+        _t0 = _time.time()
+        _build_start = _t0
+        print(f"  [1/4] Inserting entities for {len(tables_info)} tables...", flush=True)
         entities_added = await self._insert_schema_entities_minimal(tables_info)
-        
+        print(f"  [1/4] Done ({entities_added} entities, {_time.time()-_t0:.1f}s)", flush=True)
+
         # Step 3: Create relationships between tables and columns
+        _t0 = _time.time()
+        print(f"  [2/4] Creating relationships...", flush=True)
         if schema_type == "db_summary":
             relationships_added = await self._create_schema_relationships(tables_info)
         else:
             relationships_added = await self._create_inferred_relationships(tables_info, schema_data)
-        
+        print(f"  [2/4] Done ({relationships_added} relationships, {_time.time()-_t0:.1f}s)", flush=True)
+
         # Step 3.5: Clean up any duplicate nodes that might have been created
         duplicates_removed = await self.graph_storage.remove_duplicate_nodes()
         if duplicates_removed > 0:
             logger.info(f"Cleaned up {duplicates_removed} duplicate nodes")
-        
+
         # Step 3.6: Log graph statistics
         graph_stats = await self.graph_storage.get_graph_stats()
         logger.info(f"Graph statistics: {graph_stats['total_nodes']} nodes, {graph_stats['total_edges']} edges")
         logger.info(f"Node types: {graph_stats['node_types']}")
-        
+
         # Step 4: LLM ENHANCEMENT (MOVED EARLIER AND IMPROVED)
         if self.llm_model_func:
             logger.info("Starting LLM enhancement phase...")
-            
+
             # by Wenjun
             self.edge_descriptions = {}
+            _t0 = _time.time()
+            print(f"  [3/4] Enhancing descriptions with LLM...", flush=True)
             await self._enhance_descriptions_with_llm_chunked(tables_info, metadata_content, language)
+            print(f"  [3/4] Done ({_time.time()-_t0:.1f}s)", flush=True)
+            _t0 = _time.time()
+            print(f"  [4/4] Enhancing relationship weights with LLM...", flush=True)
             await self._enhance_relationship_weights_with_llm_chunked(metadata_content, language)
+            print(f"  [4/4] Done ({_time.time()-_t0:.1f}s, total: {_time.time()-_build_start:.1f}s)", flush=True)
         else:
             logger.warning("No LLM function provided - skipping description enhancement")
         return {
@@ -544,11 +558,18 @@ class DatabaseSchemaBuilder:
         table_chunks = self._chunk_tables_by_tokens(tables_info, available_tokens)
         
         logger.info(f"Processing {len(tables_info)} tables in {len(table_chunks)} chunks")
-        
+        _chunk_start = _time.time()
+
         # Process each chunk
         for i, chunk_tables in enumerate(table_chunks, 1):
             logger.info(f"Processing chunk {i}/{len(table_chunks)} with {len(chunk_tables)} tables")
-            
+            elapsed = _time.time() - _chunk_start
+            if i > 1:
+                eta = elapsed / (i - 1) * (len(table_chunks) - i + 1)
+                print(f"\r  [3/4] Enhancing descriptions: chunk {i}/{len(table_chunks)} (ETA: {eta:.0f}s)", end='', flush=True)
+            else:
+                print(f"\r  [3/4] Enhancing descriptions: chunk {i}/{len(table_chunks)}", end='', flush=True)
+
             try:
                 # Create prompt for this chunk
                 chunk_schema_text = self._format_schema_for_llm({"tables": chunk_tables})
@@ -574,7 +595,8 @@ class DatabaseSchemaBuilder:
             except Exception as e:
                 logger.error(f"Error enhancing descriptions for chunk {i}: {e}")
                 continue
-    
+        print(flush=True)
+
     async def _enhance_relationship_weights_with_llm_chunked(self, 
                                                 metadata_content: Optional[str],
                                                 language: str = "English") -> None:
@@ -601,10 +623,17 @@ class DatabaseSchemaBuilder:
         relationship_chunks = self._chunk_relationships_by_tokens(relationships_list, available_tokens)
         
         logger.info(f"Processing relationships in {len(relationship_chunks)} chunks")
-        
+        _chunk_start = _time.time()
+
         # Process each chunk
         for i, chunk_relationships in enumerate(relationship_chunks, 1):
             logger.info(f"Processing relationship chunk {i}/{len(relationship_chunks)}")
+            elapsed = _time.time() - _chunk_start
+            if i > 1:
+                eta = elapsed / (i - 1) * (len(relationship_chunks) - i + 1)
+                print(f"\r  [4/4] Enhancing weights: chunk {i}/{len(relationship_chunks)} (ETA: {eta:.0f}s)", end='', flush=True)
+            else:
+                print(f"\r  [4/4] Enhancing weights: chunk {i}/{len(relationship_chunks)}", end='', flush=True)
             
             try:
                 # Create minimal schema for this chunk

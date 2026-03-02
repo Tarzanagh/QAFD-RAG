@@ -1,0 +1,1668 @@
+{
+  "local003": {
+    "instance_id": "local003",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local003/local003/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "customers",
+        "order_items",
+        "orders"
+      ],
+      "columns": [
+        "customers.customer_unique_id",
+        "customers.customer_id",
+        "order_items.price",
+        "order_items.order_id",
+        "orders.order_purchase_timestamp",
+        "orders.customer_id",
+        "orders.order_status",
+        "orders.order_id"
+      ]
+    }
+  },
+  "local004": {
+    "instance_id": "local004",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local004/local004/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "customers",
+        "order_payments",
+        "orders"
+      ],
+      "columns": [
+        "customers.customer_unique_id",
+        "customers.customer_id",
+        "order_payments.payment_value",
+        "order_payments.order_id",
+        "orders.customer_id",
+        "orders.order_id",
+        "orders.order_purchase_timestamp"
+      ]
+    }
+  },
+  "local008": {
+    "instance_id": "local008",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local008/local008/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "batting",
+        "player"
+      ],
+      "columns": [
+        "batting.player_id",
+        "batting.g",
+        "batting.r",
+        "batting.h",
+        "batting.hr",
+        "player.name_given",
+        "player.player_id"
+      ]
+    }
+  },
+  "local009": {
+    "instance_id": "local009",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local009/local009/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "airports_data",
+        "flights"
+      ],
+      "columns": [
+        "airports_data.city",
+        "airports_data.airport_code",
+        "airports_data.coordinates",
+        "flights.flight_id",
+        "flights.departure_airport",
+        "flights.arrival_airport"
+      ]
+    }
+  },
+  "local010": {
+    "instance_id": "local010",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local010/local010/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "airports_data",
+        "flights"
+      ],
+      "columns": [
+        "airports_data.city",
+        "airports_data.airport_code",
+        "airports_data.coordinates",
+        "flights.flight_id",
+        "flights.departure_airport",
+        "flights.arrival_airport"
+      ]
+    }
+  },
+  "local015": {
+    "instance_id": "local015",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local015/local015/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "collisions",
+        "parties"
+      ],
+      "columns": [
+        "collisions.case_id",
+        "collisions.motorcyclist_killed_count",
+        "collisions.motorcycle_collision",
+        "parties.party_safety_equipment_1",
+        "parties.party_safety_equipment_2",
+        "parties.case_id",
+        "parties.party_age"
+      ]
+    }
+  },
+  "local017": {
+    "instance_id": "local017",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local017/local017/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "collisions"
+      ],
+      "columns": [
+        "collisions.pcf_violation_category",
+        "collisions.case_id",
+        "collisions.collision_date"
+      ]
+    }
+  },
+  "local019": {
+    "instance_id": "local019",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local019/local019/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "Promotions",
+        "Cards",
+        "Locations",
+        "Events",
+        "Matches",
+        "Belts",
+        "Wrestlers"
+      ],
+      "columns": [
+        "Promotions.id",
+        "Promotions.name",
+        "Cards.id",
+        "Cards.location_id",
+        "Cards.event_id",
+        "Cards.promotion_id",
+        "Locations.name",
+        "Locations.id",
+        "Events.name",
+        "Events.id",
+        "Matches.duration",
+        "Matches.win_type",
+        "Matches.title_id",
+        "Matches.winner_id",
+        "Matches.loser_id",
+        "Matches.card_id",
+        "Belts.name",
+        "Belts.id",
+        "Wrestlers.name",
+        "Wrestlers.id"
+      ]
+    }
+  },
+  "local026": {
+    "instance_id": "local026",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local026/local026/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "player",
+        "ball_by_ball",
+        "batsman_scored",
+        "extra_runs"
+      ],
+      "columns": [
+        "player.player_name",
+        "player.player_id",
+        "ball_by_ball.match_id",
+        "ball_by_ball.bowler",
+        "ball_by_ball.over_id",
+        "ball_by_ball.innings_no",
+        "batsman_scored.match_id",
+        "batsman_scored.over_id",
+        "batsman_scored.ball_id",
+        "batsman_scored.innings_no",
+        "batsman_scored.runs_scored",
+        "extra_runs.match_id",
+        "extra_runs.over_id",
+        "extra_runs.ball_id",
+        "extra_runs.innings_no",
+        "extra_runs.extra_runs"
+      ]
+    }
+  },
+  "local021": {
+    "instance_id": "local021",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local021/local021/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "ball_by_ball",
+        "batsman_scored"
+      ],
+      "columns": [
+        "ball_by_ball.match_id",
+        "ball_by_ball.striker",
+        "ball_by_ball.innings_no",
+        "ball_by_ball.ball_id",
+        "ball_by_ball.over_id",
+        "batsman_scored.runs_scored",
+        "batsman_scored.innings_no",
+        "batsman_scored.ball_id",
+        "batsman_scored.match_id",
+        "batsman_scored.over_id"
+      ]
+    }
+  },
+  "local022": {
+    "instance_id": "local022",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local022/local022/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "player",
+        "match",
+        "player_match",
+        "ball_by_ball",
+        "batsman_scored"
+      ],
+      "columns": [
+        "player.player_name",
+        "player.player_id",
+        "match.match_id",
+        "match.team_1",
+        "match.team_2",
+        "match.match_winner",
+        "player_match.team_id",
+        "player_match.player_id",
+        "player_match.match_id",
+        "ball_by_ball.striker",
+        "ball_by_ball.match_id",
+        "ball_by_ball.innings_no",
+        "ball_by_ball.ball_id",
+        "ball_by_ball.over_id",
+        "batsman_scored.runs_scored",
+        "batsman_scored.innings_no",
+        "batsman_scored.ball_id",
+        "batsman_scored.match_id",
+        "batsman_scored.over_id"
+      ]
+    }
+  },
+  "local023": {
+    "instance_id": "local023",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local023/local023/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "player",
+        "match",
+        "ball_by_ball",
+        "batsman_scored"
+      ],
+      "columns": [
+        "player.player_name",
+        "player.player_id",
+        "match.match_id",
+        "match.season_id",
+        "ball_by_ball.striker",
+        "ball_by_ball.match_id",
+        "ball_by_ball.innings_no",
+        "ball_by_ball.ball_id",
+        "ball_by_ball.over_id",
+        "batsman_scored.runs_scored",
+        "batsman_scored.innings_no",
+        "batsman_scored.ball_id",
+        "batsman_scored.match_id",
+        "batsman_scored.over_id"
+      ]
+    }
+  },
+  "local024": {
+    "instance_id": "local024",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local024/local024/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "player",
+        "ball_by_ball",
+        "batsman_scored"
+      ],
+      "columns": [
+        "player.country_name",
+        "player.player_id",
+        "ball_by_ball.striker",
+        "ball_by_ball.match_id",
+        "ball_by_ball.innings_no",
+        "ball_by_ball.ball_id",
+        "ball_by_ball.over_id",
+        "batsman_scored.runs_scored",
+        "batsman_scored.innings_no",
+        "batsman_scored.ball_id",
+        "batsman_scored.match_id",
+        "batsman_scored.over_id"
+      ]
+    }
+  },
+  "local028": {
+    "instance_id": "local028",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local028/local028/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "olist_orders"
+      ],
+      "columns": [
+        "olist_orders.order_delivered_customer_date",
+        "olist_orders.order_status"
+      ]
+    }
+  },
+  "local031": {
+    "instance_id": "local031",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local031/local031/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "olist_orders"
+      ],
+      "columns": [
+        "olist_orders.order_status",
+        "olist_orders.order_delivered_customer_date"
+      ]
+    }
+  },
+  "local029": {
+    "instance_id": "local029",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local029/local029/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "olist_customers",
+        "olist_orders",
+        "olist_order_payments"
+      ],
+      "columns": [
+        "olist_customers.customer_unique_id",
+        "olist_customers.customer_city",
+        "olist_customers.customer_state",
+        "olist_customers.customer_id",
+        "olist_orders.order_id",
+        "olist_orders.customer_id",
+        "olist_orders.order_status",
+        "olist_order_payments.payment_value",
+        "olist_order_payments.order_id"
+      ]
+    }
+  },
+  "local030": {
+    "instance_id": "local030",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local030/local030/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "olist_customers",
+        "olist_orders",
+        "olist_order_payments"
+      ],
+      "columns": [
+        "olist_customers.customer_city",
+        "olist_customers.customer_id",
+        "olist_orders.customer_id",
+        "olist_orders.order_id",
+        "olist_orders.order_status",
+        "olist_order_payments.payment_value",
+        "olist_order_payments.order_id"
+      ]
+    }
+  },
+  "local034": {
+    "instance_id": "local034",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local034/local034/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "olist_order_items",
+        "olist_products",
+        "olist_order_payments"
+      ],
+      "columns": [
+        "olist_order_items.product_id",
+        "olist_order_items.order_id",
+        "olist_products.product_category_name",
+        "olist_products.product_id",
+        "olist_order_payments.payment_type",
+        "olist_order_payments.order_id"
+      ]
+    }
+  },
+  "local038": {
+    "instance_id": "local038",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local038/local038/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "actor",
+        "language",
+        "category",
+        "film",
+        "film_actor",
+        "film_category"
+      ],
+      "columns": [
+        "actor.actor_id",
+        "actor.first_name",
+        "actor.last_name",
+        "language.language_id",
+        "language.name",
+        "category.category_id",
+        "category.name",
+        "film.film_id",
+        "film.language_id",
+        "film.length",
+        "film.rating",
+        "film.release_year",
+        "film_actor.actor_id",
+        "film_actor.film_id",
+        "film_category.film_id",
+        "film_category.category_id"
+      ]
+    }
+  },
+  "local039": {
+    "instance_id": "local039",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local039/local039/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "city",
+        "address",
+        "category",
+        "customer",
+        "film_category",
+        "inventory",
+        "rental"
+      ],
+      "columns": [
+        "city.city_id",
+        "city.city",
+        "address.address_id",
+        "address.city_id",
+        "category.name",
+        "category.category_id",
+        "customer.customer_id",
+        "customer.address_id",
+        "film_category.film_id",
+        "film_category.category_id",
+        "inventory.inventory_id",
+        "inventory.film_id",
+        "rental.customer_id",
+        "rental.inventory_id",
+        "rental.return_date",
+        "rental.rental_date"
+      ]
+    }
+  },
+  "local041": {
+    "instance_id": "local041",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local041/local041/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "trees"
+      ],
+      "columns": [
+        "trees.boroname",
+        "trees.health"
+      ]
+    }
+  },
+  "local049": {
+    "instance_id": "local049",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local049/local049/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "companies_dates",
+        "companies_industries"
+      ],
+      "columns": [
+        "companies_dates.company_id",
+        "companies_dates.date_joined",
+        "companies_industries.industry",
+        "companies_industries.company_id"
+      ]
+    }
+  },
+  "local054": {
+    "instance_id": "local054",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local054/local054/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "albums",
+        "artists",
+        "customers",
+        "invoices",
+        "invoice_items",
+        "tracks"
+      ],
+      "columns": [
+        "albums.ArtistId",
+        "albums.AlbumId",
+        "artists.Name",
+        "artists.ArtistId",
+        "customers.CustomerId",
+        "customers.FirstName",
+        "invoices.InvoiceId",
+        "invoices.CustomerId",
+        "invoice_items.TrackId",
+        "invoice_items.InvoiceId",
+        "invoice_items.UnitPrice",
+        "invoice_items.Quantity",
+        "tracks.AlbumId",
+        "tracks.TrackId"
+      ]
+    }
+  },
+  "local055": {
+    "instance_id": "local055",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local055/local055/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "albums",
+        "artists",
+        "customers",
+        "invoices",
+        "invoice_items",
+        "tracks"
+      ],
+      "columns": [
+        "albums.AlbumId",
+        "albums.ArtistId",
+        "artists.ArtistId",
+        "artists.Name",
+        "customers.CustomerId",
+        "invoices.InvoiceId",
+        "invoices.CustomerId",
+        "invoice_items.TrackId",
+        "invoice_items.InvoiceId",
+        "invoice_items.Quantity",
+        "invoice_items.UnitPrice",
+        "tracks.TrackId",
+        "tracks.AlbumId"
+      ]
+    }
+  },
+  "local198": {
+    "instance_id": "local198",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local198/local198/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "customers",
+        "invoices"
+      ],
+      "columns": [
+        "customers.Country",
+        "invoices.BillingCountry",
+        "invoices.Total"
+      ]
+    }
+  },
+  "local056": {
+    "instance_id": "local056",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local056/local056/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "customer",
+        "payment"
+      ],
+      "columns": [
+        "customer.last_name",
+        "customer.customer_id",
+        "customer.first_name",
+        "payment.amount",
+        "payment.customer_id",
+        "payment.payment_date"
+      ]
+    }
+  },
+  "local058": {
+    "instance_id": "local058",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local058/local058/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "hardware_dim_product",
+        "hardware_fact_sales_monthly"
+      ],
+      "columns": [
+        "hardware_dim_product.segment",
+        "hardware_dim_product.product_code",
+        "hardware_fact_sales_monthly.fiscal_year",
+        "hardware_fact_sales_monthly.product_code"
+      ]
+    }
+  },
+  "local059": {
+    "instance_id": "local059",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local059/local059/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "hardware_dim_product",
+        "hardware_fact_sales_monthly"
+      ],
+      "columns": [
+        "hardware_dim_product.product_code",
+        "hardware_dim_product.division",
+        "hardware_fact_sales_monthly.sold_quantity",
+        "hardware_fact_sales_monthly.product_code",
+        "hardware_fact_sales_monthly.date"
+      ]
+    }
+  },
+  "local071": {
+    "instance_id": "local071",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local071/local071/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "cities"
+      ],
+      "columns": [
+        "cities.country_code_2",
+        "cities.insert_date"
+      ]
+    }
+  },
+  "local066": {
+    "instance_id": "local066",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local066/local066/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "pizza_toppings",
+        "pizza_recipes"
+      ],
+      "columns": [
+        "pizza_toppings.topping_name",
+        "pizza_toppings.topping_id",
+        "pizza_recipes.pizza_id",
+        "pizza_recipes.toppings"
+      ]
+    }
+  },
+  "local065": {
+    "instance_id": "local065",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local065/local065/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "pizza_clean_runner_orders",
+        "pizza_clean_customer_orders"
+      ],
+      "columns": [
+        "pizza_clean_runner_orders.order_id",
+        "pizza_clean_runner_orders.cancellation",
+        "pizza_clean_customer_orders.order_id",
+        "pizza_clean_customer_orders.pizza_id",
+        "pizza_clean_customer_orders.extras"
+      ]
+    }
+  },
+  "local064": {
+    "instance_id": "local064",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local064/local064/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "customer_transactions"
+      ],
+      "columns": [
+        "customer_transactions.customer_id",
+        "customer_transactions.txn_date",
+        "customer_transactions.txn_amount",
+        "customer_transactions.txn_type"
+      ]
+    }
+  },
+  "local299": {
+    "instance_id": "local299",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local299/local299/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "customer_transactions"
+      ],
+      "columns": [
+        "customer_transactions.customer_id",
+        "customer_transactions.txn_date",
+        "customer_transactions.txn_amount",
+        "customer_transactions.txn_type"
+      ]
+    }
+  },
+  "local300": {
+    "instance_id": "local300",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local300/local300/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "customer_transactions"
+      ],
+      "columns": [
+        "customer_transactions.customer_id",
+        "customer_transactions.txn_date",
+        "customer_transactions.txn_amount",
+        "customer_transactions.txn_type"
+      ]
+    }
+  },
+  "local075": {
+    "instance_id": "local075",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local075/local075/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "shopping_cart_events",
+        "shopping_cart_page_hierarchy"
+      ],
+      "columns": [
+        "shopping_cart_events.event_type",
+        "shopping_cart_events.visit_id",
+        "shopping_cart_page_hierarchy.page_id",
+        "shopping_cart_page_hierarchy.page_name",
+        "shopping_cart_page_hierarchy.product_id"
+      ]
+    }
+  },
+  "local078": {
+    "instance_id": "local078",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local078/local078/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "interest_metrics",
+        "interest_map"
+      ],
+      "columns": [
+        "interest_metrics.interest_id",
+        "interest_metrics.month_year",
+        "interest_metrics.composition",
+        "interest_map.interest_name",
+        "interest_map.id"
+      ]
+    }
+  },
+  "local085": {
+    "instance_id": "local085",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local085/local085/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "orders"
+      ],
+      "columns": [
+        "orders.employeeid",
+        "orders.orderid",
+        "orders.shippeddate",
+        "orders.requireddate"
+      ]
+    }
+  },
+  "local099": {
+    "instance_id": "local099",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local099/local099/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "Person",
+        "M_Director",
+        "M_Cast"
+      ],
+      "columns": [
+        "Person.PID",
+        "Person.Name",
+        "M_Director.PID",
+        "M_Director.MID",
+        "M_Cast.PID",
+        "M_Cast.MID"
+      ]
+    }
+  },
+  "local131": {
+    "instance_id": "local131",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local131/local131/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "Musical_Preferences",
+        "Musical_Styles"
+      ],
+      "columns": [
+        "Musical_Preferences.StyleID",
+        "Musical_Preferences.PreferenceSeq",
+        "Musical_Styles.StyleName",
+        "Musical_Styles.StyleID"
+      ]
+    }
+  },
+  "local132": {
+    "instance_id": "local132",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local132/local132/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "Customers",
+        "Entertainer_Styles",
+        "Entertainers",
+        "Musical_Preferences"
+      ],
+      "columns": [
+        "Customers.CustLastName",
+        "Customers.CustomerID",
+        "Entertainer_Styles.EntertainerID",
+        "Entertainer_Styles.StyleID",
+        "Entertainer_Styles.StyleStrength",
+        "Entertainers.EntStageName",
+        "Entertainers.EntertainerID",
+        "Musical_Preferences.CustomerID",
+        "Musical_Preferences.StyleID",
+        "Musical_Preferences.PreferenceSeq"
+      ]
+    }
+  },
+  "local157": {
+    "instance_id": "local157",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local157/local157/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "bitcoin_prices"
+      ],
+      "columns": [
+        "bitcoin_prices.ticker",
+        "bitcoin_prices.market_date",
+        "bitcoin_prices.volume"
+      ]
+    }
+  },
+  "local163": {
+    "instance_id": "local163",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local163/local163/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "university_faculty"
+      ],
+      "columns": [
+        "university_faculty.FacRank",
+        "university_faculty.FacFirstName",
+        "university_faculty.FacLastName",
+        "university_faculty.FacSalary"
+      ]
+    }
+  },
+  "local193": {
+    "instance_id": "local193",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local193/local193/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "payment"
+      ],
+      "columns": [
+        "payment.customer_id",
+        "payment.payment_date",
+        "payment.amount"
+      ]
+    }
+  },
+  "local194": {
+    "instance_id": "local194",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local194/local194/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "film",
+        "film_actor",
+        "inventory",
+        "payment",
+        "rental"
+      ],
+      "columns": [
+        "film.film_id",
+        "film.title",
+        "film_actor.actor_id",
+        "film_actor.film_id",
+        "inventory.film_id",
+        "inventory.inventory_id",
+        "payment.amount",
+        "payment.rental_id",
+        "rental.rental_id",
+        "rental.inventory_id"
+      ]
+    }
+  },
+  "local195": {
+    "instance_id": "local195",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local195/local195/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "actor",
+        "customer",
+        "film",
+        "film_actor",
+        "inventory",
+        "payment",
+        "rental"
+      ],
+      "columns": [
+        "actor.actor_id",
+        "actor.first_name",
+        "actor.last_name",
+        "customer.customer_id",
+        "film.film_id",
+        "film.title",
+        "film_actor.actor_id",
+        "film_actor.film_id",
+        "inventory.film_id",
+        "inventory.inventory_id",
+        "payment.amount",
+        "payment.rental_id",
+        "payment.customer_id",
+        "rental.inventory_id",
+        "rental.rental_id"
+      ]
+    }
+  },
+  "local196": {
+    "instance_id": "local196",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local196/local196/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "inventory",
+        "payment",
+        "rental"
+      ],
+      "columns": [
+        "inventory.inventory_id",
+        "inventory.film_id",
+        "payment.customer_id",
+        "payment.amount",
+        "rental.customer_id",
+        "rental.inventory_id",
+        "rental.rental_date"
+      ]
+    }
+  },
+  "local197": {
+    "instance_id": "local197",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local197/local197/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "payment"
+      ],
+      "columns": [
+        "payment.customer_id",
+        "payment.amount",
+        "payment.payment_date"
+      ]
+    }
+  },
+  "local199": {
+    "instance_id": "local199",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local199/local199/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "staff",
+        "rental"
+      ],
+      "columns": [
+        "staff.store_id",
+        "staff.staff_id",
+        "rental.rental_id",
+        "rental.staff_id",
+        "rental.rental_date"
+      ]
+    }
+  },
+  "local202": {
+    "instance_id": "local202",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local202/local202/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "alien_data"
+      ],
+      "columns": [
+        "alien_data.state",
+        "alien_data.age",
+        "alien_data.aggressive"
+      ]
+    }
+  },
+  "local209": {
+    "instance_id": "local209",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local209/local209/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "deliveries",
+        "stores",
+        "orders"
+      ],
+      "columns": [
+        "deliveries.delivery_order_id",
+        "deliveries.delivery_status",
+        "stores.store_name",
+        "stores.store_id",
+        "orders.order_id",
+        "orders.store_id",
+        "orders.delivery_order_id"
+      ]
+    }
+  },
+  "local210": {
+    "instance_id": "local210",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local210/local210/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "hubs",
+        "stores",
+        "orders"
+      ],
+      "columns": [
+        "hubs.hub_name",
+        "hubs.hub_id",
+        "stores.store_id",
+        "stores.hub_id",
+        "orders.store_id",
+        "orders.order_created_month",
+        "orders.order_status"
+      ]
+    }
+  },
+  "local218": {
+    "instance_id": "local218",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local218/local218/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "Match",
+        "Team"
+      ],
+      "columns": [
+        "Match.season",
+        "Match.away_team_goal",
+        "Match.home_team_api_id",
+        "Match.away_team_api_id",
+        "Match.home_team_goal",
+        "Team.id",
+        "Team.team_long_name",
+        "Team.team_api_id"
+      ]
+    }
+  },
+  "local219": {
+    "instance_id": "local219",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local219/local219/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "Player",
+        "Match",
+        "League",
+        "Team"
+      ],
+      "columns": [
+        "Player.player_name",
+        "Player.player_api_id",
+        "Match.id",
+        "Match.season",
+        "Match.match_api_id",
+        "Match.home_team_goal",
+        "Match.away_team_goal",
+        "Match.goal",
+        "Match.card",
+        "Match.league_id",
+        "Match.home_team_api_id",
+        "Match.away_team_api_id",
+        "Match.home_player_1",
+        "Match.home_player_2",
+        "Match.home_player_3",
+        "Match.home_player_4",
+        "Match.home_player_5",
+        "Match.home_player_6",
+        "Match.home_player_7",
+        "Match.home_player_8",
+        "Match.home_player_9",
+        "Match.home_player_10",
+        "Match.home_player_11",
+        "Match.away_player_1",
+        "Match.away_player_2",
+        "Match.away_player_3",
+        "Match.away_player_4",
+        "Match.away_player_5",
+        "Match.away_player_6",
+        "Match.away_player_7",
+        "Match.away_player_8",
+        "Match.away_player_9",
+        "Match.away_player_10",
+        "Match.away_player_11",
+        "League.name",
+        "League.id",
+        "Team.team_long_name",
+        "Team.team_api_id"
+      ]
+    }
+  },
+  "local229": {
+    "instance_id": "local229",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local229/local229/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "ball_by_ball",
+        "batsman_scored"
+      ],
+      "columns": [
+        "ball_by_ball.match_id",
+        "ball_by_ball.non_striker",
+        "ball_by_ball.striker",
+        "ball_by_ball.innings_no",
+        "ball_by_ball.ball_id",
+        "ball_by_ball.over_id",
+        "batsman_scored.runs_scored",
+        "batsman_scored.innings_no",
+        "batsman_scored.ball_id",
+        "batsman_scored.match_id",
+        "batsman_scored.over_id"
+      ]
+    }
+  },
+  "local244": {
+    "instance_id": "local244",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local244/local244/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "InvoiceLine",
+        "Track"
+      ],
+      "columns": [
+        "InvoiceLine.TrackId",
+        "InvoiceLine.UnitPrice",
+        "InvoiceLine.Quantity",
+        "Track.TrackId",
+        "Track.Milliseconds"
+      ]
+    }
+  },
+  "local263": {
+    "instance_id": "local263",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local263/local263/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "model_score",
+        "model"
+      ],
+      "columns": [
+        "model_score.name",
+        "model_score.version",
+        "model_score.step",
+        "model_score.test_score",
+        "model_score.model",
+        "model.L1_model",
+        "model.name",
+        "model.version"
+      ]
+    }
+  },
+  "local269": {
+    "instance_id": "local269",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local269/local269/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "packaging",
+        "packaging_relations"
+      ],
+      "columns": [
+        "packaging.id",
+        "packaging_relations.contains_id",
+        "packaging_relations.packaging_id",
+        "packaging_relations.qty"
+      ]
+    }
+  },
+  "local274": {
+    "instance_id": "local274",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local274/local274/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "products",
+        "picking_line"
+      ],
+      "columns": [
+        "products.name",
+        "products.id",
+        "picking_line.product_id",
+        "picking_line.location_id",
+        "picking_line.qty",
+        "picking_line.order_id"
+      ]
+    }
+  },
+  "local283": {
+    "instance_id": "local283",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local283/local283/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "Match",
+        "League",
+        "Country",
+        "Team"
+      ],
+      "columns": [
+        "Match.id",
+        "Match.season",
+        "Match.stage",
+        "Match.date",
+        "Match.home_team_goal",
+        "Match.away_team_goal",
+        "Match.country_id",
+        "Match.league_id",
+        "Match.home_team_api_id",
+        "Match.away_team_api_id",
+        "League.name",
+        "League.id",
+        "Country.name",
+        "Country.id",
+        "Team.team_long_name",
+        "Team.team_api_id"
+      ]
+    }
+  },
+  "local284": {
+    "instance_id": "local284",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local284/local284/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "veg_loss_rate_df"
+      ],
+      "columns": [
+        "veg_loss_rate_df.loss_rate_%"
+      ]
+    }
+  },
+  "local285": {
+    "instance_id": "local285",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local285/local285/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "veg_txn_df",
+        "veg_loss_rate_df",
+        "veg_cat",
+        "veg_whsle_df"
+      ],
+      "columns": [
+        "veg_txn_df.item_code",
+        "veg_txn_df.txn_date",
+        "veg_txn_df.qty_sold(kg)",
+        "veg_txn_df.unit_selling_px_rmb/kg",
+        "veg_loss_rate_df.item_code",
+        "veg_loss_rate_df.loss_rate_%",
+        "veg_cat.category_code",
+        "veg_cat.category_name",
+        "veg_cat.item_code",
+        "veg_whsle_df.whsle_px_rmb-kg",
+        "veg_whsle_df.whsle_date",
+        "veg_whsle_df.item_code"
+      ]
+    }
+  },
+  "local301": {
+    "instance_id": "local301",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local301/local301/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "cleaned_weekly_sales"
+      ],
+      "columns": [
+        "cleaned_weekly_sales.week_date",
+        "cleaned_weekly_sales.sales"
+      ]
+    }
+  },
+  "local329": {
+    "instance_id": "local329",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local329/local329/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "form_log"
+      ],
+      "columns": [
+        "form_log.session",
+        "form_log.path",
+        "form_log.stamp"
+      ]
+    }
+  },
+  "local358": {
+    "instance_id": "local358",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local358/local358/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "mst_users"
+      ],
+      "columns": [
+        "mst_users.user_id",
+        "mst_users.birth_date"
+      ]
+    }
+  },
+  "local360": {
+    "instance_id": "local360",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local360/local360/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "activity_log"
+      ],
+      "columns": [
+        "activity_log.session",
+        "activity_log.stamp",
+        "activity_log.path",
+        "activity_log.search_type"
+      ]
+    }
+  },
+  "local336": {
+    "instance_id": "local336",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local336/local336/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "pit_stops",
+        "results",
+        "lap_times_ext",
+        "races_ext",
+        "retirements",
+        "lap_positions"
+      ],
+      "columns": [
+        "pit_stops.driver_id",
+        "pit_stops.lap",
+        "pit_stops.milliseconds",
+        "pit_stops.race_id",
+        "results.race_id",
+        "results.driver_id",
+        "results.grid",
+        "lap_times_ext.lap",
+        "lap_times_ext.race_id",
+        "lap_times_ext.driver_id",
+        "lap_times_ext.running_milliseconds",
+        "races_ext.race_id",
+        "races_ext.is_pit_data_available",
+        "retirements.driver_id",
+        "retirements.race_id",
+        "retirements.lap",
+        "lap_positions.race_id",
+        "lap_positions.driver_id",
+        "lap_positions.lap",
+        "lap_positions.position"
+      ]
+    }
+  },
+  "local309": {
+    "instance_id": "local309",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local309/local309/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "constructors",
+        "drivers",
+        "races",
+        "results"
+      ],
+      "columns": [
+        "constructors.name",
+        "constructors.constructor_id",
+        "drivers.surname",
+        "drivers.driver_id",
+        "drivers.forename",
+        "races.year",
+        "races.race_id",
+        "results.points",
+        "results.race_id",
+        "results.driver_id",
+        "results.constructor_id"
+      ]
+    }
+  },
+  "local311": {
+    "instance_id": "local311",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local311/local311/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "constructors",
+        "drivers",
+        "races",
+        "results"
+      ],
+      "columns": [
+        "constructors.name",
+        "constructors.constructor_id",
+        "drivers.forename",
+        "drivers.surname",
+        "drivers.driver_id",
+        "races.year",
+        "races.race_id",
+        "results.points",
+        "results.race_id",
+        "results.driver_id",
+        "results.constructor_id"
+      ]
+    }
+  },
+  "local354": {
+    "instance_id": "local354",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local354/local354/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "races",
+        "results"
+      ],
+      "columns": [
+        "races.year",
+        "races.round",
+        "races.race_id",
+        "results.driver_id",
+        "results.constructor_id",
+        "results.race_id"
+      ]
+    }
+  },
+  "local355": {
+    "instance_id": "local355",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local355/local355/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "results",
+        "driver_standings_ext",
+        "races_ext"
+      ],
+      "columns": [
+        "results.race_id",
+        "results.driver_id",
+        "results.constructor_id",
+        "driver_standings_ext.race_id",
+        "driver_standings_ext.driver_id",
+        "races_ext.race_id",
+        "races_ext.year",
+        "races_ext.round"
+      ]
+    }
+  },
+  "local074": {
+    "instance_id": "local074",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local074/local074/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "customer_transactions"
+      ],
+      "columns": [
+        "customer_transactions.customer_id",
+        "customer_transactions.txn_date",
+        "customer_transactions.txn_amount"
+      ]
+    }
+  },
+  "local077": {
+    "instance_id": "local077",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local077/local077/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "interest_metrics",
+        "interest_map"
+      ],
+      "columns": [
+        "interest_metrics.month_year",
+        "interest_metrics.interest_id",
+        "interest_metrics.composition",
+        "interest_metrics.index_value",
+        "interest_metrics._year",
+        "interest_metrics._month",
+        "interest_map.id",
+        "interest_map.interest_name"
+      ]
+    }
+  },
+  "local114": {
+    "instance_id": "local114",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local114/local114/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "web_orders",
+        "web_sales_reps",
+        "web_region"
+      ],
+      "columns": [
+        "web_orders.id",
+        "web_orders.account_id",
+        "web_orders.total_amt_usd",
+        "web_sales_reps.id",
+        "web_sales_reps.name",
+        "web_sales_reps.region_id",
+        "web_region.id",
+        "web_region.name"
+      ]
+    }
+  },
+  "local141": {
+    "instance_id": "local141",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local141/local141/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "salesorderheader",
+        "SalesPersonQuotaHistory"
+      ],
+      "columns": [
+        "salesorderheader.salespersonid",
+        "salesorderheader.orderdate",
+        "salesorderheader.totaldue",
+        "SalesPersonQuotaHistory.BusinessEntityID",
+        "SalesPersonQuotaHistory.QuotaDate",
+        "SalesPersonQuotaHistory.SalesQuota"
+      ]
+    }
+  },
+  "local277": {
+    "instance_id": "local277",
+    "status": "success",
+    "type": "trajectory",
+    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local277/local277/spider/result.json",
+    "schema_extraction": {
+      "tables": [
+        "monthly_sales"
+      ],
+      "columns": [
+        "monthly_sales.product_id",
+        "monthly_sales.mth",
+        "monthly_sales.qty"
+      ]
+    }
+  }
+}
