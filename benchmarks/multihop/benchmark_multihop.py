@@ -415,7 +415,7 @@ class MultiHopBenchmark:
     def save_results(self, result: BenchmarkResult):
         """Save results as two separate files: eval metrics and generated responses"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        results_dir = os.path.join(QAFD_RAG_HOME, "results", "multihop")
+        results_dir = os.path.join(QAFD_RAG_HOME, "results", "multihop", self.dataset)
         os.makedirs(results_dir, exist_ok=True)
 
         eval_file = os.path.join(results_dir, f"{self.dataset}_{timestamp}_eval.json")
@@ -459,8 +459,6 @@ class MultiHopBenchmark:
                     "question": result.questions[i] if result.questions else "",
                     "generated_answer": response,
                     "gold_answers": result.gold_answers[i] if result.gold_answers else [],
-                    "f1": result.f1_scores[i] if result.f1_scores else None,
-                    "exact_match": result.exact_match_scores[i] if result.exact_match_scores else None,
                 }
                 output_entries.append(entry)
 
