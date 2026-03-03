@@ -8,7 +8,7 @@ from typing import Type, cast, List, Dict, Any, Optional
 
 from .llm import (
     gpt_4o_mini_complete,
-    qwen3_coder_80_complete,
+    gpt_oss_120b_complete,
     local_sentence_embedding,
     openai_cloud_embedding,
     is_local_model,
