@@ -30,6 +30,7 @@ Thumbs.db
 # Downloaded datasets (auto-fetched from HuggingFace)
 data/multihop/*.json
 
-# Run logs and results (regenerable)
+# Run logs and results (ignore content but keep directory structure)
 run_all_embeddings.log
-results/
+results/**/*.json
+results/**/*.txt
