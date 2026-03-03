@@ -235,12 +235,29 @@
 <section>
   <div class="container">
     <h2>About QAFD-RAG</h2>
-    <p class="abstract">
-      QAFD-RAG uses <strong>query-aware flow diffusion</strong> to retrieve contextually relevant subgraphs
-      from a knowledge graph. Unlike community-based (GraphRAG) or entity-centric (LightRAG) approaches,
-      QAFD-RAG dynamically re-weights edges based on query relevance and propagates flow through the graph
-      to discover multi-hop context with <strong>retrieval guarantees</strong>.
+    <p class="abstract" style="margin-bottom: 32px;">
+      QAFD-RAG is a graph-based retrieval-augmented generation framework that uses
+      <strong>query-aware flow diffusion</strong> to retrieve contextually relevant subgraphs
+      from a knowledge graph with <strong>retrieval guarantees</strong>.
     </p>
+    <div class="pipeline" style="gap: 20px;">
+      <div class="pipeline-card" style="text-align:center;">
+        <h3 style="color:var(--accent);margin:0 0 8px;">The Problem</h3>
+        <p style="font-size:0.95rem;color:var(--text-muted);">
+          Existing graph-based RAG methods rely on <strong>static retrieval</strong> strategies&mdash;community
+          detection (GraphRAG) or one-hop entity lookup (LightRAG)&mdash;that ignore query context
+          and miss relevant multi-hop connections.
+        </p>
+      </div>
+      <div class="pipeline-card" style="text-align:center;">
+        <h3 style="color:var(--accent);margin:0 0 8px;">Our Solution</h3>
+        <p style="font-size:0.95rem;color:var(--text-muted);">
+          QAFD-RAG <strong>dynamically re-weights</strong> graph edges based on query relevance and
+          <strong>propagates flow</strong> through the knowledge graph to discover multi-hop context,
+          assembling a query-specific subgraph for the LLM.
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 
