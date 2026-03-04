@@ -61,6 +61,86 @@ class Text2SQLResult:
     create_table: str
     success: bool = True
     error_message: str = ""
+    retrieved_tables: List[str] = None
+    retrieved_columns: List[str] = None
+
+
+def parse_schema_from_create_table(create_table: str) -> tuple:
+    """Extract table names and table.column pairs from CREATE TABLE output."""
+    import re
+    tables = []
+    columns = []
+    current_table = None
+    for line in create_table.split('\n'):
+        m = re.match(r'^CREATE TABLE\s+`?(\w+)`?\s*\(', line)
+        if m:
+            current_table = m.group(1)
+            tables.append(current_table)
+            continue
+        if current_table and line.strip().startswith('`'):
+            cm = re.match(r'\s*`(\w+)`', line)
+            if cm:
+                columns.append(f"{current_table}.{cm.group(1)}")
+        elif current_table and line.strip().startswith('"'):
+            cm = re.match(r'\s*"(\w+)"', line)
+            if cm:
+                columns.append(f"{current_table}.{cm.group(1)}")
+    return tables, columns
+
+
+def compute_schema_metrics(results: List[Text2SQLResult], golden_path: str) -> dict:
+    """Compute table and column recall/precision/F1 against golden annotations."""
+    if not os.path.exists(golden_path):
+        return {}
+
+    with open(golden_path, 'r') as f:
+        golden = json.load(f)
+
+    table_metrics = []
+    column_metrics = []
+
+    for r in results:
+        if not r.success or r.instance_id not in golden:
+            continue
+        g = golden[r.instance_id]
+        if 'schema_extraction' not in g:
+            continue
+
+        golden_tables = set(t.lower() for t in g['schema_extraction'].get('tables', []))
+        golden_cols = set(c.lower() for c in g['schema_extraction'].get('columns', []))
+
+        retrieved_tables = set(t.lower() for t in (r.retrieved_tables or []))
+        retrieved_cols = set(c.lower() for c in (r.retrieved_columns or []))
+
+        # Table metrics
+        if golden_tables:
+            tp = len(retrieved_tables & golden_tables)
+            precision = tp / len(retrieved_tables) if retrieved_tables else 0
+            recall = tp / len(golden_tables)
+            f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
+            table_metrics.append({"precision": precision, "recall": recall, "f1": f1})
+
+        # Column metrics
+        if golden_cols:
+            tp = len(retrieved_cols & golden_cols)
+            precision = tp / len(retrieved_cols) if retrieved_cols else 0
+            recall = tp / len(golden_cols)
+            f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
+            column_metrics.append({"precision": precision, "recall": recall, "f1": f1})
+
+    if not table_metrics:
+        return {}
+
+    avg = lambda lst, key: sum(m[key] for m in lst) / len(lst)
+    return {
+        "table_recall": round(avg(table_metrics, "recall"), 4),
+        "table_precision": round(avg(table_metrics, "precision"), 4),
+        "table_f1": round(avg(table_metrics, "f1"), 4),
+        "column_recall": round(avg(column_metrics, "recall"), 4),
+        "column_precision": round(avg(column_metrics, "precision"), 4),
+        "column_f1": round(avg(column_metrics, "f1"), 4),
+        "num_evaluated": len(table_metrics),
+    }
 
 
 class Text2SQLBenchmark:
@@ -151,10 +231,13 @@ class Text2SQLBenchmark:
                 else:
                     create_table_str = str(clusters)
 
+                tables, columns = parse_schema_from_create_table(create_table_str)
                 results.append(Text2SQLResult(
                     instance_id=instance_id, db=db, question=question,
                     create_table=create_table_str,
-                    success=True
+                    success=True,
+                    retrieved_tables=tables,
+                    retrieved_columns=columns,
                 ))
 
             except Exception as e:
@@ -166,7 +249,8 @@ class Text2SQLBenchmark:
 
         return results
 
-    def save_results(self, results: List[Text2SQLResult], db_name: str = None):
+    def save_results(self, results: List[Text2SQLResult], db_name: str = None,
+                     benchmark: str = "spider2-lite"):
         """Save results as two separate files: eval metrics and generated responses"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         if db_name:
@@ -179,7 +263,14 @@ class Text2SQLBenchmark:
 
         success_count = sum(1 for r in results if r.success)
 
-        # --- Eval file: success/fail stats ---
+        # --- Schema accuracy metrics (if golden file exists) ---
+        golden_paths = {
+            "spider2-lite": QAFD_RAG_HOME / "data" / "text2sql" / "spider2-lite" / "golden_lite_spider_total.json",
+        }
+        golden_path = str(golden_paths.get(benchmark, ""))
+        schema_metrics = compute_schema_metrics(results, golden_path)
+
+        # --- Eval file: success/fail stats + schema metrics ---
         eval_data = {
             "timestamp": datetime.now().isoformat(),
             "llm": self.llm_model,
@@ -192,6 +283,8 @@ class Text2SQLBenchmark:
                 for r in results if not r.success
             ],
         }
+        if schema_metrics:
+            eval_data["schema_metrics"] = schema_metrics
 
         with open(eval_file, 'w', encoding='utf-8') as f:
             json.dump(eval_data, f, indent=2, ensure_ascii=False)
@@ -259,6 +352,22 @@ async def main():
     print(f"  {'Successful':<25} {success_count}/{len(results)}")
     print(f"  {'Failed':<25} {len(results) - success_count}")
 
+    # Schema accuracy metrics
+    golden_paths = {
+        "spider2-lite": QAFD_RAG_HOME / "data" / "text2sql" / "spider2-lite" / "golden_lite_spider_total.json",
+    }
+    golden_path = str(golden_paths.get(args.benchmark, ""))
+    schema_metrics = compute_schema_metrics(results, golden_path)
+    if schema_metrics:
+        print(f"\n  SCHEMA RETRIEVAL ACCURACY")
+        print(f"  {'─' * 40}")
+        print(f"  {'Table Recall':<25} {schema_metrics['table_recall']*100:.1f}%")
+        print(f"  {'Table Precision':<25} {schema_metrics['table_precision']*100:.1f}%")
+        print(f"  {'Table F1':<25} {schema_metrics['table_f1']*100:.1f}%")
+        print(f"  {'Column Recall':<25} {schema_metrics['column_recall']*100:.1f}%")
+        print(f"  {'Column Precision':<25} {schema_metrics['column_precision']*100:.1f}%")
+        print(f"  {'Column F1':<25} {schema_metrics['column_f1']*100:.1f}%")
+
     # Show failed instances
     failed = [r for r in results if not r.success]
     if failed:
@@ -270,7 +379,7 @@ async def main():
             print(f"  ... and {len(failed) - 5} more")
     print()
 
-    benchmark.save_results(results, db_name=args.db)
+    benchmark.save_results(results, db_name=args.db, benchmark=args.benchmark)
 
 if __name__ == "__main__":
     asyncio.run(main())

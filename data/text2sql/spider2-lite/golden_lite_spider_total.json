@@ -1,9 +1,6 @@
 {
   "local003": {
     "instance_id": "local003",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local003/local003/spider/result.json",
     "schema_extraction": {
       "tables": [
         "customers",
@@ -24,9 +21,6 @@
   },
   "local004": {
     "instance_id": "local004",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local004/local004/spider/result.json",
     "schema_extraction": {
       "tables": [
         "customers",
@@ -46,9 +40,6 @@
   },
   "local008": {
     "instance_id": "local008",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local008/local008/spider/result.json",
     "schema_extraction": {
       "tables": [
         "batting",
@@ -67,9 +58,6 @@
   },
   "local009": {
     "instance_id": "local009",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local009/local009/spider/result.json",
     "schema_extraction": {
       "tables": [
         "airports_data",
@@ -87,9 +75,6 @@
   },
   "local010": {
     "instance_id": "local010",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local010/local010/spider/result.json",
     "schema_extraction": {
       "tables": [
         "airports_data",
@@ -107,9 +92,6 @@
   },
   "local015": {
     "instance_id": "local015",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local015/local015/spider/result.json",
     "schema_extraction": {
       "tables": [
         "collisions",
@@ -128,9 +110,6 @@
   },
   "local017": {
     "instance_id": "local017",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local017/local017/spider/result.json",
     "schema_extraction": {
       "tables": [
         "collisions"
@@ -144,9 +123,6 @@
   },
   "local019": {
     "instance_id": "local019",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local019/local019/spider/result.json",
     "schema_extraction": {
       "tables": [
         "Promotions",
@@ -183,9 +159,6 @@
   },
   "local026": {
     "instance_id": "local026",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local026/local026/spider/result.json",
     "schema_extraction": {
       "tables": [
         "player",
@@ -215,9 +188,6 @@
   },
   "local021": {
     "instance_id": "local021",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local021/local021/spider/result.json",
     "schema_extraction": {
       "tables": [
         "ball_by_ball",
@@ -239,9 +209,6 @@
   },
   "local022": {
     "instance_id": "local022",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local022/local022/spider/result.json",
     "schema_extraction": {
       "tables": [
         "player",
@@ -275,9 +242,6 @@
   },
   "local023": {
     "instance_id": "local023",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local023/local023/spider/result.json",
     "schema_extraction": {
       "tables": [
         "player",
@@ -305,9 +269,6 @@
   },
   "local024": {
     "instance_id": "local024",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local024/local024/spider/result.json",
     "schema_extraction": {
       "tables": [
         "player",
@@ -332,9 +293,6 @@
   },
   "local028": {
     "instance_id": "local028",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local028/local028/spider/result.json",
     "schema_extraction": {
       "tables": [
         "olist_orders"
@@ -347,9 +305,6 @@
   },
   "local031": {
     "instance_id": "local031",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local031/local031/spider/result.json",
     "schema_extraction": {
       "tables": [
         "olist_orders"
@@ -362,9 +317,6 @@
   },
   "local029": {
     "instance_id": "local029",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local029/local029/spider/result.json",
     "schema_extraction": {
       "tables": [
         "olist_customers",
@@ -386,9 +338,6 @@
   },
   "local030": {
     "instance_id": "local030",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local030/local030/spider/result.json",
     "schema_extraction": {
       "tables": [
         "olist_customers",
@@ -408,9 +357,6 @@
   },
   "local034": {
     "instance_id": "local034",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local034/local034/spider/result.json",
     "schema_extraction": {
       "tables": [
         "olist_order_items",
@@ -429,9 +375,6 @@
   },
   "local038": {
     "instance_id": "local038",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local038/local038/spider/result.json",
     "schema_extraction": {
       "tables": [
         "actor",
@@ -463,9 +406,6 @@
   },
   "local039": {
     "instance_id": "local039",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local039/local039/spider/result.json",
     "schema_extraction": {
       "tables": [
         "city",
@@ -498,9 +438,6 @@
   },
   "local041": {
     "instance_id": "local041",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local041/local041/spider/result.json",
     "schema_extraction": {
       "tables": [
         "trees"
@@ -513,9 +450,6 @@
   },
   "local049": {
     "instance_id": "local049",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local049/local049/spider/result.json",
     "schema_extraction": {
       "tables": [
         "companies_dates",
@@ -531,9 +465,6 @@
   },
   "local054": {
     "instance_id": "local054",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local054/local054/spider/result.json",
     "schema_extraction": {
       "tables": [
         "albums",
@@ -563,9 +494,6 @@
   },
   "local055": {
     "instance_id": "local055",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local055/local055/spider/result.json",
     "schema_extraction": {
       "tables": [
         "albums",
@@ -594,9 +522,6 @@
   },
   "local198": {
     "instance_id": "local198",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local198/local198/spider/result.json",
     "schema_extraction": {
       "tables": [
         "customers",
@@ -611,9 +536,6 @@
   },
   "local056": {
     "instance_id": "local056",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local056/local056/spider/result.json",
     "schema_extraction": {
       "tables": [
         "customer",
@@ -631,9 +553,6 @@
   },
   "local058": {
     "instance_id": "local058",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local058/local058/spider/result.json",
     "schema_extraction": {
       "tables": [
         "hardware_dim_product",
@@ -649,9 +568,6 @@
   },
   "local059": {
     "instance_id": "local059",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local059/local059/spider/result.json",
     "schema_extraction": {
       "tables": [
         "hardware_dim_product",
@@ -668,9 +584,6 @@
   },
   "local071": {
     "instance_id": "local071",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local071/local071/spider/result.json",
     "schema_extraction": {
       "tables": [
         "cities"
@@ -683,9 +596,6 @@
   },
   "local066": {
     "instance_id": "local066",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local066/local066/spider/result.json",
     "schema_extraction": {
       "tables": [
         "pizza_toppings",
@@ -701,9 +611,6 @@
   },
   "local065": {
     "instance_id": "local065",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local065/local065/spider/result.json",
     "schema_extraction": {
       "tables": [
         "pizza_clean_runner_orders",
@@ -720,9 +627,6 @@
   },
   "local064": {
     "instance_id": "local064",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local064/local064/spider/result.json",
     "schema_extraction": {
       "tables": [
         "customer_transactions"
@@ -737,9 +641,6 @@
   },
   "local299": {
     "instance_id": "local299",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local299/local299/spider/result.json",
     "schema_extraction": {
       "tables": [
         "customer_transactions"
@@ -754,9 +655,6 @@
   },
   "local300": {
     "instance_id": "local300",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local300/local300/spider/result.json",
     "schema_extraction": {
       "tables": [
         "customer_transactions"
@@ -771,9 +669,6 @@
   },
   "local075": {
     "instance_id": "local075",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local075/local075/spider/result.json",
     "schema_extraction": {
       "tables": [
         "shopping_cart_events",
@@ -790,9 +685,6 @@
   },
   "local078": {
     "instance_id": "local078",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local078/local078/spider/result.json",
     "schema_extraction": {
       "tables": [
         "interest_metrics",
@@ -809,9 +701,6 @@
   },
   "local085": {
     "instance_id": "local085",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local085/local085/spider/result.json",
     "schema_extraction": {
       "tables": [
         "orders"
@@ -826,9 +715,6 @@
   },
   "local099": {
     "instance_id": "local099",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local099/local099/spider/result.json",
     "schema_extraction": {
       "tables": [
         "Person",
@@ -847,9 +733,6 @@
   },
   "local131": {
     "instance_id": "local131",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local131/local131/spider/result.json",
     "schema_extraction": {
       "tables": [
         "Musical_Preferences",
@@ -865,9 +748,6 @@
   },
   "local132": {
     "instance_id": "local132",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local132/local132/spider/result.json",
     "schema_extraction": {
       "tables": [
         "Customers",
@@ -891,9 +771,6 @@
   },
   "local157": {
     "instance_id": "local157",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local157/local157/spider/result.json",
     "schema_extraction": {
       "tables": [
         "bitcoin_prices"
@@ -907,9 +784,6 @@
   },
   "local163": {
     "instance_id": "local163",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local163/local163/spider/result.json",
     "schema_extraction": {
       "tables": [
         "university_faculty"
@@ -924,9 +798,6 @@
   },
   "local193": {
     "instance_id": "local193",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local193/local193/spider/result.json",
     "schema_extraction": {
       "tables": [
         "payment"
@@ -940,9 +811,6 @@
   },
   "local194": {
     "instance_id": "local194",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local194/local194/spider/result.json",
     "schema_extraction": {
       "tables": [
         "film",
@@ -967,9 +835,6 @@
   },
   "local195": {
     "instance_id": "local195",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local195/local195/spider/result.json",
     "schema_extraction": {
       "tables": [
         "actor",
@@ -1001,9 +866,6 @@
   },
   "local196": {
     "instance_id": "local196",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local196/local196/spider/result.json",
     "schema_extraction": {
       "tables": [
         "inventory",
@@ -1023,9 +885,6 @@
   },
   "local197": {
     "instance_id": "local197",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local197/local197/spider/result.json",
     "schema_extraction": {
       "tables": [
         "payment"
@@ -1039,9 +898,6 @@
   },
   "local199": {
     "instance_id": "local199",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local199/local199/spider/result.json",
     "schema_extraction": {
       "tables": [
         "staff",
@@ -1058,9 +914,6 @@
   },
   "local202": {
     "instance_id": "local202",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local202/local202/spider/result.json",
     "schema_extraction": {
       "tables": [
         "alien_data"
@@ -1074,9 +927,6 @@
   },
   "local209": {
     "instance_id": "local209",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local209/local209/spider/result.json",
     "schema_extraction": {
       "tables": [
         "deliveries",
@@ -1096,9 +946,6 @@
   },
   "local210": {
     "instance_id": "local210",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local210/local210/spider/result.json",
     "schema_extraction": {
       "tables": [
         "hubs",
@@ -1118,9 +965,6 @@
   },
   "local218": {
     "instance_id": "local218",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local218/local218/spider/result.json",
     "schema_extraction": {
       "tables": [
         "Match",
@@ -1140,9 +984,6 @@
   },
   "local219": {
     "instance_id": "local219",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local219/local219/spider/result.json",
     "schema_extraction": {
       "tables": [
         "Player",
@@ -1194,9 +1035,6 @@
   },
   "local229": {
     "instance_id": "local229",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local229/local229/spider/result.json",
     "schema_extraction": {
       "tables": [
         "ball_by_ball",
@@ -1219,9 +1057,6 @@
   },
   "local244": {
     "instance_id": "local244",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local244/local244/spider/result.json",
     "schema_extraction": {
       "tables": [
         "InvoiceLine",
@@ -1238,9 +1073,6 @@
   },
   "local263": {
     "instance_id": "local263",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local263/local263/spider/result.json",
     "schema_extraction": {
       "tables": [
         "model_score",
@@ -1260,9 +1092,6 @@
   },
   "local269": {
     "instance_id": "local269",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local269/local269/spider/result.json",
     "schema_extraction": {
       "tables": [
         "packaging",
@@ -1278,9 +1107,6 @@
   },
   "local274": {
     "instance_id": "local274",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local274/local274/spider/result.json",
     "schema_extraction": {
       "tables": [
         "products",
@@ -1298,9 +1124,6 @@
   },
   "local283": {
     "instance_id": "local283",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local283/local283/spider/result.json",
     "schema_extraction": {
       "tables": [
         "Match",
@@ -1330,9 +1153,6 @@
   },
   "local284": {
     "instance_id": "local284",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local284/local284/spider/result.json",
     "schema_extraction": {
       "tables": [
         "veg_loss_rate_df"
@@ -1344,9 +1164,6 @@
   },
   "local285": {
     "instance_id": "local285",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local285/local285/spider/result.json",
     "schema_extraction": {
       "tables": [
         "veg_txn_df",
@@ -1372,9 +1189,6 @@
   },
   "local301": {
     "instance_id": "local301",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local301/local301/spider/result.json",
     "schema_extraction": {
       "tables": [
         "cleaned_weekly_sales"
@@ -1387,9 +1201,6 @@
   },
   "local329": {
     "instance_id": "local329",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local329/local329/spider/result.json",
     "schema_extraction": {
       "tables": [
         "form_log"
@@ -1403,9 +1214,6 @@
   },
   "local358": {
     "instance_id": "local358",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local358/local358/spider/result.json",
     "schema_extraction": {
       "tables": [
         "mst_users"
@@ -1418,9 +1226,6 @@
   },
   "local360": {
     "instance_id": "local360",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local360/local360/spider/result.json",
     "schema_extraction": {
       "tables": [
         "activity_log"
@@ -1435,9 +1240,6 @@
   },
   "local336": {
     "instance_id": "local336",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local336/local336/spider/result.json",
     "schema_extraction": {
       "tables": [
         "pit_stops",
@@ -1473,9 +1275,6 @@
   },
   "local309": {
     "instance_id": "local309",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local309/local309/spider/result.json",
     "schema_extraction": {
       "tables": [
         "constructors",
@@ -1500,9 +1299,6 @@
   },
   "local311": {
     "instance_id": "local311",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local311/local311/spider/result.json",
     "schema_extraction": {
       "tables": [
         "constructors",
@@ -1527,9 +1323,6 @@
   },
   "local354": {
     "instance_id": "local354",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local354/local354/spider/result.json",
     "schema_extraction": {
       "tables": [
         "races",
@@ -1547,9 +1340,6 @@
   },
   "local355": {
     "instance_id": "local355",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local355/local355/spider/result.json",
     "schema_extraction": {
       "tables": [
         "results",
@@ -1570,9 +1360,6 @@
   },
   "local074": {
     "instance_id": "local074",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local074/local074/spider/result.json",
     "schema_extraction": {
       "tables": [
         "customer_transactions"
@@ -1586,9 +1373,6 @@
   },
   "local077": {
     "instance_id": "local077",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local077/local077/spider/result.json",
     "schema_extraction": {
       "tables": [
         "interest_metrics",
@@ -1608,9 +1392,6 @@
   },
   "local114": {
     "instance_id": "local114",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local114/local114/spider/result.json",
     "schema_extraction": {
       "tables": [
         "web_orders",
@@ -1631,9 +1412,6 @@
   },
   "local141": {
     "instance_id": "local141",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local141/local141/spider/result.json",
     "schema_extraction": {
       "tables": [
         "salesorderheader",
@@ -1651,9 +1429,6 @@
   },
   "local277": {
     "instance_id": "local277",
-    "status": "success",
-    "type": "trajectory",
-    "trajectory_path": "/data1/davoud/spider_lite_06_07/output_v1/gpt-4o-local277/local277/spider/result.json",
     "schema_extraction": {
       "tables": [
         "monthly_sales"
