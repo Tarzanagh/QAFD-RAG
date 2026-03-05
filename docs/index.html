@@ -5,253 +5,629 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QAFD-RAG: Query-Aware Flow Diffusion for Graph-Based RAG</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --accent: #2563eb;
-      --accent-light: #dbeafe;
-      --accent-dark: #1d4ed8;
-      --bg: #ffffff;
-      --bg-alt: #f8fafc;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --code-bg: #f1f5f9;
-      --success: #16a34a;
-      --radius: 8px;
+      --navy-900: #0a1628;
+      --navy-800: #0f2140;
+      --navy-700: #1e3a5f;
+      --blue-600: #2563eb;
+      --blue-500: #3b82f6;
+      --blue-400: #60a5fa;
+      --blue-300: #93c5fd;
+      --blue-200: #bfdbfe;
+      --blue-100: #dbeafe;
+      --blue-50: #eff6ff;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-500: #64748b;
+      --slate-400: #94a3b8;
+      --slate-300: #cbd5e1;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+      --white: #ffffff;
+      --radius: 10px;
+      --radius-lg: 16px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--text);
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--slate-800);
       line-height: 1.6;
-      background: var(--bg);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Hero */
+    /* ===== HERO ===== */
     .hero {
-      background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #3b82f6 100%);
-      color: #fff;
-      padding: 80px 20px 60px;
+      background: linear-gradient(155deg, #d6e6f7 0%, #dbeafe 40%, #e8f1fc 70%, #eff6ff 100%);
+      color: var(--slate-800);
+      padding: 48px 20px 44px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
-    .hero h1 { font-size: 3rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
-    .hero .venue {
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,0.04) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 30%, rgba(59,130,246,0.03) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; }
+
+    /* Animated Logo */
+    .logo-wrap {
+      margin: 0 auto 20px;
+      width: 160px; height: 160px;
+      animation: logoFadeIn 1s ease-out;
+    }
+    @keyframes logoFadeIn {
+      from { opacity: 0; transform: scale(0.85) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+
+    /* Water flows FROM source — graph builds where water reaches */
+    @keyframes waterFlow {
+      0% { stroke-dashoffset: var(--len); opacity: 0.85; }
+      100% { stroke-dashoffset: 0; opacity: 0.85; }
+    }
+    @keyframes pipeFadeIn {
+      0% { opacity: 0; }
+      100% { opacity: var(--pipe-op, 0.7); }
+    }
+    @keyframes sheenFadeIn {
+      0% { opacity: 0; }
+      100% { opacity: var(--sheen-op, 0.4); }
+    }
+    @keyframes nodeAppear {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .wf { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); animation: waterFlow var(--dur, 0.8s) ease-out forwards; opacity: 0; }
+    .pr { opacity: 0; animation: pipeFadeIn 0.3s ease-out forwards; }
+    .sr { opacity: 0; animation: sheenFadeIn 0.3s ease-out forwards; }
+    .np { opacity: 0; transform-box: fill-box; transform-origin: center; animation: nodeAppear 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+
+    .venue-badge {
       display: inline-block;
-      background: rgba(255,255,255,0.2);
-      padding: 4px 16px;
+      background: rgba(59,130,246,0.25);
+      border: 1px solid rgba(147,197,253,0.3);
+      padding: 5px 18px;
       border-radius: 20px;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 600;
-      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+      animation: fadeUp 0.6s ease-out 0.2s both;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 6px;
+      animation: fadeUp 0.6s ease-out 0.3s both;
     }
     .hero .subtitle {
-      font-size: 1.15rem;
-      max-width: 720px;
-      margin: 0 auto 24px;
-      opacity: 0.92;
-      line-height: 1.7;
+      font-size: 1.08rem;
+      max-width: 680px;
+      margin: 0 auto 22px;
+      opacity: 0.88;
+      line-height: 1.75;
+      font-weight: 400;
+      animation: fadeUp 0.6s ease-out 0.4s both;
     }
     .hero .authors {
-      font-size: 0.92rem;
-      opacity: 0.85;
-      max-width: 700px;
-      margin: 0 auto 28px;
-      line-height: 1.8;
+      font-size: 0.88rem;
+      opacity: 0.7;
+      max-width: 660px;
+      margin: 0 auto 30px;
+      line-height: 1.9;
+      animation: fadeUp 0.6s ease-out 0.5s both;
     }
-    .hero .authors a { color: #93c5fd; text-decoration: none; }
-    .hero .authors a:hover { text-decoration: underline; }
-    .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp 0.6s ease-out 0.6s both;
+    }
     .btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 10px 24px;
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 22px;
       border-radius: 50px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       text-decoration: none;
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: all 0.2s;
+      font-family: inherit;
     }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    .btn-primary { background: #fff; color: var(--accent); }
-    .btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5); }
-    .btn-outline:hover { border-color: #fff; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+    .btn-primary { background: var(--blue-600); color: #fff; }
+    .btn-outline { background: rgba(30,58,138,0.06); color: var(--slate-800); border: 1.5px solid var(--slate-300); }
+    .btn-outline:hover { border-color: var(--blue-500); background: rgba(37,99,235,0.08); }
+    .btn svg { width: 17px; height: 17px; flex-shrink: 0; }
 
-    /* Container */
-    .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
-
-    /* Sections */
-    section { padding: 60px 0; }
-    section:nth-child(even) { background: var(--bg-alt); }
+    /* ===== LAYOUT ===== */
+    .container { max-width: 940px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 64px 0; }
+    section.alt { background: var(--slate-50); }
     section h2 {
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       font-weight: 700;
-      margin-bottom: 24px;
+      margin-bottom: 10px;
       text-align: center;
-      color: var(--text);
+      letter-spacing: -0.3px;
     }
-    section h3 { font-size: 1.2rem; font-weight: 600; margin: 20px 0 12px; }
+    section .section-sub {
+      text-align: center;
+      color: var(--slate-500);
+      font-size: 1rem;
+      margin-bottom: 32px;
+      max-width: 600px;
+      margin-left: auto; margin-right: auto;
+    }
 
-    /* Abstract */
-    .abstract { font-size: 1.05rem; line-height: 1.8; color: var(--text-muted); text-align: center; max-width: 800px; margin: 0 auto; }
+    /* ===== ABOUT CARDS ===== */
+    .about-text {
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: var(--slate-500);
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 36px;
+    }
+    .duo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .card h3 {
+      color: var(--blue-600);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .card p, .card li {
+      font-size: 0.93rem;
+      color: var(--slate-500);
+      line-height: 1.7;
+    }
+    .card ol { padding-left: 18px; }
+    .card li { margin-bottom: 6px; }
+    .card li strong { color: var(--slate-800); }
 
-    /* Figures */
+    /* ===== FIGURES ===== */
     .figure-row {
-      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
-      margin: 32px 0;
+      display: flex; gap: 18px; justify-content: center; flex-wrap: wrap;
+      margin-top: 8px;
     }
     .figure-card {
       text-align: center;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      background: var(--white);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-lg);
       padding: 16px;
-      flex: 1; min-width: 240px; max-width: 300px;
+      flex: 1; min-width: 220px; max-width: 280px;
+      transition: box-shadow 0.2s, transform 0.2s;
     }
-    .figure-card img { width: 100%; border-radius: 4px; }
+    .figure-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.07); transform: translateY(-2px); }
+    .figure-card img { width: 100%; border-radius: 6px; }
     .figure-card .caption {
       margin-top: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    /* Pipeline */
-    .pipeline {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 24px;
-    }
-    .pipeline-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-    }
-    .pipeline-card h3 {
-      color: var(--accent);
-      margin: 0 0 12px;
-      font-size: 1.1rem;
-    }
-    .pipeline-card ol { padding-left: 20px; }
-    .pipeline-card li { margin-bottom: 8px; font-size: 0.95rem; color: var(--text-muted); }
-    .pipeline-card li strong { color: var(--text); }
-
-    /* Tables */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 16px 0;
-      font-size: 0.92rem;
-    }
-    th, td {
-      padding: 10px 14px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-    th {
-      background: var(--bg-alt);
-      font-weight: 600;
-      color: var(--text);
-    }
-    td { color: var(--text-muted); }
-    tr:hover td { background: var(--accent-light); }
-
-    /* Code */
-    pre {
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      overflow-x: auto;
       font-size: 0.88rem;
-      line-height: 1.6;
-    }
-    code { font-family: 'SF Mono', 'Fira Code', monospace; }
-
-    /* Benchmark highlight */
-    .benchmark-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-top: 24px;
-    }
-    .benchmark-item {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      text-align: center;
-    }
-    .benchmark-item .task-name {
       font-weight: 700;
-      font-size: 1rem;
-      color: var(--accent);
-      margin-bottom: 6px;
+      color: var(--slate-700);
     }
-    .benchmark-item .dataset { font-size: 0.88rem; color: var(--text-muted); }
-    .benchmark-item .metrics { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+    .figure-card .caption small { font-weight: 500; color: var(--slate-400); }
 
-    /* Footer */
-    footer {
-      background: #1e293b;
-      color: #94a3b8;
-      padding: 40px 20px;
+    /* ===== BENCHMARKS ===== */
+    .bench-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+    }
+    .bench-item {
+      background: var(--white);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-lg);
+      padding: 22px 18px;
       text-align: center;
-      font-size: 0.88rem;
+      transition: box-shadow 0.2s;
     }
-    footer a { color: #93c5fd; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    .bench-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .bench-item .task {
+      font-weight: 700; font-size: 1rem;
+      color: var(--blue-600); margin-bottom: 4px;
+    }
+    .bench-item .dataset { font-size: 0.85rem; color: var(--slate-500); }
+    .bench-item .metrics { font-size: 0.78rem; color: var(--slate-400); margin-top: 6px; }
 
-    /* Responsive */
+    /* ===== MODELS ===== */
+    .models-text {
+      text-align: center;
+      color: var(--slate-500);
+      font-size: 1rem;
+      line-height: 2;
+    }
+    .models-text strong { color: var(--slate-700); }
+
+    /* ===== CODE ===== */
+    pre {
+      background: var(--slate-900);
+      color: var(--slate-300);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.65;
+      margin-top: 16px;
+    }
+    code { font-family: 'JetBrains Mono', 'SF Mono', monospace; }
+    pre .comment { color: var(--slate-500); }
+    pre .string { color: #7dd3fc; }
+    pre .keyword { color: var(--blue-400); }
+
+    section h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 28px 0 8px;
+      color: var(--slate-700);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--slate-900);
+      color: var(--slate-400);
+      padding: 36px 20px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--blue-300); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    footer .sep { margin: 0 8px; opacity: 0.4; }
+
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-      .hero h1 { font-size: 2rem; }
-      .pipeline { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2.2rem; }
+      .logo-wrap { width: 120px; height: 120px; }
+      .duo-grid { grid-template-columns: 1fr; }
       .figure-card { max-width: 100%; }
     }
   </style>
 </head>
 <body>
 
-<!-- Hero -->
+<!-- ==================== HERO ==================== -->
 <header class="hero">
-  <div class="venue">ICLR 2026</div>
-  <h1>QAFD-RAG</h1>
-  <p class="subtitle">
-    Query-Aware Flow Diffusion for Graph-Based Retrieval-Augmented Generation with Retrieval Guarantees
-  </p>
-  <p class="authors">
-    Zhuoping Zhou, Davoud Ataee Tarzanagh, Sima Didari, Wenjun Hu, Baruch Gutow,<br/>
-    Oxana Verkholyak, Masoud Faraki, Heng Hao, Hankyu Moon, Seungjai Min
-  </p>
-  <div class="btn-group">
-    <a class="btn btn-primary" href="https://openreview.net/pdf?id=n28wnc2QTc"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-3px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/></svg> Paper</a>
-    <a class="btn btn-outline" href="https://github.com/Tarzanagh/QAFD-RAG"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-3px"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/></svg> Code (Coming Soon)</a>
-    <a class="btn btn-outline" href="https://huggingface.co/datasets/tarzanagh/QAFD-RAG"><svg width="20" height="18" viewBox="0 0 120 120" fill="currentColor" style="vertical-align:-3px"><path d="M37.2 56.8c-1.5-2.8-4.1-3.2-5.7-3.2-1.6 0-4.2.4-5.7 3.2-.4.7-.1 1.6.6 2 .7.4 1.6.1 2-.6.7-1.3 1.8-1.6 3.1-1.6s2.4.3 3.1 1.6c.3.5.8.7 1.3.7.2 0 .5-.1.7-.2.7-.3 1-.9.6-1.9zM93.2 56.8c-1.5-2.8-4.1-3.2-5.7-3.2-1.6 0-4.2.4-5.7 3.2-.4.7-.1 1.6.6 2 .7.4 1.6.1 2-.6.7-1.3 1.8-1.6 3.1-1.6s2.4.3 3.1 1.6c.3.5.8.7 1.3.7.2 0 .5-.1.7-.2.7-.3 1-.9.6-1.9zM60 74c-8 0-14.5 3.5-17.5 9-.4.7-.1 1.6.6 2 .7.4 1.6.1 2-.6 2.4-4.4 7.8-7.4 14.9-7.4s12.5 3 14.9 7.4c.3.5.8.7 1.3.7.2 0 .5-.1.7-.2.7-.4 1-1.3.6-2-3-5.5-9.5-9-17.5-9z"/><path d="M60 10C32.4 10 10 32.4 10 60s22.4 50 50 50 50-22.4 50-50S87.6 10 60 10zm0 95c-24.8 0-45-20.2-45-45s20.2-45 45-45 45 20.2 45 45-20.2 45-45 45z"/></svg> Data</a>
+  <div class="hero-content">
+
+    <!-- ANIMATED CAFFEINE WATER-FLOW LOGO -->
+    <div class="logo-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 280" width="100%" height="100%">
+        <defs>
+          <radialGradient id="src" cx="40%" cy="32%">
+            <stop offset="0%" stop-color="#1E40AF" /><stop offset="45%" stop-color="#1E3A8A" /><stop offset="100%" stop-color="#172554" />
+          </radialGradient>
+          <radialGradient id="srcSp" cx="34%" cy="26%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" /><stop offset="18%" stop-color="#93C5FD" stop-opacity="0.3" /><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+          </radialGradient>
+          <radialGradient id="srcGl" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.5" /><stop offset="50%" stop-color="#1E3A8A" stop-opacity="0.15" /><stop offset="100%" stop-color="#172554" stop-opacity="0" />
+          </radialGradient>
+          <radialGradient id="s1" cx="38%" cy="28%">
+            <stop offset="0%" stop-color="#60A5FA" /><stop offset="45%" stop-color="#2563EB" /><stop offset="100%" stop-color="#1E3A8A" />
+          </radialGradient>
+          <radialGradient id="s1sp" cx="32%" cy="24%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.85" /><stop offset="22%" stop-color="#BFDBFE" stop-opacity="0.2" /><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+          </radialGradient>
+          <radialGradient id="m1" cx="38%" cy="28%">
+            <stop offset="0%" stop-color="#93C5FD" /><stop offset="50%" stop-color="#3B82F6" /><stop offset="100%" stop-color="#2563EB" />
+          </radialGradient>
+          <radialGradient id="m1sp" cx="32%" cy="24%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.7" /><stop offset="20%" stop-color="#FFFFFF" stop-opacity="0.12" /><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+          </radialGradient>
+          <radialGradient id="w1" cx="38%" cy="28%">
+            <stop offset="0%" stop-color="#BFDBFE" /><stop offset="50%" stop-color="#93C5FD" /><stop offset="100%" stop-color="#60A5FA" />
+          </radialGradient>
+          <radialGradient id="w1sp" cx="32%" cy="24%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.75" /><stop offset="18%" stop-color="#FFFFFF" stop-opacity="0.12" /><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+          </radialGradient>
+          <radialGradient id="st1" cx="38%" cy="28%">
+            <stop offset="0%" stop-color="#DBEAFE" /><stop offset="50%" stop-color="#BFDBFE" /><stop offset="100%" stop-color="#93C5FD" />
+          </radialGradient>
+          <radialGradient id="st1sp" cx="32%" cy="24%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.8" /><stop offset="16%" stop-color="#FFFFFF" stop-opacity="0.1" /><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+          </radialGradient>
+          <radialGradient id="lf" cx="38%" cy="28%">
+            <stop offset="0%" stop-color="#EFF6FF" /><stop offset="50%" stop-color="#DBEAFE" /><stop offset="100%" stop-color="#BFDBFE" />
+          </radialGradient>
+          <linearGradient id="pSh" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.25" />
+            <stop offset="40%" stop-color="#93C5FD" stop-opacity="0.08" />
+            <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+          </linearGradient>
+          <filter id="sB" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="b1" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b2" />
+            <feMerge><feMergeNode in="b1" /><feMergeNode in="b2" /></feMerge>
+          </filter>
+          <filter id="nG" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="2.5" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="sG" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="4" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="pG" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+
+
+        <!--
+          FLOW-FROM-SOURCE BUILD:
+          Water flows outward from source. Where water reaches, pipe + node appear.
+          
+          Timeline:
+          0.0s  Source node appears
+          0.3s  Water flows Source→G, Source→D (two directions)
+          0.6s  Pipe behind water fades in, G and D nodes pop
+          0.8s  Water flows G→C and D→C (converging)
+          1.1s  C node pops, 5-ring complete
+          1.3s  Water flows C→B (6-ring top)
+          1.6s  B pops, water flows B→A
+          1.9s  A pops
+          1.5s  Water flows D→E (6-ring bottom)  
+          1.8s  E pops, water flows E→F
+          2.1s  F pops, water flows F→A (ring closes)
+          2.2s  Water flows into branches: A→M1, B→M2, E→M3
+          2.6s  Branch nodes pop
+          2.8s  Thin trickle to M1→leaf, M3→leaf
+          3.0s  Starved pipes barely appear (F→M4, G→M5)
+          3.3s  Starved nodes fade in
+          3.5s+ Water loops continuously inside all pipes
+        -->
+
+        <!-- ======= SOURCE (appears first, 0.0s) ======= -->
+        <circle cx="255" cy="118" r="22" fill="url(#srcGl)" filter="url(#sB)" class="np" style="animation-delay:0s;" />
+        <g filter="url(#sG)" class="np" style="animation-delay:0s;">
+          <circle cx="255" cy="118" r="16" fill="url(#src)" />
+          <circle cx="255" cy="118" r="16" fill="url(#srcSp)" />
+          <ellipse cx="249" cy="110" rx="5" ry="3.5" fill="#FFFFFF" opacity="0.5" />
+        </g>
+
+        <!-- ======= WATER FROM SOURCE (0.3s) ======= -->
+        <!-- Water: Source→G -->
+        <path d="M255,118 C250,105 245,90 242,80 Q238,72 235,68" fill="none" stroke="#7DD3FC" stroke-width="6" stroke-linecap="round" class="wf" style="--len:65;--dur:0.7s;animation-delay:0.3s;" />
+        <!-- Water: Source→D -->
+        <path d="M255,118 C248,128 230,140 215,146 Q200,150 192,148" fill="none" stroke="#7DD3FC" stroke-width="5.5" stroke-linecap="round" class="wf" style="--len:80;--dur:0.8s;animation-delay:0.35s;" />
+
+        <!-- Pipes fade in behind: Source→G, Source→D (0.5s) -->
+        <path d="M235,68 C242,78 250,95 254,108 Q255,114 255,118" fill="none" stroke="#172554" stroke-width="11" stroke-linecap="round" class="pr" style="--pipe-op:0.92;animation-delay:0.5s;" />
+        <path d="M235,68 C242,78 250,95 254,108 Q255,114 255,118" fill="none" stroke="url(#pSh)" stroke-width="5" stroke-linecap="round" class="sr" style="--sheen-op:0.6;animation-delay:0.55s;" />
+        <path d="M255,118 C242,128 218,142 202,148 Q196,150 192,148" fill="none" stroke="#172554" stroke-width="10.5" stroke-linecap="round" class="pr" style="--pipe-op:0.88;animation-delay:0.55s;" />
+        <path d="M255,118 C242,128 218,142 202,148 Q196,150 192,148" fill="none" stroke="url(#pSh)" stroke-width="4.5" stroke-linecap="round" class="sr" style="--sheen-op:0.55;animation-delay:0.6s;" />
+
+        <!-- G and D nodes pop (0.65s) -->
+        <g filter="url(#nG)">
+          <circle cx="235" cy="68" r="10" fill="url(#s1)" class="np" style="animation-delay:0.65s;" /><circle cx="235" cy="68" r="10" fill="url(#s1sp)" class="np" style="animation-delay:0.65s;" />
+          <circle cx="192" cy="148" r="11" fill="url(#s1)" class="np" style="animation-delay:0.7s;" /><circle cx="192" cy="148" r="11" fill="url(#s1sp)" class="np" style="animation-delay:0.7s;" />
+        </g>
+
+        <!-- ======= WATER: G→C, D→C (0.8s, converging) ======= -->
+        <path d="M235,68 C225,72 215,78 205,85 Q198,90 192,92" fill="none" stroke="#7DD3FC" stroke-width="5.5" stroke-linecap="round" class="wf" style="--len:60;--dur:0.7s;animation-delay:0.8s;" />
+        <path d="M192,148 C192,138 192,118 192,105 Q192,98 192,92" fill="none" stroke="#7DD3FC" stroke-width="5" stroke-linecap="round" class="wf" style="--len:56;--dur:0.65s;animation-delay:0.85s;" />
+
+        <!-- Pipes: C→G, C→D (0.95s) -->
+        <path d="M192,92 C202,82 215,72 225,68 Q230,66 235,68" fill="none" stroke="#172554" stroke-width="10.5" stroke-linecap="round" class="pr" style="--pipe-op:0.88;animation-delay:0.95s;" />
+        <path d="M192,92 C202,82 215,72 225,68 Q230,66 235,68" fill="none" stroke="url(#pSh)" stroke-width="4.5" stroke-linecap="round" class="sr" style="--sheen-op:0.55;animation-delay:1.0s;" />
+        <path d="M192,92 C192,108 192,128 192,148" fill="none" stroke="#172554" stroke-width="10.5" stroke-linecap="round" class="pr" style="--pipe-op:0.85;animation-delay:1.0s;" />
+        <path d="M192,92 C192,108 192,128 192,148" fill="none" stroke="url(#pSh)" stroke-width="4.5" stroke-linecap="round" class="sr" style="--sheen-op:0.55;animation-delay:1.05s;" />
+
+        <!-- C node pops (1.1s) -->
+        <g filter="url(#nG)">
+          <circle cx="192" cy="92" r="11" fill="url(#s1)" class="np" style="animation-delay:1.1s;" /><circle cx="192" cy="92" r="11" fill="url(#s1sp)" class="np" style="animation-delay:1.1s;" />
+        </g>
+
+        <!-- ======= WATER: C→B (1.3s, 6-ring top) ======= -->
+        <path d="M192,92 C180,78 165,66 152,62 Q146,60 140,60" fill="none" stroke="#93C5FD" stroke-width="4.5" stroke-linecap="round" class="wf" style="--len:60;--dur:0.7s;animation-delay:1.3s;" />
+        <!-- Pipe C→B (1.45s) -->
+        <path d="M192,92 C180,78 165,66 152,62 Q146,60 140,60" fill="none" stroke="#1E3A8A" stroke-width="9.5" stroke-linecap="round" class="pr" style="--pipe-op:0.75;animation-delay:1.45s;" />
+        <path d="M192,92 C180,78 165,66 152,62 Q146,60 140,60" fill="none" stroke="url(#pSh)" stroke-width="4.2" stroke-linecap="round" class="sr" style="--sheen-op:0.5;animation-delay:1.5s;" />
+        <!-- B pops (1.6s) -->
+        <g filter="url(#nG)">
+          <circle cx="140" cy="60" r="9.5" fill="url(#s1)" class="np" style="animation-delay:1.6s;" /><circle cx="140" cy="60" r="9.5" fill="url(#s1sp)" class="np" style="animation-delay:1.6s;" />
+        </g>
+
+        <!-- Water: B→A (1.65s) -->
+        <path d="M140,60 C128,62 110,72 98,82 Q92,88 88,92" fill="none" stroke="#93C5FD" stroke-width="4" stroke-linecap="round" class="wf" style="--len:70;--dur:0.7s;animation-delay:1.65s;" />
+        <!-- Pipe B→A (1.8s) -->
+        <path d="M140,60 C128,62 110,72 98,82 Q92,88 88,92" fill="none" stroke="#1E3A8A" stroke-width="9" stroke-linecap="round" class="pr" style="--pipe-op:0.72;animation-delay:1.8s;" />
+        <path d="M140,60 C128,62 110,72 98,82 Q92,88 88,92" fill="none" stroke="url(#pSh)" stroke-width="4" stroke-linecap="round" class="sr" style="--sheen-op:0.5;animation-delay:1.85s;" />
+        <!-- A pops (1.95s) -->
+        <g filter="url(#nG)">
+          <circle cx="88" cy="92" r="10" fill="url(#s1)" class="np" style="animation-delay:1.95s;" /><circle cx="88" cy="92" r="10" fill="url(#s1sp)" class="np" style="animation-delay:1.95s;" />
+        </g>
+
+        <!-- ======= WATER: D→E (1.5s, 6-ring bottom) ======= -->
+        <path d="M192,148 C182,158 165,168 152,173 Q146,175 140,175" fill="none" stroke="#93C5FD" stroke-width="4" stroke-linecap="round" class="wf" style="--len:65;--dur:0.7s;animation-delay:1.5s;" />
+        <!-- Pipe D→E (1.65s) -->
+        <path d="M192,148 C182,158 165,168 152,173 Q146,175 140,175" fill="none" stroke="#1E3A8A" stroke-width="8.5" stroke-linecap="round" class="pr" style="--pipe-op:0.72;animation-delay:1.65s;" />
+        <path d="M192,148 C182,158 165,168 152,173 Q146,175 140,175" fill="none" stroke="url(#pSh)" stroke-width="3.8" stroke-linecap="round" class="sr" style="--sheen-op:0.45;animation-delay:1.7s;" />
+        <!-- E pops (1.85s) -->
+        <g filter="url(#nG)">
+          <circle cx="140" cy="175" r="8.5" fill="url(#m1)" class="np" style="animation-delay:1.85s;" /><circle cx="140" cy="175" r="8.5" fill="url(#m1sp)" class="np" style="animation-delay:1.85s;" />
+        </g>
+
+        <!-- Water: E→F (1.9s) -->
+        <path d="M140,175 C128,172 110,162 98,155 Q92,150 88,148" fill="none" stroke="#BFDBFE" stroke-width="3" stroke-linecap="round" class="wf" style="--len:65;--dur:0.7s;animation-delay:1.9s;" />
+        <!-- Pipe E→F (2.05s) -->
+        <path d="M140,175 C128,172 110,162 98,155 Q92,150 88,148" fill="none" stroke="#1D4ED8" stroke-width="6" stroke-linecap="round" class="pr" style="--pipe-op:0.5;animation-delay:2.05s;" />
+        <path d="M140,175 C128,172 110,162 98,155 Q92,150 88,148" fill="none" stroke="url(#pSh)" stroke-width="2.8" stroke-linecap="round" class="sr" style="--sheen-op:0.35;animation-delay:2.1s;" />
+        <!-- F pops (2.2s) -->
+        <g filter="url(#nG)">
+          <circle cx="88" cy="148" r="7.5" fill="url(#m1)" class="np" style="animation-delay:2.2s;" /><circle cx="88" cy="148" r="7.5" fill="url(#m1sp)" class="np" style="animation-delay:2.2s;" />
+        </g>
+
+        <!-- Water: F→A closing ring (2.25s) -->
+        <path d="M88,148 C88,132 88,112 88,92" fill="none" stroke="#BFDBFE" stroke-width="2.5" stroke-linecap="round" class="wf" style="--len:56;--dur:0.6s;animation-delay:2.25s;" />
+        <path d="M88,148 C88,132 88,112 88,92" fill="none" stroke="#1D4ED8" stroke-width="5.5" stroke-linecap="round" class="pr" style="--pipe-op:0.48;animation-delay:2.4s;" />
+        <path d="M88,148 C88,132 88,112 88,92" fill="none" stroke="url(#pSh)" stroke-width="2.5" stroke-linecap="round" class="sr" style="--sheen-op:0.3;animation-delay:2.45s;" />
+
+        <!-- ======= BRANCH WATER (2.2s+) ======= -->
+        <!-- A→M1 (strong branch) -->
+        <path d="M88,92 C75,82 58,70 48,65 Q44,63 42,62" fill="none" stroke="#93C5FD" stroke-width="3.5" stroke-linecap="round" class="wf" style="--len:50;--dur:0.6s;animation-delay:2.2s;" />
+        <path d="M88,92 C75,82 58,70 48,65 Q44,63 42,62" fill="none" stroke="#1E3A8A" stroke-width="7" stroke-linecap="round" class="pr" style="--pipe-op:0.6;animation-delay:2.35s;" />
+        <path d="M88,92 C75,82 58,70 48,65 Q44,63 42,62" fill="none" stroke="url(#pSh)" stroke-width="3" stroke-linecap="round" class="sr" style="--sheen-op:0.4;animation-delay:2.4s;" />
+        <g filter="url(#nG)">
+          <circle cx="42" cy="62" r="8" fill="url(#m1)" class="np" style="animation-delay:2.5s;" /><circle cx="42" cy="62" r="8" fill="url(#m1sp)" class="np" style="animation-delay:2.5s;" />
+        </g>
+        <!-- M1→leaf -->
+        <path d="M42,62 C36,52 28,42 25,38 Q23,36 22,35" fill="none" stroke="#BFDBFE" stroke-width="1.8" stroke-linecap="round" class="wf" style="--len:38;--dur:0.5s;animation-delay:2.6s;" />
+        <path d="M42,62 C36,52 28,42 25,38 Q23,36 22,35" fill="none" stroke="#3B82F6" stroke-width="3" stroke-linecap="round" class="pr" style="--pipe-op:0.28;animation-delay:2.75s;" />
+        <circle cx="22" cy="35" r="3" fill="url(#lf)" class="np" style="animation-delay:2.85s;" />
+
+        <!-- B→M2 up -->
+        <path d="M140,60 C140,48 140,35 140,25" fill="none" stroke="#BFDBFE" stroke-width="2.2" stroke-linecap="round" class="wf" style="--len:35;--dur:0.5s;animation-delay:2.0s;" />
+        <path d="M140,60 C140,48 140,35 140,25" fill="none" stroke="#2563EB" stroke-width="4.5" stroke-linecap="round" class="pr" style="--pipe-op:0.38;animation-delay:2.15s;" />
+        <path d="M140,60 C140,48 140,35 140,25" fill="none" stroke="url(#pSh)" stroke-width="2" stroke-linecap="round" class="sr" style="--sheen-op:0.25;animation-delay:2.2s;" />
+        <circle cx="140" cy="25" r="5.5" fill="url(#w1)" class="np" style="animation-delay:2.3s;" /><circle cx="140" cy="25" r="5.5" fill="url(#w1sp)" class="np" style="animation-delay:2.3s;" />
+
+        <!-- E→M3 down -->
+        <path d="M140,175 C140,188 140,205 140,218" fill="none" stroke="#BFDBFE" stroke-width="2.2" stroke-linecap="round" class="wf" style="--len:43;--dur:0.5s;animation-delay:2.15s;" />
+        <path d="M140,175 C140,188 140,205 140,218" fill="none" stroke="#2563EB" stroke-width="4.5" stroke-linecap="round" class="pr" style="--pipe-op:0.4;animation-delay:2.3s;" />
+        <path d="M140,175 C140,188 140,205 140,218" fill="none" stroke="url(#pSh)" stroke-width="2" stroke-linecap="round" class="sr" style="--sheen-op:0.25;animation-delay:2.35s;" />
+        <circle cx="140" cy="218" r="6" fill="url(#w1)" class="np" style="animation-delay:2.45s;" /><circle cx="140" cy="218" r="6" fill="url(#w1sp)" class="np" style="animation-delay:2.45s;" />
+        <!-- M3→leaf -->
+        <path d="M140,218 C134,230 126,242 120,250" fill="none" stroke="#DBEAFE" stroke-width="1.5" stroke-linecap="round" class="wf" style="--len:38;--dur:0.5s;animation-delay:2.55s;" />
+        <path d="M140,218 C134,230 126,242 120,250" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" class="pr" style="--pipe-op:0.18;animation-delay:2.7s;" />
+        <circle cx="120" cy="250" r="2.8" fill="url(#lf)" class="np" style="animation-delay:2.8s;" />
+
+        <!-- Source extension -->
+        <path d="M255,118 C258,132 262,150 265,165" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" class="wf" style="--len:50;--dur:0.5s;animation-delay:2.0s;" />
+        <path d="M255,118 C258,132 262,150 265,165" fill="none" stroke="#2563EB" stroke-width="3.5" stroke-linecap="round" class="pr" style="--pipe-op:0.3;animation-delay:2.15s;" />
+        <circle cx="265" cy="165" r="4.5" fill="url(#w1)" class="np" style="animation-delay:2.3s;" /><circle cx="265" cy="165" r="4.5" fill="url(#w1sp)" class="np" style="animation-delay:2.3s;" />
+
+        <!-- ======= STARVED PIPES (3.0s — tiny trickle, no real flow) ======= -->
+        <path d="M88,148 C75,158 60,168 48,178" fill="none" stroke="#DBEAFE" stroke-width="1.2" stroke-linecap="round" class="wf" style="--len:45;--dur:0.8s;animation-delay:3.0s;" />
+        <path d="M88,148 C75,158 60,168 48,178" fill="none" stroke="#60A5FA" stroke-width="2.2" stroke-linecap="round" class="pr" style="--pipe-op:0.15;animation-delay:3.2s;" />
+        <circle cx="48" cy="178" r="4" fill="url(#st1)" class="np" style="animation-delay:3.4s;" /><circle cx="48" cy="178" r="4" fill="url(#st1sp)" class="np" style="animation-delay:3.4s;" />
+
+        <path d="M235,68 C240,55 246,42 252,35" fill="none" stroke="#DBEAFE" stroke-width="1.2" stroke-linecap="round" class="wf" style="--len:42;--dur:0.8s;animation-delay:3.1s;" />
+        <path d="M235,68 C240,55 246,42 252,35" fill="none" stroke="#60A5FA" stroke-width="2.8" stroke-linecap="round" class="pr" style="--pipe-op:0.22;animation-delay:3.3s;" />
+        <circle cx="252" cy="35" r="4" fill="url(#st1)" class="np" style="animation-delay:3.5s;" /><circle cx="252" cy="35" r="4" fill="url(#st1sp)" class="np" style="animation-delay:3.5s;" />
+
+        <!-- ======= CONTINUOUS WATER LOOP (starts after build ~4s) ======= -->
+        <g fill="none" stroke-linecap="round" opacity="0">
+          <set attributeName="opacity" to="1" begin="4s" fill="freeze" />
+          <!-- 5-ring loop -->
+          <path d="M255,118 C242,128 218,142 202,148 Q196,150 192,148" stroke="#7DD3FC" stroke-width="5" stroke-dasharray="12 8">
+            <animate attributeName="stroke-dashoffset" values="0;-40" dur="1.2s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <path d="M192,148 C192,128 192,108 192,92" stroke="#7DD3FC" stroke-width="5.5" stroke-dasharray="14 8">
+            <animate attributeName="stroke-dashoffset" values="0;-44" dur="1s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <path d="M192,92 C202,82 215,72 225,68 Q230,66 235,68" stroke="#7DD3FC" stroke-width="5.5" stroke-dasharray="12 8">
+            <animate attributeName="stroke-dashoffset" values="0;-40" dur="1.1s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <path d="M235,68 C242,78 250,95 254,108 Q255,114 255,118" stroke="#7DD3FC" stroke-width="6" stroke-dasharray="14 8">
+            <animate attributeName="stroke-dashoffset" values="0;-44" dur="1s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <!-- 6-ring top -->
+          <path d="M192,92 C180,78 165,66 152,62 Q146,60 140,60" stroke="#93C5FD" stroke-width="4.5" stroke-dasharray="10 8">
+            <animate attributeName="stroke-dashoffset" values="0;-36" dur="1.4s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <path d="M140,60 C128,62 110,72 98,82 Q92,88 88,92" stroke="#93C5FD" stroke-width="4" stroke-dasharray="10 8">
+            <animate attributeName="stroke-dashoffset" values="0;-36" dur="1.5s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <!-- 6-ring bottom -->
+          <path d="M192,148 C182,158 165,168 152,173 Q146,175 140,175" stroke="#93C5FD" stroke-width="4" stroke-dasharray="10 8">
+            <animate attributeName="stroke-dashoffset" values="0;-36" dur="1.3s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <path d="M140,175 C128,172 110,162 98,155 Q92,150 88,148" stroke="#BFDBFE" stroke-width="2.8" stroke-dasharray="8 8">
+            <animate attributeName="stroke-dashoffset" values="0;-32" dur="1.6s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <path d="M88,148 C88,132 88,112 88,92" stroke="#BFDBFE" stroke-width="2.5" stroke-dasharray="8 8">
+            <animate attributeName="stroke-dashoffset" values="0;-32" dur="1.8s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <!-- Branches -->
+          <path d="M88,92 C75,82 58,70 48,65 Q44,63 42,62" stroke="#93C5FD" stroke-width="3.2" stroke-dasharray="8 7">
+            <animate attributeName="stroke-dashoffset" values="0;-30" dur="1.4s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <path d="M140,60 C140,48 140,35 140,25" stroke="#BFDBFE" stroke-width="2" stroke-dasharray="6 7">
+            <animate attributeName="stroke-dashoffset" values="0;-26" dur="1.6s" begin="4s" repeatCount="indefinite" />
+          </path>
+          <path d="M140,175 C140,188 140,205 140,218" stroke="#BFDBFE" stroke-width="2" stroke-dasharray="6 7">
+            <animate attributeName="stroke-dashoffset" values="0;-26" dur="1.5s" begin="4s" repeatCount="indefinite" />
+          </path>
+        </g>
+
+      </svg>
+    </div>
+
+    <h1 style="font-size:2.8rem;font-weight:700;letter-spacing:-1px;margin-bottom:24px;color:var(--navy-900);animation:fadeUp 0.6s ease-out 0.3s both;">QAFD-RAG</h1>
+
+    <div class="btn-group">
+      <a class="btn btn-primary" href="https://openreview.net/pdf?id=n28wnc2QTc">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/></svg>
+        Paper
+      </a>
+      <a class="btn btn-outline" href="https://github.com/Tarzanagh/QAFD-RAG">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/></svg>
+        Code
+      </a>
+      <a class="btn btn-outline" href="https://huggingface.co/datasets/tarzanagh/QAFD-RAG">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        Data
+      </a>
+    </div>
   </div>
 </header>
 
-<!-- Abstract -->
+<!-- ==================== ABOUT ==================== -->
 <section>
   <div class="container">
-    <h2>About QAFD-RAG</h2>
-    <p class="abstract" style="margin-bottom: 32px;">
-      QAFD-RAG is a graph-based retrieval-augmented generation framework that uses
+    <h2 style="font-size:1.55rem;font-weight:700;color:var(--slate-800);margin-bottom:16px;">
+      Query-Aware Flow Diffusion for Graph-Based<br/>Retrieval-Augmented Generation
+    </h2>
+    <p class="about-text">
+      <strong style="color:var(--blue-600);">QAFD-RAG</strong> is a graph-based retrieval-augmented generation framework that uses
       <strong>query-aware flow diffusion</strong> to retrieve contextually relevant subgraphs
-      from a knowledge graph with <strong>retrieval guarantees</strong>.
+      from a knowledge graph with <strong>statistical retrieval guarantees</strong>.
     </p>
-    <div class="pipeline" style="gap: 20px;">
-      <div class="pipeline-card" style="text-align:center;">
-        <h3 style="color:var(--accent);margin:0 0 8px;">The Problem</h3>
-        <p style="font-size:0.95rem;color:var(--text-muted);">
-          Existing graph-based RAG methods rely on <strong>static retrieval</strong> strategies&mdash;community
+    <div class="duo-grid">
+      <div class="card">
+        <h3>The Problem</h3>
+        <p>
+          Existing graph-based RAG methods rely on <strong>static retrieval</strong>&mdash;community
           detection (GraphRAG) or one-hop entity lookup (LightRAG)&mdash;that ignore query context
           and miss relevant multi-hop connections.
         </p>
       </div>
-      <div class="pipeline-card" style="text-align:center;">
-        <h3 style="color:var(--accent);margin:0 0 8px;">Our Solution</h3>
-        <p style="font-size:0.95rem;color:var(--text-muted);">
+      <div class="card">
+        <h3>Our Solution</h3>
+        <p>
           QAFD-RAG <strong>dynamically re-weights</strong> graph edges based on query relevance and
           <strong>propagates flow</strong> through the knowledge graph to discover multi-hop context,
           assembling a query-specific subgraph for the LLM.
@@ -261,10 +637,11 @@
   </div>
 </section>
 
-<!-- Comparison -->
-<section>
+<!-- ==================== COMPARISON ==================== -->
+<section class="alt">
   <div class="container">
     <h2>Approach Comparison</h2>
+    <p class="section-sub">How different retrieval strategies explore a knowledge graph</p>
     <div class="figure-row">
       <div class="figure-card">
         <img src="figs/GraphRAG.png" alt="GraphRAG" />
@@ -279,130 +656,142 @@
         <div class="caption">QAFD-RAG (Ours)<br/><small>Query-Aware Flow Diffusion</small></div>
       </div>
     </div>
+    <p style="margin-top:24px;font-size:0.92rem;color:var(--slate-500);line-height:1.75;max-width:860px;margin-left:auto;margin-right:auto;">
+      Comparison on Wikipedia pages (Apple fruit, Apple Inc., Amazon River, Amazon.com).
+      Query: <em>"Introduce Steve Jobs's products in Apple."</em>
+      <strong style="color:var(--slate-700);">GraphRAG</strong> retrieves entire communities, mixing relevant nodes (e.g., Mac, macOS) with irrelevant ones (e.g., Amazon River, Apple fruit).
+      <strong style="color:var(--slate-700);">LightRAG</strong> focuses on 1-hop neighborhoods, including both relevant nodes (e.g., Steve Jobs, iPhone) and structurally close but irrelevant ones (e.g., Fuji).
+      <strong style="color:var(--slate-700);">QAFD-RAG</strong> reweights edges by the query's holistic meaning, suppressing irrelevant neighborhoods and preventing traversal into unrelated clusters.
+      The resulting subgraph is coherent, with edge thickness reflecting weight and node size indicating importance.
+    </p>
   </div>
 </section>
 
-<!-- Method -->
+<!-- ==================== METHOD ==================== -->
 <section>
   <div class="container">
     <h2>How It Works</h2>
-    <div class="pipeline">
-      <div class="pipeline-card">
-        <h3>Stage 1: Knowledge Graph Construction</h3>
+    <p class="section-sub">A two-stage pipeline from raw documents to grounded LLM answers</p>
+    <div class="duo-grid">
+      <div class="card">
+        <h3>Stage 1 &mdash; Knowledge Graph Construction</h3>
         <ol>
           <li><strong>Chunking</strong> &mdash; Documents are split into overlapping token-based chunks.</li>
           <li><strong>Entity Extraction</strong> &mdash; An LLM identifies entities and relationships from each chunk.</li>
           <li><strong>Graph Assembly</strong> &mdash; Entities become nodes, relationships become weighted edges, all embedded into vector space.</li>
         </ol>
       </div>
-      <div class="pipeline-card">
-        <h3>Stage 2: Query-Aware Retrieval</h3>
+      <div class="card">
+        <h3>Stage 2 &mdash; Query-Aware Retrieval</h3>
         <ol>
-          <li><strong>Entity Matching</strong> &mdash; Query keywords are matched to KG entities via vector similarity.</li>
+          <li><strong>Entity Matching</strong> &mdash; Query keywords matched to KG entities via vector similarity.</li>
           <li><strong>Flow Diffusion</strong> &mdash; Mass propagates through the graph with query-aware edge re-weighting.</li>
-          <li><strong>Context Assembly</strong> &mdash; Top-ranked nodes and their text chunks form the context for the LLM.</li>
+          <li><strong>Context Assembly</strong> &mdash; Top-ranked nodes and their text chunks form context for the LLM.</li>
         </ol>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Benchmarks -->
-<section>
+<!-- ==================== BENCHMARKS ==================== -->
+<section class="alt">
   <div class="container">
     <h2>Benchmarks</h2>
-    <div class="benchmark-grid">
-      <div class="benchmark-item">
-        <div class="task-name">UltraDomain</div>
+    <p class="section-sub">Evaluated across diverse retrieval and generation tasks</p>
+    <div class="bench-grid">
+      <div class="bench-item">
+        <div class="task">UltraDomain</div>
         <div class="dataset">Diverse Domain QA</div>
-        <div class="metrics">Comprehensiveness, Diversity, Relevance, Logicality, Coherence</div>
+        <div class="metrics">Comprehensiveness · Diversity · Relevance · Logicality · Coherence</div>
       </div>
-      <div class="benchmark-item">
-        <div class="task-name">Multi-hop QA</div>
-        <div class="dataset">MuSiQue, HotpotQA, 2WikiMultiHopQA</div>
-        <div class="metrics">F1, Exact Match</div>
+      <div class="bench-item">
+        <div class="task">Multi-hop QA</div>
+        <div class="dataset">MuSiQue · HotpotQA · 2WikiMultiHopQA</div>
+        <div class="metrics">F1 · Exact Match</div>
       </div>
-      <div class="benchmark-item">
-        <div class="task-name">Text-to-SQL</div>
+      <div class="bench-item">
+        <div class="task">Text-to-SQL</div>
         <div class="dataset">Spider2-lite (Pagila, etc.)</div>
         <div class="metrics">Schema Retrieval Accuracy</div>
       </div>
-      <div class="benchmark-item">
-        <div class="task-name">Summarization</div>
+      <div class="bench-item">
+        <div class="task">Summarization</div>
         <div class="dataset">SQuALITY</div>
-        <div class="metrics">BLEU, ROUGE, METEOR</div>
+        <div class="metrics">BLEU · ROUGE · METEOR</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Embedding Models -->
+<!-- ==================== MODELS ==================== -->
 <section>
   <div class="container">
     <h2>Supported Models</h2>
-    <p style="text-align:center; color: var(--text-muted); font-size: 1.05rem; line-height: 1.8;">
-      <strong>Embeddings:</strong> openai-small, openai-large, jina-v3, gritlm, nvidia-nv-embed-v2<br/>
-      <strong>LLMs:</strong> gpt-4o-mini, gpt-4o, gpt-5-nano, gpt-5-mini, gpt-5, gpt-oss-120b
+    <p class="models-text">
+      <strong>Embeddings:</strong> openai-small · openai-large · jina-v3 · gritlm · nvidia-nv-embed-v2<br/>
+      <strong>LLMs:</strong> gpt-4o-mini · gpt-4o · gpt-5-nano · gpt-5-mini · gpt-5 · gpt-oss-120b
     </p>
   </div>
 </section>
 
-<!-- Quick Start -->
-<section>
+<!-- ==================== QUICK START ==================== -->
+<section class="alt">
   <div class="container">
     <h2>Quick Start</h2>
-<pre><code># 1. Install dependencies
+<pre><code><span class="comment"># 1. Install dependencies</span>
 pip install -r requirements.txt
 
-# 2. Set your OpenAI API key
-export OPENAI_API_KEY="sk-..."
+<span class="comment"># 2. Set your OpenAI API key</span>
+export OPENAI_API_KEY=<span class="string">"sk-..."</span>
 
-# 3. Build a knowledge graph
+<span class="comment"># 3. Build a knowledge graph</span>
 ./run.sh ultradomain --build --max-documents 100
 
-# 4. Run a benchmark
+<span class="comment"># 4. Run a benchmark</span>
 ./run.sh ultradomain --questions 10</code></pre>
 
-    <h3 style="margin-top: 32px;">Python API</h3>
-<pre><code>from src import QAFD_RAG, QueryParam
+    <h3>Python API</h3>
+<pre><code><span class="keyword">from</span> src <span class="keyword">import</span> QAFD_RAG, QueryParam
 
 rag = QAFD_RAG(
-    working_dir="./my_kg",
-    llm_model_name="gpt-4o-mini",
-    embedding_model_key="jina-v3",
+    working_dir=<span class="string">"./my_kg"</span>,
+    llm_model_name=<span class="string">"gpt-4o-mini"</span>,
+    embedding_model_key=<span class="string">"jina-v3"</span>,
 )
 
-# Index documents
-rag.insert(["Document text 1...", "Document text 2..."])
+<span class="comment"># Index documents</span>
+rag.insert([<span class="string">"Document text 1..."</span>, <span class="string">"Document text 2..."</span>])
 
-# Query
-answer = rag.query("What is X?", param=QueryParam(mode="hybrid"))
+<span class="comment"># Query</span>
+answer = rag.query(<span class="string">"What is X?"</span>, param=QueryParam(mode=<span class="string">"hybrid"</span>))
 print(answer)</code></pre>
   </div>
 </section>
 
-<!-- Citation -->
+<!-- ==================== CITATION ==================== -->
 <section>
   <div class="container">
     <h2>Citation</h2>
 <pre><code>@inproceedings{zhou2026qafd,
   title={Query-Aware Flow Diffusion for Graph-Based RAG with Retrieval Guarantees},
-  author={Zhuoping Zhou and Davoud Ataee Tarzanagh and Sima Didari and Wenjun Hu and Baruch Gutow and Oxana Verkholyak and Masoud Faraki and Heng Hao and Hankyu Moon and Seungjai Min},
+  author={Zhuoping Zhou and Davoud Ataee Tarzanagh and Sima Didari and Wenjun Hu
+          and Baruch Gutow and Oxana Verkholyak and Masoud Faraki and Heng Hao
+          and Hankyu Moon and Seungjai Min},
   booktitle={International Conference on Learning Representations (ICLR)},
   year={2026}
 }</code></pre>
   </div>
 </section>
 
-<!-- Footer -->
+<!-- ==================== FOOTER ==================== -->
 <footer>
   <p>
-    QAFD-RAG &bull;
-    <a href="https://openreview.net/pdf?id=n28wnc2QTc">Paper</a> &bull;
-    <a href="https://github.com/Tarzanagh/QAFD-RAG">GitHub</a> &bull;
-    <a href="https://huggingface.co/datasets/tarzanagh/QAFD-RAG">HuggingFace</a>
+    QAFD-RAG
+    <span class="sep">·</span><a href="https://openreview.net/pdf?id=n28wnc2QTc">Paper</a>
+    <span class="sep">·</span><a href="https://github.com/Tarzanagh/QAFD-RAG">GitHub</a>
+    <span class="sep">·</span><a href="https://huggingface.co/datasets/tarzanagh/QAFD-RAG">HuggingFace</a>
   </p>
-  <p style="margin-top: 8px;">ICLR 2026</p>
+  <p style="margin-top: 8px; opacity: 0.6;">Contact: <a href="mailto:tarzanagh@gmail.com">tarzanagh@gmail.com</a></p>
 </footer>
 
 </body>
