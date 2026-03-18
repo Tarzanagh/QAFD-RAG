@@ -205,7 +205,7 @@ class MultiHopBenchmark:
         data_dir = os.path.join(QAFD_RAG_HOME, "data", "multihop")
         filepath = os.path.join(data_dir, filename)
         if not os.path.exists(filepath):
-            print(f"  Downloading {filename} from osunlp/HippoRAG_2...", end=" ", flush=True)
+            print(f"  Downloading {filename} from HuggingFace...", end=" ", flush=True)
             from huggingface_hub import hf_hub_download
             os.makedirs(data_dir, exist_ok=True)
             hf_hub_download(

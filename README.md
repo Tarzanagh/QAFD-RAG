@@ -159,7 +159,7 @@ Datasets are automatically downloaded from HuggingFace on first run:
 | Task | Source | Reference |
 |------|--------|-----------|
 | **UltraDomain** | [TommyChien/UltraDomain](https://huggingface.co/datasets/TommyChien/UltraDomain) | mix.jsonl |
-| **Multi-hop QA** | [osunlp/HippoRAG_2](https://huggingface.co/datasets/osunlp/HippoRAG_2) | MuSiQue, HotpotQA, 2WikiMultiHopQA |
+| **Multi-hop QA** | [osunlp](https://huggingface.co/osunlp) | MuSiQue, HotpotQA, 2WikiMultiHopQA |
 | **Summarization** | [pszemraj/SQuALITY-v1.3](https://huggingface.co/datasets/pszemraj/SQuALITY-v1.3) | SQuALITY |
 | **Text-to-SQL** | Included (`data/text2sql/`) | Spider2-lite (Pagila) + Bird (superhero) with auto-generated DB summaries |
 
