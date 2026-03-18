@@ -73,7 +73,7 @@ QAFD-RAG/
 │   └── summarization/               # Document summarization
 ├── data/                            # Datasets (auto-downloaded from HuggingFace)
 ├── docs/figs/                       # Figures for README
-├── kg/                              # Built knowledge graphs
+├── kg/                              # Knowledge graphs (auto-generated or downloaded)
 ├── ICLR2026/                        # Paper source (LaTeX)
 └── results/                         # Benchmark results (JSON)
 ```
@@ -95,7 +95,22 @@ All benchmarks are run through `./run.sh` (automatically uses the `qafd-rag` con
 ./run.sh <task> [options]
 ```
 
-### Build Knowledge Graphs
+### Knowledge Graphs
+
+KGs are stored under `kg/{task}/{llm}_{embedding}_{dataset}/`. By default, KGs are **auto-generated on first run** if not present. To skip building, you can download pre-built KGs from HuggingFace:
+
+```bash
+# Download all pre-built KGs
+huggingface-cli download qafd/kg --local-dir ./kg
+
+# Or download a specific benchmark
+huggingface-cli download qafd/kg --include "ultradomain/*" --local-dir ./kg
+huggingface-cli download qafd/kg --include "multihop/*" --local-dir ./kg
+```
+
+Pre-built KGs are available at: [huggingface.co/datasets/qafd/kg](https://huggingface.co/datasets/qafd/kg)
+
+To build KGs manually:
 
 ```bash
 ./run.sh ultradomain --build --max-documents 100
