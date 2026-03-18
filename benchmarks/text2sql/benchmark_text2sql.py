@@ -202,7 +202,7 @@ class Text2SQLBenchmark:
                     ))
                     continue
 
-            working_dir = get_kg_dir(db)
+            working_dir = get_kg_dir(db, llm_model=self.llm_model, embedding_model=self.embedding_model)
 
             try:
                 # Get raw clusters (same as CoFD-M pipeline)

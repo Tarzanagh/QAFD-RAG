@@ -93,7 +93,7 @@ class SQuALITYBenchmark:
 
     def _get_working_dir(self, dataset_name: str) -> str:
         """Get working directory for dataset"""
-        return os.path.join(QAFD_RAG_HOME, "kg", "summarization", f"{dataset_name}_{self.embedding_model}")
+        return os.path.join(QAFD_RAG_HOME, "kg", "summarization", f"{self.llm_model}_{self.embedding_model}_{dataset_name}")
 
     def _kg_exists(self, working_dir: str) -> bool:
         """Check if KG already exists"""

@@ -178,7 +178,7 @@ class MultiHopBenchmark:
         os.environ["OPENAI_API_BASE"] = "https://api.openai.com/v1"
 
     def _get_working_dir(self) -> str:
-        return os.path.join(QAFD_RAG_HOME, "kg", "multihop", f"{self.config['kg_dir']}_{self.embedding_model}")
+        return os.path.join(QAFD_RAG_HOME, "kg", "multihop", f"{self.llm_model}_{self.embedding_model}_{self.config['kg_dir']}")
 
     def _kg_exists(self, working_dir: str) -> bool:
         kg_files = [

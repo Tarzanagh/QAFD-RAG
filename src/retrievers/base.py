@@ -64,13 +64,15 @@ class BaseRetriever(ABC):
         """
         pass
 
-    @abstractmethod
     def find_path(
         self,
         source: str,
         target: str
     ) -> Tuple[Optional[List[str]], float]:
         """Find path between source and target nodes.
+
+        Optional — not all retrievers support pathfinding (e.g. flow diffusion
+        returns ranked clusters, not paths).
 
         Args:
             source: Source node ID
@@ -79,7 +81,7 @@ class BaseRetriever(ABC):
         Returns:
             Tuple of (path as list of node IDs or None, score)
         """
-        pass
+        return None, 0.0
 
     def get_node_scores(self) -> Dict[str, float]:
         """Get the scores/values for all processed nodes.

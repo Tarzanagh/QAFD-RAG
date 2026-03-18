@@ -43,6 +43,10 @@
     @keyframes nodeAppear { 0% { transform:scale(0); opacity:0; } 60% { transform:scale(1.2); opacity:1; } 100% { transform:scale(1); opacity:1; } }
     @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
     @keyframes seedPulse { 0%,100% { r: 14; } 50% { r: 17; } }
+    
+    
+    
+    
 
     .btn-group { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; animation:fadeUp 0.6s ease-out 0.6s both; }
     .btn { display:inline-flex; align-items:center; gap:7px; padding:10px 22px; border-radius:50px; font-size:0.9rem; font-weight:600; text-decoration:none; transition:all 0.2s; font-family:inherit; }
@@ -116,7 +120,7 @@
           <filter id="sG" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
         </defs>
 
-        <!-- ========= BACKGROUND KNOWLEDGE GRAPH (gray, always visible) ========= -->
+        <!-- ========= BACKGROUND KNOWLEDGE GRAPH (always visible, gray) ========= -->
         <g opacity="0.15" stroke="#94A3B8" stroke-width="0.7" fill="none">
           <line x1="15" y1="60" x2="40" y2="30"/><line x1="40" y1="30" x2="75" y2="22"/>
           <line x1="15" y1="60" x2="10" y2="110"/><line x1="10" y1="110" x2="25" y2="160"/>
@@ -142,11 +146,24 @@
           <line x1="275" y1="18" x2="320" y2="12"/><line x1="320" y1="12" x2="350" y2="22"/>
           <line x1="130" y1="265" x2="175" y2="270"/><line x1="175" y1="270" x2="220" y2="265"/>
           <line x1="220" y1="265" x2="260" y2="255"/><line x1="260" y1="255" x2="308" y2="260"/>
+          
+          
+          
+          <line x1="320" y1="200" x2="290" y2="220"/>
+          <line x1="290" y1="220" x2="260" y2="255"/>
           <line x1="130" y1="40" x2="158" y2="92"/><line x1="110" y1="120" x2="158" y2="148"/>
           <line x1="120" y1="200" x2="158" y2="175"/><line x1="355" y1="100" x2="325" y2="118"/>
           <line x1="375" y1="140" x2="335" y2="165"/><line x1="275" y1="18" x2="270" y2="45"/>
-          <line x1="170" y1="18" x2="210" y2="60"/><line x1="320" y1="200" x2="290" y2="220"/>
-          <line x1="290" y1="220" x2="260" y2="255"/>
+          <line x1="170" y1="18" x2="210" y2="60"/>
+          <line x1="262" y1="92" x2="262" y2="148"/><line x1="210" y1="60" x2="262" y2="92"/>
+          <line x1="158" y1="92" x2="210" y2="60"/><line x1="262" y1="148" x2="210" y2="175"/>
+          <line x1="210" y1="175" x2="158" y2="148"/><line x1="158" y1="92" x2="158" y2="148"/>
+          <line x1="262" y1="92" x2="305" y2="68"/><line x1="305" y1="68" x2="325" y2="118"/>
+          <line x1="325" y1="118" x2="262" y2="148"/><line x1="158" y1="92" x2="112" y2="62"/>
+          <line x1="112" y1="62" x2="92" y2="35"/><line x1="210" y1="60" x2="210" y2="25"/>
+          <line x1="210" y1="175" x2="210" y2="218"/><line x1="210" y1="218" x2="190" y2="250"/>
+          <line x1="325" y1="118" x2="335" y2="165"/><line x1="305" y1="68" x2="322" y2="35"/>
+          <line x1="158" y1="148" x2="118" y2="178"/>
         </g>
         <g fill="#B0BEC5" opacity="0.22">
           <circle cx="15" cy="60" r="2.5"/><circle cx="40" cy="30" r="2.2"/><circle cx="75" cy="22" r="2.2"/>
@@ -164,116 +181,170 @@
           <circle cx="320" cy="200" r="2.2"/><circle cx="340" cy="240" r="2"/><circle cx="308" cy="260" r="2"/>
           <circle cx="290" cy="220" r="2"/><circle cx="260" cy="255" r="2"/><circle cx="175" cy="270" r="2"/>
           <circle cx="220" cy="265" r="2"/><circle cx="270" cy="45" r="2"/><circle cx="210" cy="60" r="2"/>
+          <circle cx="325" cy="118" r="3"/><circle cx="305" cy="68" r="2.8"/>
+          <circle cx="262" cy="148" r="2.8"/><circle cx="262" cy="92" r="2.8"/>
+          <circle cx="210" cy="175" r="2.5"/><circle cx="158" cy="92" r="2.5"/>
+          <circle cx="158" cy="148" r="2.2"/><circle cx="112" cy="62" r="2.2"/>
+          <circle cx="92" cy="35" r="2"/><circle cx="210" cy="25" r="2"/>
+          <circle cx="210" cy="218" r="2.2"/><circle cx="190" cy="250" r="2"/>
+          <circle cx="335" cy="165" r="2"/><circle cx="118" cy="178" r="2"/>
+          <circle cx="322" cy="35" r="2"/>
         </g>
 
-        <!-- ========= CAFFEINE SUBGRAPH PIPES (always visible, highlighted) ========= -->
-        <g fill="none" stroke-linecap="round">
-          <!-- 5-RING (strongest) -->
-          <path d="M305,68 C312,85 318,100 325,118" stroke="#172554" stroke-width="10" opacity="0.9"/>
-          <path d="M305,68 C312,85 318,100 325,118" stroke="url(#pSh)" stroke-width="4.5" opacity="0.55"/>
-          <path d="M262,148 C282,138 305,128 325,118" stroke="#172554" stroke-width="9.5" opacity="0.88"/>
-          <path d="M262,148 C282,138 305,128 325,118" stroke="url(#pSh)" stroke-width="4.2" opacity="0.52"/>
-          <path d="M262,92 C275,82 290,72 305,68" stroke="#172554" stroke-width="9.5" opacity="0.86"/>
-          <path d="M262,92 C275,82 290,72 305,68" stroke="url(#pSh)" stroke-width="4.2" opacity="0.5"/>
-          <path d="M262,92 C262,110 262,130 262,148" stroke="#172554" stroke-width="9.5" opacity="0.84"/>
-          <path d="M262,92 C262,110 262,130 262,148" stroke="url(#pSh)" stroke-width="4.2" opacity="0.5"/>
-          <!-- 6-RING top -->
-          <path d="M210,60 C228,68 245,78 262,92" stroke="#1E3A8A" stroke-width="8.5" opacity="0.72"/>
-          <path d="M210,60 C228,68 245,78 262,92" stroke="url(#pSh)" stroke-width="3.8" opacity="0.45"/>
-          <path d="M158,92 C175,80 192,68 210,60" stroke="#1E3A8A" stroke-width="8" opacity="0.7"/>
-          <path d="M158,92 C175,80 192,68 210,60" stroke="url(#pSh)" stroke-width="3.5" opacity="0.45"/>
-          <!-- 6-RING bottom -->
-          <path d="M210,175 C228,168 245,158 262,148" stroke="#1E3A8A" stroke-width="7.5" opacity="0.68"/>
-          <path d="M210,175 C228,168 245,158 262,148" stroke="url(#pSh)" stroke-width="3.2" opacity="0.42"/>
-          <path d="M158,148 C175,158 192,168 210,175" stroke="#1D4ED8" stroke-width="5.5" opacity="0.5"/>
-          <path d="M158,148 C175,158 192,168 210,175" stroke="url(#pSh)" stroke-width="2.5" opacity="0.35"/>
-          <path d="M158,92 C158,112 158,130 158,148" stroke="#1D4ED8" stroke-width="5" opacity="0.48"/>
-          <path d="M158,92 C158,112 158,130 158,148" stroke="url(#pSh)" stroke-width="2.2" opacity="0.3"/>
-          <!-- BRANCHES -->
-          <path d="M112,62 C128,70 142,80 158,92" stroke="#1E3A8A" stroke-width="6.5" opacity="0.58"/>
-          <path d="M112,62 C128,70 142,80 158,92" stroke="url(#pSh)" stroke-width="2.8" opacity="0.38"/>
-          <path d="M92,35 C98,42 104,52 112,62" stroke="#3B82F6" stroke-width="2.8" opacity="0.25"/>
-          <path d="M210,25 C210,35 210,48 210,60" stroke="#2563EB" stroke-width="4" opacity="0.35"/>
-          <path d="M210,218 C210,205 210,190 210,175" stroke="#2563EB" stroke-width="4" opacity="0.38"/>
-          <path d="M190,250 C196,242 202,232 210,218" stroke="#93C5FD" stroke-width="1.8" opacity="0.16"/>
-          <path d="M335,165 C332,150 328,132 325,118" stroke="#2563EB" stroke-width="3.2" opacity="0.28"/>
-          <!-- STARVED (thin, faint) -->
-          <path d="M118,178 C130,168 142,158 158,148" stroke="#60A5FA" stroke-width="2" opacity="0.13"/>
-          <path d="M322,35 C316,42 310,55 305,68" stroke="#60A5FA" stroke-width="2.5" opacity="0.18"/>
+        <!--
+          PHASE 1: BUILD — water shoots from source, pipe+node appear where it lands
+          PHASE 2: LOOP — after build, continuous flow from source outward
+          
+          Each element uses <animate> with begin= for precise timing.
+          Pipe: starts invisible, fades in when water arrives
+          Node: starts invisible, pops when pipe reaches it
+          Water: draws from source outward using stroke-dashoffset
+        -->
+
+        <!-- ======= SOURCE (0s) ======= -->
+        <circle cx="325" cy="118" r="20" fill="url(#srcGl)" filter="url(#sB)" opacity="0"><animate attributeName="opacity" to="1" dur="0.4s" begin="0.2s" fill="freeze"/></circle>
+        <g filter="url(#sG)" opacity="0"><animate attributeName="opacity" to="1" dur="0.4s" begin="0.2s" fill="freeze"/>
+          <circle cx="325" cy="118" r="14" fill="url(#src)"/><circle cx="325" cy="118" r="14" fill="url(#srcSp)"/>
+          <ellipse cx="320" cy="111" rx="4.5" ry="3" fill="#FFF" opacity="0.5"/>
         </g>
 
-        <!-- ========= WATER FLOWING FROM SOURCE OUTWARD (animated dashes) ========= -->
-        <g fill="none" stroke-linecap="round">
-          <!-- 5-ring: Source→G, Source→D, G→C, C↔D -->
-          <path d="M325,118 C318,100 312,85 305,68" stroke="#7DD3FC" stroke-width="5.5" stroke-dasharray="12 8"><animate attributeName="stroke-dashoffset" values="0;-40" dur="1s" repeatCount="indefinite"/></path>
-          <path d="M325,118 C305,128 282,138 262,148" stroke="#7DD3FC" stroke-width="5" stroke-dasharray="12 8"><animate attributeName="stroke-dashoffset" values="0;-40" dur="1.2s" repeatCount="indefinite"/></path>
-          <path d="M305,68 C290,72 275,82 262,92" stroke="#7DD3FC" stroke-width="5" stroke-dasharray="12 8"><animate attributeName="stroke-dashoffset" values="0;-40" dur="1.1s" repeatCount="indefinite"/></path>
-          <path d="M262,92 C262,110 262,130 262,148" stroke="#7DD3FC" stroke-width="5" stroke-dasharray="12 8"><animate attributeName="stroke-dashoffset" values="0;-40" dur="1s" repeatCount="indefinite"/></path>
-
-          <!-- 6-ring top: C→B→A (outward from source side) -->
-          <path d="M262,92 C245,78 228,68 210,60" stroke="#93C5FD" stroke-width="4" stroke-dasharray="10 8"><animate attributeName="stroke-dashoffset" values="0;-36" dur="1.4s" repeatCount="indefinite"/></path>
-          <path d="M210,60 C192,68 175,80 158,92" stroke="#93C5FD" stroke-width="3.8" stroke-dasharray="10 8"><animate attributeName="stroke-dashoffset" values="0;-36" dur="1.5s" repeatCount="indefinite"/></path>
-
-          <!-- 6-ring bottom: D→E→F (outward from source side) -->
-          <path d="M262,148 C245,158 228,168 210,175" stroke="#93C5FD" stroke-width="3.5" stroke-dasharray="10 8"><animate attributeName="stroke-dashoffset" values="0;-36" dur="1.3s" repeatCount="indefinite"/></path>
-          <path d="M210,175 C192,168 175,158 158,148" stroke="#BFDBFE" stroke-width="2.5" stroke-dasharray="8 8"><animate attributeName="stroke-dashoffset" values="0;-32" dur="1.6s" repeatCount="indefinite"/></path>
-          <!-- F→A (ring close, weakest flow) -->
-          <path d="M158,148 C158,130 158,112 158,92" stroke="#BFDBFE" stroke-width="2.2" stroke-dasharray="8 8"><animate attributeName="stroke-dashoffset" values="0;-32" dur="1.8s" repeatCount="indefinite"/></path>
-
-          <!-- Branches outward from ring nodes -->
-          <!-- A→M1→leaf -->
-          <path d="M158,92 C142,80 128,70 112,62" stroke="#93C5FD" stroke-width="3" stroke-dasharray="8 7"><animate attributeName="stroke-dashoffset" values="0;-30" dur="1.4s" repeatCount="indefinite"/></path>
-          <path d="M112,62 C104,52 98,42 92,35" stroke="#BFDBFE" stroke-width="1.5" stroke-dasharray="5 6"><animate attributeName="stroke-dashoffset" values="0;-22" dur="1.8s" repeatCount="indefinite"/></path>
-          <!-- B→M2 (up) -->
-          <path d="M210,60 C210,48 210,35 210,25" stroke="#BFDBFE" stroke-width="2" stroke-dasharray="6 7"><animate attributeName="stroke-dashoffset" values="0;-26" dur="1.6s" repeatCount="indefinite"/></path>
-          <!-- E→M3→leaf (down) -->
-          <path d="M210,175 C210,190 210,205 210,218" stroke="#BFDBFE" stroke-width="2" stroke-dasharray="6 7"><animate attributeName="stroke-dashoffset" values="0;-26" dur="1.5s" repeatCount="indefinite"/></path>
-          <path d="M210,218 C202,232 196,242 190,250" stroke="#DBEAFE" stroke-width="1.2" stroke-dasharray="4 6"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2s" repeatCount="indefinite"/></path>
-          <!-- Source→ext -->
-          <path d="M325,118 C328,132 332,150 335,165" stroke="#BFDBFE" stroke-width="1.5" stroke-dasharray="5 6"><animate attributeName="stroke-dashoffset" values="0;-22" dur="1.7s" repeatCount="indefinite"/></path>
-        </g>
-
-        <!-- ========= CAFFEINE ATOMS ========= -->
-        <!-- 5-ring + 6-ring strong atoms -->
-        <g filter="url(#nG)">
-          <circle cx="262" cy="92" r="10" fill="url(#s1)"/><circle cx="262" cy="92" r="10" fill="url(#s1sp)"/>
-          <circle cx="262" cy="148" r="10" fill="url(#s1)"/><circle cx="262" cy="148" r="10" fill="url(#s1sp)"/>
+        <!-- ======= HOP 1: Source→G(305,68) and Source→D(262,148) ======= -->
+        <!-- Water Source→G -->
+        <path d="M325,118 C318,100 312,85 305,68" fill="none" stroke="#7DD3FC" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="55" stroke-dashoffset="55" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.6s" begin="0.5s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="0.5s" fill="freeze"/></path>
+        <!-- Pipe Source→G fades in -->
+        <path d="M305,68 C312,85 318,100 325,118" fill="none" stroke="#172554" stroke-width="10" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.9" dur="0.3s" begin="0.7s" fill="freeze"/></path>
+        <path d="M305,68 C312,85 318,100 325,118" fill="none" stroke="url(#pSh)" stroke-width="4.5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.55" dur="0.3s" begin="0.75s" fill="freeze"/></path>
+        <!-- G node pops -->
+        <g filter="url(#nG)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="0.85s" fill="freeze"/>
           <circle cx="305" cy="68" r="9" fill="url(#s1)"/><circle cx="305" cy="68" r="9" fill="url(#s1sp)"/>
+        </g>
+
+        <!-- Water Source→D -->
+        <path d="M325,118 C305,128 282,138 262,148" fill="none" stroke="#7DD3FC" stroke-width="5" stroke-linecap="round" stroke-dasharray="75" stroke-dashoffset="75" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.7s" begin="0.55s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="0.55s" fill="freeze"/></path>
+        <path d="M262,148 C282,138 305,128 325,118" fill="none" stroke="#172554" stroke-width="9.5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.88" dur="0.3s" begin="0.8s" fill="freeze"/></path>
+        <path d="M262,148 C282,138 305,128 325,118" fill="none" stroke="url(#pSh)" stroke-width="4.2" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.52" dur="0.3s" begin="0.85s" fill="freeze"/></path>
+        <g filter="url(#nG)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="0.95s" fill="freeze"/>
+          <circle cx="262" cy="148" r="10" fill="url(#s1)"/><circle cx="262" cy="148" r="10" fill="url(#s1sp)"/>
+        </g>
+
+        <!-- ======= HOP 2: G→C and D→C (converging) ======= -->
+        <path d="M305,68 C290,72 275,82 262,92" fill="none" stroke="#7DD3FC" stroke-width="5" stroke-linecap="round" stroke-dasharray="55" stroke-dashoffset="55" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.6s" begin="1.0s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="1.0s" fill="freeze"/></path>
+        <path d="M262,92 C275,82 290,72 305,68" fill="none" stroke="#172554" stroke-width="9.5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.86" dur="0.3s" begin="1.2s" fill="freeze"/></path>
+        <path d="M262,92 C275,82 290,72 305,68" fill="none" stroke="url(#pSh)" stroke-width="4.2" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.5" dur="0.3s" begin="1.25s" fill="freeze"/></path>
+
+        <path d="M262,148 C262,130 262,110 262,92" fill="none" stroke="#7DD3FC" stroke-width="5" stroke-linecap="round" stroke-dasharray="56" stroke-dashoffset="56" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.55s" begin="1.05s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="1.05s" fill="freeze"/></path>
+        <path d="M262,92 C262,110 262,130 262,148" fill="none" stroke="#172554" stroke-width="9.5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.84" dur="0.3s" begin="1.25s" fill="freeze"/></path>
+        <path d="M262,92 C262,110 262,130 262,148" fill="none" stroke="url(#pSh)" stroke-width="4.2" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.5" dur="0.3s" begin="1.3s" fill="freeze"/></path>
+
+        <g filter="url(#nG)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="1.35s" fill="freeze"/>
+          <circle cx="262" cy="92" r="10" fill="url(#s1)"/><circle cx="262" cy="92" r="10" fill="url(#s1sp)"/>
+        </g>
+
+        <!-- ======= HOP 3: C→B→A (6-ring top) and D→E→F (6-ring bottom) ======= -->
+        <!-- C→B -->
+        <path d="M262,92 C245,78 228,68 210,60" fill="none" stroke="#93C5FD" stroke-width="4.2" stroke-linecap="round" stroke-dasharray="62" stroke-dashoffset="62" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.6s" begin="1.5s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="1.5s" fill="freeze"/></path>
+        <path d="M210,60 C228,68 245,78 262,92" fill="none" stroke="#1E3A8A" stroke-width="8.5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.72" dur="0.3s" begin="1.7s" fill="freeze"/></path>
+        <path d="M210,60 C228,68 245,78 262,92" fill="none" stroke="url(#pSh)" stroke-width="3.8" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.45" dur="0.3s" begin="1.75s" fill="freeze"/></path>
+        <g filter="url(#nG)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="1.85s" fill="freeze"/>
           <circle cx="210" cy="60" r="9" fill="url(#s1)"/><circle cx="210" cy="60" r="9" fill="url(#s1sp)"/>
+        </g>
+
+        <!-- B→A -->
+        <path d="M210,60 C192,68 175,80 158,92" fill="none" stroke="#93C5FD" stroke-width="3.8" stroke-linecap="round" stroke-dasharray="65" stroke-dashoffset="65" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.6s" begin="1.9s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="1.9s" fill="freeze"/></path>
+        <path d="M158,92 C175,80 192,68 210,60" fill="none" stroke="#1E3A8A" stroke-width="8" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.7" dur="0.3s" begin="2.1s" fill="freeze"/></path>
+        <path d="M158,92 C175,80 192,68 210,60" fill="none" stroke="url(#pSh)" stroke-width="3.5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.45" dur="0.3s" begin="2.15s" fill="freeze"/></path>
+        <g filter="url(#nG)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="2.25s" fill="freeze"/>
           <circle cx="158" cy="92" r="9" fill="url(#s1)"/><circle cx="158" cy="92" r="9" fill="url(#s1sp)"/>
+        </g>
+
+        <!-- D→E -->
+        <path d="M262,148 C245,158 228,168 210,175" fill="none" stroke="#93C5FD" stroke-width="3.8" stroke-linecap="round" stroke-dasharray="62" stroke-dashoffset="62" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.6s" begin="1.5s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="1.5s" fill="freeze"/></path>
+        <path d="M210,175 C228,168 245,158 262,148" fill="none" stroke="#1E3A8A" stroke-width="7.5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.68" dur="0.3s" begin="1.7s" fill="freeze"/></path>
+        <path d="M210,175 C228,168 245,158 262,148" fill="none" stroke="url(#pSh)" stroke-width="3.2" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.42" dur="0.3s" begin="1.75s" fill="freeze"/></path>
+        <g filter="url(#nG)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="1.85s" fill="freeze"/>
           <circle cx="210" cy="175" r="8" fill="url(#m1)"/><circle cx="210" cy="175" r="8" fill="url(#m1sp)"/>
+        </g>
+
+        <!-- E→F -->
+        <path d="M210,175 C192,168 175,158 158,148" fill="none" stroke="#BFDBFE" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="65" stroke-dashoffset="65" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.6s" begin="1.9s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="1.9s" fill="freeze"/></path>
+        <path d="M158,148 C175,158 192,168 210,175" fill="none" stroke="#1D4ED8" stroke-width="5.5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.5" dur="0.3s" begin="2.1s" fill="freeze"/></path>
+        <g filter="url(#nG)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="2.25s" fill="freeze"/>
           <circle cx="158" cy="148" r="7" fill="url(#m1)"/><circle cx="158" cy="148" r="7" fill="url(#m1sp)"/>
         </g>
-        <!-- Strong branch -->
-        <g filter="url(#nG)">
+
+        <!-- F→A ring close -->
+        <path d="M158,148 C158,130 158,112 158,92" fill="none" stroke="#BFDBFE" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="56" stroke-dashoffset="56" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.5s" begin="2.3s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="2.3s" fill="freeze"/></path>
+        <path d="M158,92 C158,112 158,130 158,148" fill="none" stroke="#1D4ED8" stroke-width="5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.48" dur="0.3s" begin="2.5s" fill="freeze"/></path>
+
+        <!-- ======= HOP 4: BRANCHES ======= -->
+        <!-- A→M1 -->
+        <path d="M158,92 C142,80 128,70 112,62" fill="none" stroke="#93C5FD" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="52" stroke-dashoffset="52" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.5s" begin="2.4s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="2.4s" fill="freeze"/></path>
+        <path d="M112,62 C128,70 142,80 158,92" fill="none" stroke="#1E3A8A" stroke-width="6.5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.58" dur="0.3s" begin="2.55s" fill="freeze"/></path>
+        <path d="M112,62 C128,70 142,80 158,92" fill="none" stroke="url(#pSh)" stroke-width="2.8" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.38" dur="0.3s" begin="2.6s" fill="freeze"/></path>
+        <g filter="url(#nG)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="2.7s" fill="freeze"/>
           <circle cx="112" cy="62" r="7.5" fill="url(#m1)"/><circle cx="112" cy="62" r="7.5" fill="url(#m1sp)"/>
         </g>
-        <!-- Medium branches -->
-        <circle cx="210" cy="25" r="5" fill="url(#w1)"/><circle cx="210" cy="25" r="5" fill="url(#w1sp)"/>
-        <circle cx="210" cy="218" r="5.5" fill="url(#w1)"/><circle cx="210" cy="218" r="5.5" fill="url(#w1sp)"/>
-        <circle cx="335" cy="165" r="4" fill="url(#w1)"/>
-        <!-- Leaves -->
-        <circle cx="92" cy="35" r="3" fill="url(#lf)"/>
-        <circle cx="190" cy="250" r="2.5" fill="url(#lf)"/>
-        <!-- Starved -->
-        <circle cx="118" cy="178" r="3.5" fill="url(#st1)"/>
-        <circle cx="322" cy="35" r="3.5" fill="url(#st1)"/>
+        <!-- M1→leaf -->
+        <path d="M112,62 C104,52 98,42 92,35" fill="none" stroke="#DBEAFE" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="35" stroke-dashoffset="35" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.4s" begin="2.8s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="2.8s" fill="freeze"/></path>
+        <path d="M92,35 C98,42 104,52 112,62" fill="none" stroke="#3B82F6" stroke-width="2.8" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.25" dur="0.3s" begin="2.95s" fill="freeze"/></path>
+        <circle cx="92" cy="35" r="3" fill="url(#lf)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="3.05s" fill="freeze"/></circle>
 
-        <!-- ========= SOURCE (largest, darkest) ========= -->
-        <circle cx="325" cy="118" r="20" fill="url(#srcGl)" filter="url(#sB)"/>
-        <g filter="url(#sG)">
-          <circle cx="325" cy="118" r="14" fill="url(#src)"/>
-          <circle cx="325" cy="118" r="14" fill="url(#srcSp)"/>
-          <ellipse cx="320" cy="111" rx="4.5" ry="3" fill="#FFF" opacity="0.5"/>
+        <!-- B→M2 up -->
+        <path d="M210,60 C210,48 210,35 210,25" fill="none" stroke="#BFDBFE" stroke-width="2" stroke-linecap="round" stroke-dasharray="35" stroke-dashoffset="35" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.4s" begin="2.1s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="2.1s" fill="freeze"/></path>
+        <path d="M210,25 C210,35 210,48 210,60" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.35" dur="0.3s" begin="2.25s" fill="freeze"/></path>
+        <circle cx="210" cy="25" r="5" fill="url(#w1)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="2.35s" fill="freeze"/></circle>
+
+        <!-- E→M3 down -->
+        <path d="M210,175 C210,190 210,205 210,218" fill="none" stroke="#BFDBFE" stroke-width="2" stroke-linecap="round" stroke-dasharray="43" stroke-dashoffset="43" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.4s" begin="2.1s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="2.1s" fill="freeze"/></path>
+        <path d="M210,218 C210,205 210,190 210,175" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.38" dur="0.3s" begin="2.25s" fill="freeze"/></path>
+        <circle cx="210" cy="218" r="5.5" fill="url(#w1)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="2.35s" fill="freeze"/></circle>
+        <!-- M3→leaf -->
+        <path d="M210,218 C202,232 196,242 190,250" fill="none" stroke="#DBEAFE" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="38" stroke-dashoffset="38" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.4s" begin="2.5s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="2.5s" fill="freeze"/></path>
+        <path d="M190,250 C196,242 202,232 210,218" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.16" dur="0.3s" begin="2.65s" fill="freeze"/></path>
+        <circle cx="190" cy="250" r="2.5" fill="url(#lf)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="2.75s" fill="freeze"/></circle>
+
+        <!-- Source→ext -->
+        <path d="M325,118 C328,132 332,150 335,165" fill="none" stroke="#BFDBFE" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="50" stroke-dashoffset="50" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.5s" begin="2.0s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="2.0s" fill="freeze"/></path>
+        <path d="M335,165 C332,150 328,132 325,118" fill="none" stroke="#2563EB" stroke-width="3.2" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.28" dur="0.3s" begin="2.15s" fill="freeze"/></path>
+        <circle cx="335" cy="165" r="4" fill="url(#w1)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="2.3s" fill="freeze"/></circle>
+
+        <!-- STARVED -->
+        <path d="M158,148 C142,158 130,168 118,178" fill="none" stroke="#DBEAFE" stroke-width="1" stroke-linecap="round" stroke-dasharray="45" stroke-dashoffset="45" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.7s" begin="3.0s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="3.0s" fill="freeze"/></path>
+        <path d="M118,178 C130,168 142,158 158,148" fill="none" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.13" dur="0.3s" begin="3.2s" fill="freeze"/></path>
+        <circle cx="118" cy="178" r="3.5" fill="url(#st1)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="3.3s" fill="freeze"/></circle>
+
+        <path d="M305,68 C310,55 316,42 322,35" fill="none" stroke="#DBEAFE" stroke-width="1" stroke-linecap="round" stroke-dasharray="40" stroke-dashoffset="40" opacity="0"><animate attributeName="stroke-dashoffset" to="0" dur="0.7s" begin="3.1s" fill="freeze"/><animate attributeName="opacity" to="0.85" dur="0.1s" begin="3.1s" fill="freeze"/></path>
+        <path d="M322,35 C316,42 310,55 305,68" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round" opacity="0"><animate attributeName="opacity" to="0.18" dur="0.3s" begin="3.3s" fill="freeze"/></path>
+        <circle cx="322" cy="35" r="3.5" fill="url(#st1)" opacity="0"><animate attributeName="opacity" to="1" dur="0.3s" begin="3.4s" fill="freeze"/></circle>
+
+        <!-- ======= PHASE 2: CONTINUOUS WATER LOOP from source outward (4s+) ======= -->
+        <g fill="none" stroke-linecap="round" opacity="0">
+          <animate attributeName="opacity" to="1" dur="0.5s" begin="4s" fill="freeze"/>
+          <!-- 5-ring -->
+          <path d="M325,118 C318,100 312,85 305,68" stroke="#7DD3FC" stroke-width="5.5" stroke-dasharray="12 8"><animate attributeName="stroke-dashoffset" values="0;-40" dur="1s" begin="4s" repeatCount="indefinite"/></path>
+          <path d="M325,118 C305,128 282,138 262,148" stroke="#7DD3FC" stroke-width="5" stroke-dasharray="12 8"><animate attributeName="stroke-dashoffset" values="0;-40" dur="1.2s" begin="4s" repeatCount="indefinite"/></path>
+          <path d="M305,68 C290,72 275,82 262,92" stroke="#7DD3FC" stroke-width="5" stroke-dasharray="12 8"><animate attributeName="stroke-dashoffset" values="0;-40" dur="1.1s" begin="4s" repeatCount="indefinite"/></path>
+          <path d="M262,148 C262,130 262,110 262,92" stroke="#7DD3FC" stroke-width="5" stroke-dasharray="12 8"><animate attributeName="stroke-dashoffset" values="0;-40" dur="1s" begin="4s" repeatCount="indefinite"/></path>
+          <!-- 6-ring top (outward from C) -->
+          <path d="M262,92 C245,78 228,68 210,60" stroke="#93C5FD" stroke-width="4" stroke-dasharray="10 8"><animate attributeName="stroke-dashoffset" values="0;-36" dur="1.4s" begin="4s" repeatCount="indefinite"/></path>
+          <path d="M210,60 C192,68 175,80 158,92" stroke="#93C5FD" stroke-width="3.8" stroke-dasharray="10 8"><animate attributeName="stroke-dashoffset" values="0;-36" dur="1.5s" begin="4s" repeatCount="indefinite"/></path>
+          <!-- 6-ring bottom (outward from D) -->
+          <path d="M262,148 C245,158 228,168 210,175" stroke="#93C5FD" stroke-width="3.5" stroke-dasharray="10 8"><animate attributeName="stroke-dashoffset" values="0;-36" dur="1.3s" begin="4s" repeatCount="indefinite"/></path>
+          <path d="M210,175 C192,168 175,158 158,148" stroke="#BFDBFE" stroke-width="2.5" stroke-dasharray="8 8"><animate attributeName="stroke-dashoffset" values="0;-32" dur="1.6s" begin="4s" repeatCount="indefinite"/></path>
+          <path d="M158,148 C158,130 158,112 158,92" stroke="#BFDBFE" stroke-width="2" stroke-dasharray="8 8"><animate attributeName="stroke-dashoffset" values="0;-32" dur="1.8s" begin="4s" repeatCount="indefinite"/></path>
+          <!-- Branches (outward) -->
+          <path d="M158,92 C142,80 128,70 112,62" stroke="#93C5FD" stroke-width="3" stroke-dasharray="8 7"><animate attributeName="stroke-dashoffset" values="0;-30" dur="1.4s" begin="4s" repeatCount="indefinite"/></path>
+          <path d="M210,60 C210,48 210,35 210,25" stroke="#BFDBFE" stroke-width="2" stroke-dasharray="6 7"><animate attributeName="stroke-dashoffset" values="0;-26" dur="1.6s" begin="4s" repeatCount="indefinite"/></path>
+          <path d="M210,175 C210,190 210,205 210,218" stroke="#BFDBFE" stroke-width="2" stroke-dasharray="6 7"><animate attributeName="stroke-dashoffset" values="0;-26" dur="1.5s" begin="4s" repeatCount="indefinite"/></path>
+          <path d="M325,118 C328,132 332,150 335,165" stroke="#BFDBFE" stroke-width="1.5" stroke-dasharray="5 6"><animate attributeName="stroke-dashoffset" values="0;-22" dur="1.7s" begin="4s" repeatCount="indefinite"/></path>
         </g>
       </svg>
     </div>
-
     <h1 style="font-size:2.8rem;font-weight:700;letter-spacing:-1px;margin-bottom:24px;color:var(--navy-900);animation:fadeUp 0.6s ease-out 0.3s both;">QAFD-RAG</h1>
     <div class="btn-group">
       <a class="btn btn-primary" href="https://openreview.net/pdf?id=n28wnc2QTc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/></svg> Paper</a>
       <span class="btn btn-outline" style="cursor:default;opacity:0.7;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/></svg> Code (Coming Soon)</span>
-      <a class="btn btn-outline" href="https://huggingface.co/datasets/tarzanagh/QAFD-RAG"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Data</a>
+      <a class="btn btn-outline" href="https://huggingface.co/qafd/datasets"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 95 88" fill="none"><path fill="#FFD21E" d="M47.21 76.5a34.75 34.75 0 1 0 0-69.5 34.75 34.75 0 0 0 0 69.5Z"/><path fill="#FF9D0B" d="M81.96 41.75a34.75 34.75 0 1 0-69.5 0 34.75 34.75 0 0 0 69.5 0Zm-73.5 0a38.75 38.75 0 1 1 77.5 0 38.75 38.75 0 0 1-77.5 0Z"/><path fill="#3A3B45" d="M58.5 32.3c1.28.44 1.78 3.06 3.07 2.38a5 5 0 1 0-6.76-2.07c.61 1.15 2.55-.72 3.7-.32ZM34.95 32.3c-1.28.44-1.79 3.06-3.07 2.38a5 5 0 1 1 6.76-2.07c-.61 1.15-2.56-.72-3.7-.32Z"/><path fill="#FF323D" d="M46.96 56.29c9.83 0 13-8.76 13-13.26 0-2.34-1.57-1.6-4.09-.36-2.33 1.15-5.46 2.74-8.9 2.74-7.19 0-13-6.88-13-2.38s3.16 13.26 13 13.26Z"/><path fill="#3A3B45" fill-rule="evenodd" d="M39.43 54a8.7 8.7 0 0 1 5.3-4.49c.4-.12.81.57 1.24 1.28.4.68.82 1.37 1.24 1.37.45 0 .9-.68 1.33-1.35.45-.7.89-1.38 1.32-1.25a8.61 8.61 0 0 1 5 4.17c3.73-2.94 5.1-7.74 5.1-10.7 0-2.34-1.57-1.6-4.09-.36l-.14.07c-2.31 1.15-5.39 2.67-8.77 2.67s-6.45-1.52-8.77-2.67c-2.6-1.29-4.23-2.1-4.23.29 0 3.05 1.46 8.06 5.47 10.97Z" clip-rule="evenodd"/><path fill="#FF9D0B" d="M70.71 37a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5ZM24.21 37a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5ZM17.52 48c-1.62 0-3.06.66-4.07 1.87a5.97 5.97 0 0 0-1.33 3.76 7.1 7.1 0 0 0-1.94-.3c-1.55 0-2.95.59-3.94 1.66a5.8 5.8 0 0 0-.8 7 5.3 5.3 0 0 0-1.79 2.82c-.24.9-.48 2.8.8 4.74a5.22 5.22 0 0 0-.37 5.02c1.02 2.32 3.57 4.14 8.52 6.1 3.07 1.22 5.89 2 5.91 2.01a44.33 44.33 0 0 0 10.93 1.6c5.86 0 10.05-1.8 12.46-5.34 3.88-5.69 3.33-10.9-1.7-15.92-2.77-2.78-4.62-6.87-5-7.77-.78-2.66-2.84-5.62-6.25-5.62a5.7 5.7 0 0 0-4.6 2.46c-1-1.26-1.98-2.25-2.86-2.82A7.4 7.4 0 0 0 17.52 48Zm0 4c.51 0 1.14.22 1.82.65 2.14 1.36 6.25 8.43 7.76 11.18.5.92 1.37 1.31 2.14 1.31 1.55 0 2.75-1.53.15-3.48-3.92-2.93-2.55-7.72-.68-8.01.08-.02.17-.02.24-.02 1.7 0 2.45 2.93 2.45 2.93s2.2 5.52 5.98 9.3c3.77 3.77 3.97 6.8 1.22 10.83-1.88 2.75-5.47 3.58-9.16 3.58-3.81 0-7.73-.9-9.92-1.46-.11-.03-13.45-3.8-11.76-7 .28-.54.75-.76 1.34-.76 2.38 0 6.7 3.54 8.57 3.54.41 0 .7-.17.83-.6.79-2.85-12.06-4.05-10.98-8.17.2-.73.71-1.02 1.44-1.02 3.14 0 10.2 5.53 11.68 5.53.11 0 .2-.03.24-.1.74-1.2.33-2.04-4.9-5.2-5.21-3.16-8.88-5.06-6.8-7.33.24-.26.58-.38 1-.38 3.17 0 10.66 6.82 10.66 6.82s2.02 2.1 3.25 2.1c.28 0 .52-.1.68-.38.86-1.46-8.06-8.22-8.56-11.01-.34-1.9.24-2.85 1.31-2.85Z"/><path fill="#FFD21E" d="M38.6 76.69c2.75-4.04 2.55-7.07-1.22-10.84-3.78-3.77-5.98-9.3-5.98-9.3s-.82-3.2-2.69-2.9c-1.87.3-3.24 5.08.68 8.01 3.91 2.93-.78 4.92-2.29 2.17-1.5-2.75-5.62-9.82-7.76-11.18-2.13-1.35-3.63-.6-3.13 2.2.5 2.79 9.43 9.55 8.56 11-.87 1.47-3.93-1.71-3.93-1.71s-9.57-8.71-11.66-6.44c-2.08 2.27 1.59 4.17 6.8 7.33 5.23 3.16 5.64 4 4.9 5.2-.75 1.2-12.28-8.53-13.36-4.4-1.08 4.11 11.77 5.3 10.98 8.15-.8 2.85-9.06-5.38-10.74-2.18-1.7 3.21 11.65 6.98 11.76 7.01 4.3 1.12 15.25 3.49 19.08-2.12Z"/><path fill="#FF9D0B" d="M77.4 48c1.62 0 3.07.66 4.07 1.87a5.97 5.97 0 0 1 1.33 3.76 7.1 7.1 0 0 1 1.95-.3c1.55 0 2.95.59 3.94 1.66a5.8 5.8 0 0 1 .8 7 5.3 5.3 0 0 1 1.78 2.82c.24.9.48 2.8-.8 4.74a5.22 5.22 0 0 1 .37 5.02c-1.02 2.32-3.57 4.14-8.51 6.1-3.08 1.22-5.9 2-5.92 2.01a44.33 44.33 0 0 1-10.93 1.6c-5.86 0-10.05-1.8-12.46-5.34-3.88-5.69-3.33-10.9 1.7-15.92 2.78-2.78 4.63-6.87 5.01-7.77.78-2.66 2.83-5.62 6.24-5.62a5.7 5.7 0 0 1 4.6 2.46c1-1.26 1.98-2.25 2.87-2.82A7.4 7.4 0 0 1 77.4 48Zm0 4c-.51 0-1.13.22-1.82.65-2.13 1.36-6.25 8.43-7.76 11.18a2.43 2.43 0 0 1-2.14 1.31c-1.54 0-2.75-1.53-.14-3.48 3.91-2.93 2.54-7.72.67-8.01a1.54 1.54 0 0 0-.24-.02c-1.7 0-2.45 2.93-2.45 2.93s-2.2 5.52-5.97 9.3c-3.78 3.77-3.98 6.8-1.22 10.83 1.87 2.75 5.47 3.58 9.15 3.58 3.82 0 7.73-.9 9.93-1.46.1-.03 13.45-3.8 11.76-7-.29-.54-.75-.76-1.34-.76-2.38 0-6.71 3.54-8.57 3.54-.42 0-.71-.17-.83-.6-.8-2.85 12.05-4.05 10.97-8.17-.19-.73-.7-1.02-1.44-1.02-3.14 0-10.2 5.53-11.68 5.53-.1 0-.19-.03-.23-.1-.74-1.2-.34-2.04 4.88-5.2 5.23-3.16 8.9-5.06 6.8-7.33-.23-.26-.57-.38-.98-.38-3.18 0-10.67 6.82-10.67 6.82s-2.02 2.1-3.24 2.1a.74.74 0 0 1-.68-.38c-.87-1.46 8.05-8.22 8.55-11.01.34-1.9-.24-2.85-1.31-2.85Z"/><path fill="#FFD21E" d="M56.33 76.69c-2.75-4.04-2.56-7.07 1.22-10.84 3.77-3.77 5.97-9.3 5.97-9.3s.82-3.2 2.7-2.9c1.86.3 3.23 5.08-.68 8.01-3.92 2.93.78 4.92 2.28 2.17 1.51-2.75 5.63-9.82 7.76-11.18 2.13-1.35 3.64-.6 3.13 2.2-.5 2.79-9.42 9.55-8.55 11 .86 1.47 3.92-1.71 3.92-1.71s9.58-8.71 11.66-6.44c2.08 2.27-1.58 4.17-6.8 7.33-5.23 3.16-5.63 4-4.9 5.2.75 1.2 12.28-8.53 13.36-4.4 1.08 4.11-11.76 5.3-10.97 8.15.8 2.85 9.05-5.38 10.74-2.18 1.69 3.21-11.65 6.98-11.76 7.01-4.31 1.12-15.26 3.49-19.08-2.12Z"/></svg> Data</a>
     </div>
   </div>
 </header>
@@ -374,7 +445,7 @@ print(answer)</code></pre>
 </section>
 
 <footer>
-  <p>QAFD-RAG <span class="sep">·</span><a href="https://openreview.net/pdf?id=n28wnc2QTc">Paper</a> <span class="sep">·</span><a href="https://github.com/Tarzanagh/QAFD-RAG">GitHub</a> <span class="sep">·</span><a href="https://huggingface.co/datasets/tarzanagh/QAFD-RAG">HuggingFace</a></p>
+  <p>QAFD-RAG <span class="sep">·</span><a href="https://openreview.net/pdf?id=n28wnc2QTc">Paper</a> <span class="sep">·</span><a href="https://github.com/Tarzanagh/QAFD-RAG">GitHub</a> <span class="sep">·</span><a href="https://huggingface.co/qafd/datasets">HuggingFace</a></p>
   <p style="margin-top:8px;opacity:0.6;">Contact: tarzanagh [at] gmail [dot] com</p>
 </footer>
 </body>

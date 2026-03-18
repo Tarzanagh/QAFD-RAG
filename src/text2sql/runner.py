@@ -150,14 +150,14 @@ def ensure_db_summary(db_name: str, base: Path = DEFAULT_TEXT2SQL_DIR) -> Option
         return None
 
 
-def get_kg_dir(db_name: str, kg_base: Path = DEFAULT_KG_DIR) -> Path:
+def get_kg_dir(db_name: str, kg_base: Path = DEFAULT_KG_DIR, llm_model: str = "gpt-4o-mini", embedding_model: str = "openai-small") -> Path:
     """Get KG directory for a database."""
-    return kg_base / f"spider_local_{db_name}"
+    return kg_base / f"{llm_model}_{embedding_model}_spider_local_{db_name}"
 
 
-def kg_exists(db_name: str, kg_base: Path = DEFAULT_KG_DIR) -> bool:
+def kg_exists(db_name: str, kg_base: Path = DEFAULT_KG_DIR, llm_model: str = "gpt-4o-mini", embedding_model: str = "openai-small") -> bool:
     """Check if a KG already exists (graphml + vector DBs)."""
-    kg_dir = get_kg_dir(db_name, kg_base)
+    kg_dir = get_kg_dir(db_name, kg_base, llm_model, embedding_model)
     graphml = kg_dir / "graph_chunk_entity_relation.graphml"
     entities = kg_dir / "vdb_entities.json"
     return graphml.exists() and entities.exists()
@@ -184,9 +184,9 @@ async def ensure_kg(
     from src.llm import (gpt_4o_mini_complete, gpt_4o_complete, gpt_oss_120b_complete,
                           gpt_5_complete, gpt_5_mini_complete, gpt_5_nano_complete)
 
-    working_dir = get_kg_dir(db_name)
+    working_dir = get_kg_dir(db_name, llm_model=llm_model, embedding_model=embedding_model)
 
-    if kg_exists(db_name) and not rebuild:
+    if kg_exists(db_name, llm_model=llm_model, embedding_model=embedding_model) and not rebuild:
         print(f"KG exists for {db_name} at {working_dir}")
         return working_dir
 
