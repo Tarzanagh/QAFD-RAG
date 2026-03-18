@@ -167,13 +167,13 @@ Datasets are automatically downloaded from HuggingFace on first run:
 
 ### Embedding Models
 
-| Key | Model | Provider | Dimensions | Cost |
-|-----|-------|----------|-----------|------|
-| `openai-small` | text-embedding-3-small | OpenAI API | 1536 | $0.02/1M tokens |
-| `openai-large` | text-embedding-3-large | OpenAI API | 3072 | $0.13/1M tokens |
-| `jina-v3` | jinaai/jina-embeddings-v3 | Local (GPU) | 1024 | Free |
-| `gritlm` | GritLM/GritLM-7B | Local (GPU) | 4096 | Free |
-| `nvidia-nv-embed-v2` | nvidia/NV-Embed-v2 | Local (GPU) | 4096 | Free |
+| Key | Model | Dimensions |
+|-----|-------|-----------|
+| `openai-small` | text-embedding-3-small | 1536 |
+| `openai-large` | text-embedding-3-large | 3072 |
+| `jina-v3` | jinaai/jina-embeddings-v3 | 1024 |
+| `gritlm` | GritLM/GritLM-7B | 4096 |
+| `nvidia-nv-embed-v2` | nvidia/NV-Embed-v2 | 4096 |
 
 The default embedding is **`openai-small`** which requires `OPENAI_API_KEY`.
 
