@@ -1,1 +1,3 @@
-# Pre-built KGs are available at https://huggingface.co/datasets/qafd/kg
+# KGs are auto-generated on first run if not present.
+# To skip building, download pre-built KGs from:
+# https://huggingface.co/datasets/qafd/kg
