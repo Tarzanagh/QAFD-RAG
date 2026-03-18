@@ -1,5 +1,14 @@
-# Knowledge graphs (large, rebuilt from data)
-kg/
+# Knowledge graphs (large, download from https://huggingface.co/datasets/qafd/kg)
+kg/**
+!kg/
+!kg/ultradomain/
+!kg/ultradomain/.gitkeep
+!kg/multihop/
+!kg/multihop/.gitkeep
+!kg/summarization/
+!kg/summarization/.gitkeep
+!kg/text2sql/
+!kg/text2sql/.gitkeep
 
 # Python
 __pycache__/
