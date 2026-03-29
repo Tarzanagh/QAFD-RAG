@@ -25,55 +25,76 @@ pip install -r requirements.txt
 # 2. Set your OpenAI API key (required for default embedding and LLM)
 export OPENAI_API_KEY="sk-..."
 
-# 3. Build a knowledge graph and run a benchmark
-./run.sh ultradomain --build --max-documents 100
-./run.sh ultradomain --questions 10
+# 3. Run a benchmark (KG is auto-built on first run)
+python benchmarks/run.py --task multihop --dataset musique --questions 10
+python benchmarks/run.py --task ultradomain --dataset mix --questions 10
 ```
 
 > **Note:** The default embedding model is `openai-small` (OpenAI text-embedding-3-small) and the default LLM is `gpt-4o-mini`. Both require `OPENAI_API_KEY`. To use free local embeddings instead, see [Local Embedding Models](#local-embedding-models).
+
+## Two Graph Types
+
+QAFD-RAG supports two knowledge graph representations, both using the same Query-Aware Flow Diffusion algorithm:
+
+| | **Entity Graph** | **Passage-Entity Graph** |
+|---|---|---|
+| **Nodes** | Entities + relationships | Entities + passages + facts |
+| **Extraction** | LLM entity/relationship extraction | OpenIE (NER + triple extraction) |
+| **Edges** | Entity-entity relationships | Fact edges + passage edges + synonymy edges |
+| **QAFD traversal** | Flow reaches entities, passages looked up after | Flow reaches passages directly as graph nodes |
+| **Best for** | General QA, text2sql, summarization | Multi-hop reasoning |
+| **Default tasks** | ultradomain, text2sql, summarization | multihop |
+
+Both graph types use query-aware flow diffusion with the same parameters (alpha=2.0, epsilon=0.01, step_size=0.2).
 
 ## Project Structure
 
 ```
 QAFD-RAG/
-├── run.sh                           # CLI entry point
-├── requirements.txt
+├── benchmarks/
+│   ├── run.py                       # Unified benchmark runner (--graph_type, --task)
+│   ├── multihop/                    # Multi-hop reasoning
+│   ├── ultradomain/                 # General domain QA
+│   ├── text2sql/                    # Natural language to SQL
+│   └── summarization/               # Document summarization
 ├── src/
-│   ├── QAFD_RAG.py                  # Main class
+│   ├── QAFD_RAG.py                  # Entity graph pipeline (main class)
 │   ├── base.py                      # Storage interfaces, QueryParam
 │   ├── llm.py                       # LLM and embedding functions
 │   ├── storage.py                   # KV, vector, and graph storage
 │   ├── operate.py                   # Query operations
 │   ├── evaluation.py                # Answer evaluation
-│   ├── answering/                   # Query processing pipeline
+│   ├── answering/                   # Query processing (entity graph)
 │   │   ├── handler.py               # kg_query entry point
 │   │   ├── context.py               # Context building (local/global/hybrid)
 │   │   ├── clusters.py              # Flow diffusion clustering
 │   │   └── text_units.py            # Text chunk retrieval
 │   ├── retrievers/
-│   │   ├── flow_diffusion.py        # Flow diffusion algorithm
+│   │   ├── flow_diffusion.py        # QAFD on NetworkX (entity graph)
 │   │   └── base.py                  # Retriever interface
-│   ├── indexing/                     # KG construction
+│   ├── hipporag_pipeline/           # Passage-entity graph pipeline
+│   │   ├── kg_builder.py            # OpenIE → igraph (entities + passages + facts)
+│   │   ├── graph_adapter.py         # QAFD on igraph (passage-entity graph)
+│   │   ├── retriever.py             # Fact reranking → seed selection → QAFD
+│   │   ├── config.py                # Pipeline configuration
+│   │   ├── openie.py                # NER + triple extraction
+│   │   ├── embedding_store.py       # Parquet-backed vector store
+│   │   ├── reranker.py              # LLM-based fact reranker
+│   │   ├── prompts.py               # Prompt templates
+│   │   ├── benchmark_runner.py      # Standalone runner
+│   │   └── utils.py                 # Helpers
+│   ├── indexing/                     # KG construction (entity graph)
 │   │   ├── chunkers.py              # Token-based chunking
 │   │   ├── extractors.py            # Entity/relationship extraction
 │   │   ├── schema_builder.py        # Database schema KG builder
 │   │   └── build_kg.py              # CLI KG builder
 │   ├── embedding_models/            # Embedding model implementations
-│   │   ├── JinaV3.py
-│   │   ├── GritLM.py
-│   │   ├── NVEmbedV2.py
-│   │   └── OpenAI.py
 │   ├── prompts/                     # LLM prompt templates
 │   ├── text2sql/                    # Text-to-SQL support
 │   └── utils/                       # Helpers
-├── benchmarks/
-│   ├── ultradomain/                 # General domain QA
-│   ├── multihop/                    # Multi-hop reasoning
-│   ├── text2sql/                    # Natural language to SQL
-│   └── summarization/               # Document summarization
 ├── data/                            # Datasets (auto-downloaded from HuggingFace)
-├── docs/figs/                       # Figures for README
 ├── kg/                              # Knowledge graphs (auto-generated or downloaded)
+├── docs/figs/                       # Figures for README
 ├── ICLR2026/                        # Paper source (LaTeX)
 └── results/                         # Benchmark results (JSON)
 ```
@@ -89,7 +110,34 @@ QAFD-RAG/
 
 ## Usage
 
-All benchmarks are run through `./run.sh` (automatically uses the `qafd-rag` conda env with CUDA support):
+### Unified Benchmark Runner
+
+```bash
+python benchmarks/run.py --task <task> --dataset <dataset> [options]
+```
+
+The runner automatically selects the appropriate graph type (passage-entity for multihop, entity for others). Override with `--graph_type`:
+
+```bash
+# Multihop with passage-entity graph (default)
+python benchmarks/run.py --task multihop --dataset musique --questions 100
+
+# Multihop with entity graph (override)
+python benchmarks/run.py --task multihop --dataset musique --graph_type entity
+
+# Ultradomain
+python benchmarks/run.py --task ultradomain --dataset mix --questions 10
+
+# Retrieval only (skip QA)
+python benchmarks/run.py --task multihop --dataset musique --skip_qa
+
+# Build KG only
+python benchmarks/run.py --task multihop --dataset musique --build_only
+```
+
+### Legacy CLI
+
+All benchmarks can also be run through `./run.sh`:
 
 ```bash
 ./run.sh <task> [options]
@@ -97,60 +145,51 @@ All benchmarks are run through `./run.sh` (automatically uses the `qafd-rag` con
 
 ### Knowledge Graphs
 
-KGs are stored under `kg/{task}/{llm}_{embedding}_{dataset}/`. By default, KGs are **auto-generated on first run** if not present. To skip building, you can download pre-built KGs from HuggingFace:
+KGs are auto-generated on first run. Pre-built KGs are available at [huggingface.co/datasets/qafd/kg](https://huggingface.co/datasets/qafd/kg):
 
 ```bash
 # Download all pre-built KGs
 huggingface-cli download qafd/kg --local-dir ./kg
 
 # Or download a specific benchmark
-huggingface-cli download qafd/kg --include "ultradomain/*" --local-dir ./kg
 huggingface-cli download qafd/kg --include "multihop/*" --local-dir ./kg
-```
-
-Pre-built KGs are available at: [huggingface.co/datasets/qafd/kg](https://huggingface.co/datasets/qafd/kg)
-
-To build KGs manually:
-
-```bash
-./run.sh ultradomain --build --max-documents 100
-./run.sh summarization --build --max-documents 10
-./run.sh multihop --dataset musique --build --max-documents 500
-./run.sh multihop --dataset hotpotqa --build --max-documents 500
+huggingface-cli download qafd/kg --include "ultradomain/*" --local-dir ./kg
 ```
 
 ### Run Benchmarks
 
 ```bash
-./run.sh ultradomain --questions 10
-./run.sh summarization --questions 50
-./run.sh multihop --dataset musique --questions 100
-./run.sh multihop --dataset hotpotqa --questions 100
-./run.sh multihop --dataset 2wikimultihopqa --questions 100
-./run.sh text2sql --questions 5 --db Pagila
-./run.sh text2sql --benchmark bird --questions 5 --db superhero
+# Multi-hop QA
+python benchmarks/run.py --task multihop --dataset musique --questions 100
+python benchmarks/run.py --task multihop --dataset hotpotqa --questions 100
+python benchmarks/run.py --task multihop --dataset 2wikimultihopqa --questions 100
+
+# UltraDomain
+python benchmarks/run.py --task ultradomain --dataset mix --questions 10
+
+# Text-to-SQL
+python benchmarks/run.py --task text2sql --dataset spider2-lite
+
+# Summarization
+python benchmarks/run.py --task summarization --dataset narrativeqa
 ```
 
 ### Common Options
 
 | Option | Description |
 |--------|-------------|
+| `--task TASK` | `multihop`, `ultradomain`, `text2sql`, `summarization` |
+| `--dataset NAME` | Dataset name (e.g., `musique`, `mix`, `spider2-lite`) |
+| `--graph_type TYPE` | `passage-entity` or `entity` (auto-selected by task) |
 | `--questions N` | Number of questions to evaluate |
-| `--build` | Build KG only (skip benchmark) |
-| `--force-build` | Rebuild KG even if it exists |
-| `--max-documents N` | Limit documents for KG construction |
+| `--build_only` | Build KG only, skip benchmark |
+| `--force_build` | Rebuild KG even if it exists |
+| `--skip_qa` | Run retrieval only, skip QA (passage-entity) |
 | `--embedding MODEL` | Embedding model (see table below) |
 | `--llm MODEL` | LLM model (`gpt-4o-mini`, `gpt-4o`, `gpt-5-nano`, `gpt-5-mini`, `gpt-5`, `gpt-oss-120b`) |
-
-### Task-Specific Options
-
-| Option | Task | Description |
-|--------|------|-------------|
-| `--dataset NAME` | multihop | `musique`, `hotpotqa`, `2wikimultihopqa` |
-| `--dataset NAME` | summarization | `squality` (default) |
-| `--benchmark NAME` | text2sql | `spider2-lite` (default), `bird` |
-| `--db NAME` | text2sql | Database name (e.g., `Pagila`, `superhero`) |
-| `--mode MODE` | multihop, summarization | `local`, `global`, `hybrid` (default: `hybrid`) |
+| `--alpha FLOAT` | QAFD alpha parameter (default: 2.0) |
+| `--epsilon FLOAT` | QAFD convergence threshold (default: 0.01) |
+| `--weight_scheme` | Query-aware edge weighting: `original`, `multiply`, `add` |
 
 ## Data
 
@@ -258,15 +297,21 @@ QAFD-RAG processes documents through a two-stage pipeline:
 
 **Stage 1 -- Knowledge Graph Construction**
 
-1. **Chunking**: Documents are split into overlapping token-based chunks.
-2. **Entity Extraction**: An LLM identifies entities (people, organizations, events, etc.) and their relationships from each chunk.
-3. **Graph Assembly**: Entities become nodes, relationships become weighted edges, and all are embedded into vector space.
+*Entity Graph:*
+1. Documents are split into token-based chunks.
+2. An LLM extracts entities and relationships from each chunk.
+3. Entities become nodes, relationships become weighted edges.
 
-**Stage 2 -- Query-Aware Retrieval and Answering**
+*Passage-Entity Graph:*
+1. Documents are split into passages (chunks).
+2. OpenIE extracts named entities and (subject, predicate, object) triples.
+3. Entities and passages are both graph nodes, connected by fact edges, passage-entity edges, and synonymy edges (entity pairs with cosine similarity > 0.8).
 
-1. **Entity Matching**: The query is parsed for keywords, which are matched to KG entities via vector similarity.
-2. **Flow Diffusion**: Starting from matched entities, a flow diffusion algorithm propagates "mass" through the graph. Edge weights are dynamically adjusted based on each node's similarity to the query (query-aware weighting).
-3. **Context Assembly**: Top-ranked nodes, relationships, and their associated text chunks are assembled into a context window.
-4. **LLM Answering**: The context is passed to an LLM along with the original query to generate the final answer.
+**Stage 2 -- Query-Aware Flow Diffusion**
+
+1. **Seed Selection**: Query is matched to entities/facts via embedding similarity. An LLM reranker filters the most relevant facts.
+2. **Flow Diffusion**: Mass is injected at seed nodes and propagated through the graph via push-relabel. Edge weights are dynamically adjusted based on each node's similarity to the query.
+3. **Passage Ranking**: Nodes accumulate importance scores proportional to flow. In the passage-entity graph, passages are ranked directly. In the entity graph, associated text chunks are retrieved from top-ranked entities.
+4. **LLM Answering**: Top passages are assembled into context and passed to an LLM for answer generation.
 
 The flow diffusion algorithm is the key differentiator: rather than simple graph traversal or vector search alone, it combines graph structure with query relevance to find contextually important information that may be several hops away from the initial match.
