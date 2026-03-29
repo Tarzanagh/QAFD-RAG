@@ -46,7 +46,7 @@ class FlowDiffusionRetriever(BaseRetriever):
         source_node: str,
         target_node: str,
         confidence: float = 0.5,
-        epsilon: float = 0.02,
+        epsilon: float = 0.01,
         node_embeddings: Optional[Dict] = None,
         subquery_embedding: Optional[List[float]] = None,
         weight_func: Optional[str] = None,

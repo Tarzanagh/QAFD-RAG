@@ -42,3 +42,4 @@ data/multihop/*.json
 # Run logs and results (regenerable)
 run_all_embeddings.log
 results/
+outputs/

@@ -280,7 +280,7 @@ class MultiHopBenchmark:
     async def run_benchmark(self, question_count: int = 100, force_build: bool = False,
                            max_documents: int = None, mode: str = "hybrid",
                            max_source_nodes: int = 20, min_flow_threshold: float = 0.1,
-                           alpha: float = 0.5) -> BenchmarkResult:
+                           alpha: float = 2.0) -> BenchmarkResult:
         """Run benchmark"""
         from src.QAFD_RAG import QAFD_RAG, QueryParam
 
@@ -497,7 +497,7 @@ async def main():
                         choices=["local", "global", "hybrid"])
     parser.add_argument("--max-source-nodes", type=int, default=20)
     parser.add_argument("--min-flow-threshold", type=float, default=0.1)
-    parser.add_argument("--alpha", type=float, default=0.5)
+    parser.add_argument("--alpha", type=float, default=2.0)
 
     args = parser.parse_args()
 
