@@ -114,6 +114,7 @@ def run_passage_entity(args):
     # Build sys.argv for the sub-module
     sub_argv = [
         "benchmark_runner",
+        "--task", args.task,
         "--dataset", args.dataset,
         "--data_dir", os.path.join(QAFD_RAG_HOME, "data", "multihop"),
         "--embedding_model", args.embedding,
@@ -176,9 +177,11 @@ def run_entity(args):
 
     elif task == "ultradomain":
         # Delegate to ultradomain's own argparse
+        # Ultradomain expects dataset as "mix.jsonl" format
+        ud_dataset = args.dataset if args.dataset.endswith(".jsonl") else f"{args.dataset}.jsonl"
         sub_argv = [
             "benchmark_ultradomain",
-            "--dataset", args.dataset,
+            "--dataset", ud_dataset,
             "--questions", str(args.questions),
             "--embedding", args.embedding,
             "--llm", args.llm,

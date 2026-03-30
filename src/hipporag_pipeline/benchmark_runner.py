@@ -265,6 +265,100 @@ def run_qa(
     return queries
 
 
+def run_qa_ultradomain(
+    queries: List[QuerySolution],
+    llm_func,
+    qa_top_k: int = 5,
+) -> List[QuerySolution]:
+    """Generate full responses for UltraDomain (not short answers)."""
+    for qs in queries:
+        passages = qs.docs[:qa_top_k]
+        context = "\n\n".join(passages)
+        prompt = (
+            f"Based on the following context, provide a comprehensive and detailed "
+            f"answer to the question.\n\n"
+            f"Context:\n{context}\n\n"
+            f"Question: {qs.question}\n\n"
+            f"Answer:"
+        )
+        try:
+            response = _run_sync(
+                llm_func(prompt=prompt, max_tokens=1024)
+            )
+            qs.answer = response.strip()
+        except Exception as e:
+            logger.error(f"QA error: {e}")
+            qs.answer = ""
+    return queries
+
+
+def run_quality_eval(
+    queries: List[str],
+    responses: List[str],
+    llm_func,
+    num_eval_rounds: int = 5,
+) -> Dict[str, List[float]]:
+    """Evaluate response quality using LLM scoring (same as entity-graph pipeline).
+
+    Each response is evaluated num_eval_rounds times on 5 criteria.
+    Returns dict of criterion -> list of per-query average scores.
+    """
+    criteria = ["comprehensiveness", "diversity", "logicality", "relevance", "coherence"]
+    result = {c: [] for c in criteria}
+
+    for i, (query, response) in enumerate(zip(queries, responses)):
+        if not response:
+            for c in criteria:
+                result[c].append(0.0)
+            continue
+
+        criterion_scores = {c: [] for c in criteria}
+        for _ in range(num_eval_rounds):
+            prompt = f"""Evaluate the following response to a question based on five criteria. Rate each criterion from 0-100.
+
+Question: {query}
+Response: {response}
+
+Please evaluate based on these criteria:
+- Comprehensiveness: How much detail does the answer provide to cover all aspects and details of the question?
+- Diversity: How varied and rich is the answer in providing different perspectives and insights on the question?
+- Logicality: How logically does the answer respond to all parts of the question?
+- Relevance: How relevant is the answer to the question, staying focused and addressing the intended topic or issue?
+- Coherence: How well does the answer maintain internal logical connections between its parts, ensuring a smooth and consistent structure?
+
+Provide scores in JSON format:
+{{
+    "comprehensiveness": [score],
+    "diversity": [score],
+    "logicality": [score],
+    "relevance": [score],
+    "coherence": [score]
+}}"""
+            try:
+                eval_response = _run_sync(
+                    llm_func(prompt=prompt, max_tokens=200)
+                )
+                import re as _re
+                json_match = _re.search(r'\{.*\}', eval_response, _re.DOTALL)
+                if json_match:
+                    scores = json.loads(json_match.group())
+                    for c in criteria:
+                        if c in scores:
+                            val = float(scores[c])
+                            if 0 <= val <= 100:
+                                criterion_scores[c].append(val)
+            except Exception:
+                continue
+
+        for c in criteria:
+            if criterion_scores[c]:
+                result[c].append(np.mean(criterion_scores[c]))
+            else:
+                result[c].append(0.0)
+
+    return result
+
+
 # ===========================================================================
 # Main
 # ===========================================================================
@@ -275,11 +369,14 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--dataset", type=str, default="musique",
-                        help="Dataset: musique, hotpotqa, 2wikimultihopqa")
+                        help="Dataset name (e.g. musique, hotpotqa, 2wikimultihopqa, mix)")
+    parser.add_argument("--task", type=str, default="multihop",
+                        choices=["multihop", "ultradomain"],
+                        help="Task type (determines data loading)")
     parser.add_argument("--num_queries", type=int, default=-1,
                         help="Number of queries (-1 = all)")
     parser.add_argument("--data_dir", type=str, default="data/multihop",
-                        help="Directory with corpus/question JSON files")
+                        help="Directory with corpus/question JSON files (multihop only)")
     parser.add_argument("--save_dir", type=str, default="outputs",
                         help="Output directory")
 
@@ -374,33 +471,75 @@ def main():
     # ----------------------------------------------------------------
     # Load data
     # ----------------------------------------------------------------
-    corpus_path = os.path.join(args.data_dir, f"{args.dataset}_corpus.json")
-    questions_path = os.path.join(args.data_dir, f"{args.dataset}.json")
+    if args.task == "ultradomain":
+        # UltraDomain: load from HuggingFace, each record has context + input
+        from datasets import load_dataset as hf_load_dataset
 
-    logger.info(f"Loading corpus from {corpus_path}")
-    with open(corpus_path) as f:
-        corpus = json.load(f)
-    docs = [f"{d['title']}\n{d['text']}" for d in corpus]
+        dataset_file = f"{args.dataset}.jsonl"
+        logger.info(f"Loading UltraDomain dataset: {dataset_file}")
+        hf_dataset = hf_load_dataset(
+            "TommyChien/UltraDomain", data_files=dataset_file, split="train"
+        )
 
-    logger.info(f"Loading questions from {questions_path}")
-    with open(questions_path) as f:
-        samples = json.load(f)
+        num_q = args.num_queries if args.num_queries > 0 else len(hf_dataset)
+        num_q = min(num_q, len(hf_dataset))
 
-    all_queries = [s["question"] for s in samples]
-    if args.num_queries > 0:
-        all_queries = all_queries[: args.num_queries]
-        samples = samples[: args.num_queries]
+        # Each record's context becomes the corpus.
+        # UltraDomain contexts can be very long (30K+ chars), so we chunk them
+        # into ~500-word passages to fit embedding model token limits.
+        docs = []
+        chunk_size = 500  # words per chunk
+        chunk_overlap = 50  # word overlap between chunks
+        for i in range(num_q):
+            ctx = hf_dataset[i].get("context", "")
+            if not ctx:
+                continue
+            words = ctx.split()
+            if len(words) <= chunk_size:
+                docs.append(ctx)
+            else:
+                for start in range(0, len(words), chunk_size - chunk_overlap):
+                    chunk = " ".join(words[start : start + chunk_size])
+                    if chunk.strip():
+                        docs.append(chunk)
 
-    gold_answers = get_gold_answers(samples)
-    try:
-        gold_docs = get_gold_docs(samples, args.dataset)
-    except Exception:
-        gold_docs = None
+        all_queries = [hf_dataset[i]["input"] for i in range(num_q)]
+        samples = [dict(hf_dataset[i]) for i in range(num_q)]
+        gold_answers = [
+            set(s.get("answers", [s.get("label", "")])) for s in samples
+        ]
+        gold_docs = None  # UltraDomain has no gold supporting docs
+
+    else:
+        # Multihop: load from local JSON files
+        corpus_path = os.path.join(args.data_dir, f"{args.dataset}_corpus.json")
+        questions_path = os.path.join(args.data_dir, f"{args.dataset}.json")
+
+        logger.info(f"Loading corpus from {corpus_path}")
+        with open(corpus_path) as f:
+            corpus = json.load(f)
+        docs = [f"{d['title']}\n{d['text']}" for d in corpus]
+
+        logger.info(f"Loading questions from {questions_path}")
+        with open(questions_path) as f:
+            samples = json.load(f)
+
+        all_queries = [s["question"] for s in samples]
+        if args.num_queries > 0:
+            all_queries = all_queries[: args.num_queries]
+            samples = samples[: args.num_queries]
+
+        gold_answers = get_gold_answers(samples)
+        try:
+            gold_docs = get_gold_docs(samples, args.dataset)
+        except Exception:
+            gold_docs = None
 
     print("=" * 70)
+    print(f"  Task:        {args.task}")
     print(f"  Dataset:     {args.dataset}")
     print(f"  Queries:     {len(all_queries)}")
-    print(f"  Corpus:      {len(corpus)} documents")
+    print(f"  Corpus:      {len(docs)} documents")
     print(f"  LLM:         {config.llm_model}")
     print(f"  Embedding:   {config.embedding_model_key}")
     print(f"  QAFD alpha:  {config.qafd_alpha}")
@@ -447,25 +586,47 @@ def main():
         retrieval_metrics = {}
 
     # ----------------------------------------------------------------
-    # QA
+    # QA + Evaluation (task-aware)
     # ----------------------------------------------------------------
+    avg_em, avg_f1 = None, None
+    quality_scores = None
+
     if not args.skip_qa:
         logger.info("Running QA ...")
-        retrieval_results = run_qa(retrieval_results, llm_func, qa_top_k=config.qa_top_k)
 
-        em_scores, f1_scores = [], []
-        for qs, ga in zip(retrieval_results, gold_answers):
-            qs.gold_answers = list(ga)
-            em_scores.append(exact_match(qs.answer or "", ga))
-            f1_scores.append(f1_score(qs.answer or "", ga))
+        if args.task == "ultradomain":
+            # UltraDomain: generate full responses, evaluate with quality scores
+            retrieval_results = run_qa_ultradomain(
+                retrieval_results, llm_func, qa_top_k=config.qa_top_k
+            )
+            # Quality evaluation (same as entity-graph pipeline)
+            quality_scores = run_quality_eval(
+                all_queries, [qs.answer for qs in retrieval_results], llm_func
+            )
+            if quality_scores:
+                print("\n--- Quality Metrics ---")
+                overall = []
+                for criterion, scores in quality_scores.items():
+                    avg = np.mean(scores)
+                    std = np.std(scores)
+                    print(f"  {criterion:<25} {avg:.2f} +/- {std:.2f}")
+                    overall.append(avg)
+                print(f"  {'Overall Average':<25} {np.mean(overall):.2f}")
+        else:
+            # Multihop: generate short answers, evaluate with F1/EM
+            retrieval_results = run_qa(retrieval_results, llm_func, qa_top_k=config.qa_top_k)
 
-        avg_em = round(np.mean(em_scores), 4)
-        avg_f1 = round(np.mean(f1_scores), 4)
-        print("\n--- QA Metrics ---")
-        print(f"  Exact Match: {avg_em}")
-        print(f"  F1 Score:    {avg_f1}")
-    else:
-        avg_em, avg_f1 = None, None
+            em_scores, f1_scores = [], []
+            for qs, ga in zip(retrieval_results, gold_answers):
+                qs.gold_answers = list(ga)
+                em_scores.append(exact_match(qs.answer or "", ga))
+                f1_scores.append(f1_score(qs.answer or "", ga))
+
+            avg_em = round(np.mean(em_scores), 4)
+            avg_f1 = round(np.mean(f1_scores), 4)
+            print("\n--- QA Metrics ---")
+            print(f"  Exact Match: {avg_em}")
+            print(f"  F1 Score:    {avg_f1}")
 
     # ----------------------------------------------------------------
     # Save results
@@ -474,10 +635,12 @@ def main():
     results_path = os.path.join(config.working_dir, f"results_{args.dataset}.json")
     output = {
         "dataset": args.dataset,
+        "task": args.task,
         "num_queries": len(all_queries),
         "retrieval_metrics": retrieval_metrics,
         "qa_em": avg_em,
         "qa_f1": avg_f1,
+        "quality_scores": quality_scores,
         "config": {
             "llm_model": config.llm_model,
             "embedding_model_key": config.embedding_model_key,
