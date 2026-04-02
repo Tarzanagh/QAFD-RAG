@@ -2,7 +2,7 @@
 Flow diffusion cluster operations for knowledge graph traversal.
 
 This module provides functions to find clusters using flow diffusion,
-convert subgraphs to JSON format, and summarize clusters using LLM.
+convert subgraphs to JSON format and summarize clusters using LLM.
 """
 
 import asyncio
