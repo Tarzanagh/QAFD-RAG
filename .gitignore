@@ -43,3 +43,5 @@ data/multihop/*.json
 run_all_embeddings.log
 results/
 outputs/
+outputs_ablation/
+experiments/results/

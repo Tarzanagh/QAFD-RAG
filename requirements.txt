@@ -1,5 +1,10 @@
 # QAFD-RAG Dependencies
 # Install: pip install -r requirements.txt
+#
+# Conda env setup:
+#   conda create -n qafd-rag python=3.10 -y
+#   conda activate qafd-rag
+#   pip install -r requirements.txt
 
 # --- Core ---
 openai>=1.30.0
@@ -14,6 +19,12 @@ nano-vectordb>=0.0.4
 tqdm>=4.60.0
 nest-asyncio>=1.6.0
 python-dotenv>=1.0.0
+httpx>=0.27.0
+huggingface_hub>=0.25.0
+
+# --- Graph (passage-entity pipeline) ---
+python-igraph>=0.11.0
+pyarrow>=15.0.0
 
 # --- Embedding Models (local) ---
 torch>=2.0.0
@@ -21,11 +32,12 @@ transformers>=4.40.0
 sentence-transformers>=3.0.0
 einops>=0.7.0
 gritlm>=1.0.0
+regex>=2024.0.0
 
 # --- Data Processing ---
 pandas>=2.0.0
-pyarrow>=15.0.0
 pyvis>=0.3.0
+datasets>=3.0.0
 
 # --- LLM Backends ---
 ollama>=0.5.0

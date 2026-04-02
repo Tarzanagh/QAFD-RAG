@@ -56,6 +56,15 @@ class HippoRAGConfig:
     qafd_step_size: float = 0.2
     qafd_random_seed: int = 42
 
+    # ── Query-aware enhancements (all default = original behaviour) ────────
+    sim_mode: str = "normalized"     # Similarity contrast: "normalized", "relu", "relu_sq"
+    qa_sink_gamma: float = 0.0       # Query-aware sink capacity (0=off)
+    qa_warm_delta: float = 0.0       # Query-aware seed bias (0=off)
+    qa_warm_walk: bool = False       # Use QA edge weights in warm-start walk
+    qa_warm_steps: int = 2           # Number of warm-start steps (default 2)
+    qa_accum_gamma: float = 0.0      # Query-aware x accumulation boost (0=off)
+    qa_post_lambda: float = 0.0      # Post-diffusion reranking (0=off)
+
     # ── Reranker ───────────────────────────────────────────────────────────
     rerank_dspy_file_path: Optional[str] = None      # path to DSPy JSON; None → built-in prompt
 

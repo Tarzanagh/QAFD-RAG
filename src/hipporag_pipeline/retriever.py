@@ -340,6 +340,13 @@ class HippoRAGRetriever:
             weight_scheme=self.config.qafd_weight_scheme,
             use_node_degree=self.config.qafd_use_node_degree,
             random_seed=self.config.qafd_random_seed,
+            sim_mode=self.config.sim_mode,
+            qa_sink_gamma=self.config.qa_sink_gamma,
+            qa_warm_delta=self.config.qa_warm_delta,
+            qa_warm_walk=self.config.qa_warm_walk,
+            qa_warm_steps=self.config.qa_warm_steps,
+            qa_accum_gamma=self.config.qa_accum_gamma,
+            qa_post_lambda=self.config.qa_post_lambda,
         )
         qafd_elapsed = time.time() - qafd_start
         self.qafd_time += qafd_elapsed

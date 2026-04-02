@@ -410,6 +410,23 @@ def main():
     parser.add_argument("--skip_qa", action="store_true",
                         help="Only run retrieval, skip QA step")
 
+    # Query-aware enhancements (all default = original behaviour)
+    parser.add_argument("--sim_mode", type=str, default="normalized",
+                        choices=["normalized", "relu", "relu_sq"],
+                        help="Similarity contrast function (default=normalized)")
+    parser.add_argument("--qa_sink_gamma", type=float, default=0.0,
+                        help="Query-aware sink capacity (0=off)")
+    parser.add_argument("--qa_warm_delta", type=float, default=0.0,
+                        help="Query-aware seed bias (0=off)")
+    parser.add_argument("--qa_warm_walk", action="store_true",
+                        help="Use QA edge weights in warm-start random walk")
+    parser.add_argument("--qa_warm_steps", type=int, default=2,
+                        help="Number of warm-start steps (default 2)")
+    parser.add_argument("--qa_accum_gamma", type=float, default=0.0,
+                        help="Query-aware x accumulation boost (0=off)")
+    parser.add_argument("--qa_post_lambda", type=float, default=0.0,
+                        help="Post-diffusion query reranking (0=off)")
+
     # Reranker
     parser.add_argument("--rerank_dspy_path", type=str, default=None)
 
@@ -442,6 +459,13 @@ def main():
         qafd_max_iterations=args.qafd_max_iterations,
         qafd_weight_scheme=args.qafd_weight_scheme,
         qafd_step_size=args.qafd_step_size,
+        sim_mode=args.sim_mode,
+        qa_sink_gamma=args.qa_sink_gamma,
+        qa_warm_walk=args.qa_warm_walk,
+        qa_warm_steps=args.qa_warm_steps,
+        qa_accum_gamma=args.qa_accum_gamma,
+        qa_warm_delta=args.qa_warm_delta,
+        qa_post_lambda=args.qa_post_lambda,
         rerank_dspy_file_path=args.rerank_dspy_path,
     )
 
