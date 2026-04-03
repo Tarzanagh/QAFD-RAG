@@ -252,14 +252,7 @@ Local embeddings (`jina-v3`, `gritlm`, `nvidia-nv-embed-v2`) run on your GPU and
 
 ### LLM Models
 
-| Key | Description |
-|-----|-------------|
-| `gpt-4o-mini` | Default. Fast, cost-effective |
-| `gpt-4o` | Higher quality, slower |
-| `gpt-5-nano` | GPT-5 Nano. Fastest, most affordable GPT-5 variant |
-| `gpt-5-mini` | GPT-5 Mini. Balanced speed and quality |
-| `gpt-5` | GPT-5. Highest quality |
-| `gpt-oss-120b` | Free, open-source (local) |
+`gpt-4o-mini` (default), `gpt-4o`, `gpt-5-nano`, `gpt-5-mini`, `gpt-5`, `gpt-oss-120b` (free, local)
 
 ## Python API
 
