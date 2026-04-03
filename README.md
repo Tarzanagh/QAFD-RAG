@@ -1,10 +1,6 @@
 # QAFD-RAG
 
-Official code for the paper:
-
-**[Query-Aware Flow Diffusion for Graph-Based RAG with Retrieval Guarantees](https://openreview.net/forum?id=n28wnc2QTc)**
-*Zhuoping Zhou, Davoud Ataee Tarzanagh, Sima Didari, Wenjun Hu, Baruch Gutow, Oxana Verkholyak, Masoud Faraki, Heng Hao, Hankyu Moon, Seungjai Min*
-**ICLR 2026**
+Official code for ICLR 2026 paper: **[Query-Aware Flow Diffusion for Graph-Based RAG with Retrieval Guarantees](https://openreview.net/forum?id=n28wnc2QTc)**
 
 QAFD-RAG uses **query-aware flow diffusion** to retrieve contextually relevant subgraphs from a knowledge graph. Unlike community-based (GraphRAG) or entity-centric (LightRAG) approaches, QAFD-RAG dynamically re-weights edges based on query relevance and propagates flow through the graph to discover multi-hop context with retrieval guarantees.
 
@@ -313,3 +309,14 @@ QAFD-RAG processes documents through a two-stage pipeline:
 4. **LLM Answering**: Top passages are assembled into context and passed to an LLM for answer generation.
 
 The flow diffusion algorithm is the key differentiator: rather than simple graph traversal or vector search alone, it combines graph structure with query relevance to find contextually important information that may be several hops away from the initial match.
+
+## Citation
+
+```bibtex
+@inproceedings{zhou2026qafd,
+  title={Query-Aware Flow Diffusion for Graph-Based RAG with Retrieval Guarantees},
+  author={Zhou, Zhuoping and Tarzanagh, Davoud Ataee and Didari, Sima and Hu, Wenjun and Gutow, Baruch and Verkholyak, Oxana and Faraki, Masoud and Hao, Heng and Moon, Hankyu and Min, Seungjai},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2026}
+}
+```
