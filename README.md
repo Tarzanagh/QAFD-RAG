@@ -39,7 +39,7 @@ QAFD-RAG supports two knowledge graph representations, both using the same Query
 | | **Entity Graph** | **Passage-Entity Graph** |
 |---|---|---|
 | **Nodes** | Entities + relationships | Entities + passages + facts |
-| **Extraction** | LLM entity/relationship extraction | OpenIE (NER + triple extraction) |
+| **Extraction** | LLM entity/relationship extraction | OpenIE (NER + triple extraction) ([HippoRAG 2](https://arxiv.org/abs/2405.14831)) |
 | **Edges** | Entity-entity relationships | Fact edges + passage edges + synonymy edges |
 | **QAFD traversal** | Flow reaches entities, passages looked up after | Flow reaches passages directly as graph nodes |
 | **Best for** | General QA, text2sql, summarization | Multi-hop reasoning |
