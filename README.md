@@ -315,7 +315,7 @@ The flow diffusion algorithm is the key differentiator: rather than simple graph
 ```bibtex
 @inproceedings{zhou2026qafd,
   title={Query-Aware Flow Diffusion for Graph-Based RAG with Retrieval Guarantees},
-  author={Zhou, Zhuoping and Tarzanagh, Davoud Ataee and Didari, Sima and Hu, Wenjun and Gutow, Baruch and Verkholyak, Oxana and Faraki, Masoud and Hao, Heng and Moon, Hankyu and Min, Seungjai},
+  author={Zhou, Zhuoping and Ataee Tarzanagh, Davoud and Didari, Sima and Hu, Wenjun and Gutow, Baruch and Verkholyak, Oxana and Faraki, Masoud and Hao, Heng and Moon, Hankyu and Min, Seungjai},
   booktitle={International Conference on Learning Representations (ICLR)},
   year={2026}
 }
