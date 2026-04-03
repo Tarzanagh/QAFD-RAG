@@ -149,11 +149,11 @@ KGs are auto-generated on first run. Pre-built KGs are available at [huggingface
 
 ```bash
 # Download all pre-built KGs
-huggingface-cli download qafd/kg --local-dir ./kg
+huggingface-cli download qafd/kg --repo-type dataset --local-dir ./kg
 
 # Or download a specific benchmark
-huggingface-cli download qafd/kg --include "multihop/*" --local-dir ./kg
-huggingface-cli download qafd/kg --include "ultradomain/*" --local-dir ./kg
+huggingface-cli download qafd/kg --repo-type dataset --include "multihop/*" --local-dir ./kg
+huggingface-cli download qafd/kg --repo-type dataset --include "ultradomain/*" --local-dir ./kg
 ```
 
 ### Run Benchmarks
