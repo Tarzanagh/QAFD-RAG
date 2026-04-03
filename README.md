@@ -4,11 +4,14 @@ Official code for ICLR 2026 paper: **[Query-Aware Flow Diffusion for Graph-Based
 
 QAFD-RAG uses **query-aware flow diffusion** to retrieve contextually relevant subgraphs from a knowledge graph. Unlike community-based (GraphRAG) or entity-centric (LightRAG) approaches, QAFD-RAG dynamically re-weights edges based on query relevance and propagates flow through the graph to discover multi-hop context with retrieval guarantees.
 
+<p align="center"><em>Query: "Introduce Steve Jobs's products in Apple."</em></p>
+
 <table align="center"><tr>
   <td align="center"><img src="docs/figs/GraphRAG.png" width="260" alt="GraphRAG"/><br/><em>GraphRAG</em></td>
   <td align="center"><img src="docs/figs/LightRAG.png" width="260" alt="LightRAG"/><br/><em>LightRAG</em></td>
   <td align="center"><img src="docs/figs/QAFD-RAG.png" width="260" alt="QAFD-RAG"/><br/><em>QAFD-RAG</em></td>
 </tr></table>
+<p align="center"><em>QAFD-RAG reweights edges by query relevance, suppressing irrelevant neighborhoods (e.g., Amazon, Apple fruit).</em></p>
 
 ## Quick Start
 
