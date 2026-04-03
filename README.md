@@ -145,15 +145,20 @@ All benchmarks can also be run through `./run.sh`:
 
 ### Knowledge Graphs
 
-KGs are auto-generated on first run. Pre-built KGs are available at [huggingface.co/datasets/qafd/kg](https://huggingface.co/datasets/qafd/kg):
+KGs are **auto-generated on first run** if not present. To skip building, download pre-built KGs from [huggingface.co/datasets/qafd/kg](https://huggingface.co/datasets/qafd/kg):
 
 ```bash
-# Download all pre-built KGs
-huggingface-cli download qafd/kg --repo-type dataset --local-dir ./kg
+# Download a single KG to test (recommended for first-time setup)
+huggingface-cli download qafd/kg --repo-type dataset \
+    --include "ultradomain/gpt-4o-mini_openai-small_mix/*" --local-dir ./kg
 
-# Or download a specific benchmark
+# Download all KGs for one benchmark
 huggingface-cli download qafd/kg --repo-type dataset --include "multihop/*" --local-dir ./kg
 huggingface-cli download qafd/kg --repo-type dataset --include "ultradomain/*" --local-dir ./kg
+huggingface-cli download qafd/kg --repo-type dataset --include "text2sql/*" --local-dir ./kg
+
+# Download everything
+huggingface-cli download qafd/kg --repo-type dataset --local-dir ./kg
 ```
 
 ### Run Benchmarks
