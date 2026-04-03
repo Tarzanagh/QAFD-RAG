@@ -347,6 +347,7 @@ class HippoRAGRetriever:
             qa_warm_steps=self.config.qa_warm_steps,
             qa_accum_gamma=self.config.qa_accum_gamma,
             qa_post_lambda=self.config.qa_post_lambda,
+            batch_push=self.config.batch_push,
         )
         qafd_elapsed = time.time() - qafd_start
         self.qafd_time += qafd_elapsed

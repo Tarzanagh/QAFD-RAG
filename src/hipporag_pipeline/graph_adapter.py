@@ -232,7 +232,7 @@ class IGraphQAFD:
             return 0.0
 
         # Query-aware modulation
-        if not self.node_embeddings or self.query_embedding is None:
+        if self.weight_scheme == "none" or not self.node_embeddings or self.query_embedding is None:
             self._edge_weight_cache[key] = w
             return w
 
@@ -293,40 +293,68 @@ class IGraphQAFD:
                 self.mass[i] = self.alpha * total_sink * self.source_weights[i]
 
     # ------------------------------------------------------------------
+    def _get_structural_weight(self, i: int, j: int) -> float:
+        """Get original (non-query-aware) edge weight."""
+        try:
+            eid = self.graph.get_eid(i, j)
+            return self.graph.es[eid].attributes().get("weight", 1.0)
+        except Exception:
+            return 0.0
+
     def _push(self, node_idx: int) -> bool:
-        """Push excess mass from node to neighbours."""
+        """Push excess mass from node to neighbours.
+
+        Decoupled accumulation/routing: x accumulates by structural degree
+        (independent of query), mass routes by query-aware edge weights.
+        This ensures query-aware modulation steers flow without penalising
+        the accumulation rate at query-relevant nodes.
+        """
         neighbors = self.graph.neighbors(node_idx)
         if not neighbors:
             return False
 
-        w_i = 0.0
+        # Query-aware weights (for routing)
+        w_qa = 0.0
         for j in neighbors:
-            w_i += self._get_edge_weight(node_idx, j)
+            w_qa += self._get_edge_weight(node_idx, j)
 
-        if w_i == 0:
+        if w_qa == 0:
             return False
 
         excess = self.mass[node_idx] - self.sink_capacity[node_idx]
         if excess <= 0:
             return False
 
-        # Accumulate importance — optionally boosted by query relevance
-        accum = self.step_size * excess / (w_i + 1e-8)
+        # Structural weights (for accumulation) — decoupled from QA
+        w_struct = 0.0
+        for j in neighbors:
+            w_struct += self._get_structural_weight(node_idx, j)
+        if w_struct == 0:
+            w_struct = w_qa  # fallback
+
+        # Accumulate importance based on STRUCTURAL degree (not QA)
+        accum = self.step_size * excess / (w_struct + 1e-8)
         if self.qa_accum_gamma > 0:
             accum *= (1.0 + self.qa_accum_gamma * self._node_query_sim[node_idx])
         self.x[node_idx] += accum
         self.mass[node_idx] = self.sink_capacity[node_idx]
 
+        # Route mass using QUERY-AWARE weights
         for j in neighbors:
             w_ij = self._get_edge_weight(node_idx, j)
             if w_ij > 0:
-                self.mass[j] += excess * w_ij / (w_i + 1e-8)
+                self.mass[j] += excess * w_ij / (w_qa + 1e-8)
 
         return True
 
     # ------------------------------------------------------------------
-    def run(self) -> np.ndarray:
-        """Run push-relabel flow diffusion. Returns per-node scores (np.ndarray)."""
+    def run(self, batch_push: bool = False) -> np.ndarray:
+        """Run push-relabel flow diffusion. Returns per-node scores (np.ndarray).
+
+        batch_push: If True, process ALL excess nodes per iteration (parallel
+        push-relabel). This makes edge weights effective because each iteration
+        touches all excess nodes' edges, not just one random node's.
+        """
         self._initialize()
 
         iterations = 0
@@ -343,9 +371,16 @@ class IGraphQAFD:
                 logger.info(f"QAFD converged in {iterations} iters ({pushes} pushes)")
                 break
 
-            node_idx = int(random.choice(excess_indices))
-            if self._push(node_idx):
-                pushes += 1
+            if batch_push:
+                # Batch push: process ALL excess nodes in this iteration
+                for node_idx in excess_indices:
+                    if self._push(int(node_idx)):
+                        pushes += 1
+            else:
+                # Single push: process one random excess node (original)
+                node_idx = int(random.choice(excess_indices))
+                if self._push(node_idx):
+                    pushes += 1
 
             if iterations % 10 == 0:
                 remaining = np.sum(np.maximum(0, self.mass - self.sink_capacity))
@@ -356,6 +391,7 @@ class IGraphQAFD:
         if iterations >= self.max_iterations:
             logger.warning(f"QAFD did not converge after {self.max_iterations} iterations")
 
+        logger.info(f"QAFD: {iterations} iters, {pushes} pushes, batch={batch_push}")
         return self.x
 
 
@@ -386,6 +422,7 @@ def run_igraph_qafd(
     qa_warm_steps: int = 2,
     qa_accum_gamma: float = 0.0,
     qa_post_lambda: float = 0.0,
+    batch_push: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Run QAFD on igraph and return (sorted_doc_ids, sorted_doc_scores).
 
@@ -418,7 +455,7 @@ def run_igraph_qafd(
         qa_accum_gamma=qa_accum_gamma,
     )
 
-    node_scores = qafd.run()
+    node_scores = qafd.run(batch_push=batch_push)
 
     # Extract passage scores
     doc_scores = np.array([node_scores[idx] for idx in passage_node_idxs])

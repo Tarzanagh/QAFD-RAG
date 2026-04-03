@@ -64,7 +64,7 @@ TASK_DEFAULT_GRAPH_TYPE = {
 
 GRAPH_TYPE_DEFAULTS = {
     "passage-entity": {
-        "alpha": 2.0,
+        "alpha": 3.0,
         "epsilon": 0.01,
         "max_iterations": 500,
         "step_size": 0.2,
@@ -74,7 +74,7 @@ GRAPH_TYPE_DEFAULTS = {
         "retrieval_top_k": 200,
     },
     "entity": {
-        "alpha": 2.0,
+        "alpha": 3.0,
         "epsilon": 0.01,
         "max_iterations": 500,
         "step_size": 0.2,
@@ -131,6 +131,8 @@ def run_passage_entity(args):
     ]
     if args.skip_qa:
         sub_argv.append("--skip_qa")
+    if getattr(args, 'batch_push', False):
+        sub_argv.append("--batch_push")
     if args.force_build:
         sub_argv.append("--force_index")
         sub_argv.append("--force_openie")
@@ -260,10 +262,12 @@ Examples:
                         help="Rebuild KG even if it exists")
     parser.add_argument("--skip_qa", action="store_true",
                         help="Run retrieval only, skip QA (passage-entity only)")
+    parser.add_argument("--batch_push", action="store_true",
+                        help="Batch push-relabel (process all excess nodes per iter)")
 
     # ── QAFD parameters (shared) ────────────────────────────────────────
     parser.add_argument("--alpha", type=float, default=None,
-                        help="QAFD alpha (default: 2.0)")
+                        help="QAFD alpha (default: 3.0)")
     parser.add_argument("--epsilon", type=float, default=None)
     parser.add_argument("--max_iterations", type=int, default=None)
     parser.add_argument("--step_size", type=float, default=None)

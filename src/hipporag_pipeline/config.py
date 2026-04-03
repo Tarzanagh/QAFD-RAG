@@ -48,7 +48,7 @@ class HippoRAGConfig:
 
     # ── QAFD algorithm parameters ──────────────────────────────────────────
     use_qafd: bool = True
-    qafd_alpha: float = 2.0
+    qafd_alpha: float = 3.0
     qafd_epsilon: float = 0.01
     qafd_max_iterations: int = 500
     qafd_weight_scheme: str = "original"     # "multiply", "add", "original"
@@ -64,6 +64,7 @@ class HippoRAGConfig:
     qa_warm_steps: int = 2           # Number of warm-start steps (default 2)
     qa_accum_gamma: float = 0.0      # Query-aware x accumulation boost (0=off)
     qa_post_lambda: float = 0.0      # Post-diffusion reranking (0=off)
+    batch_push: bool = False         # Batch push-relabel (process all excess nodes per iter)
 
     # ── Reranker ───────────────────────────────────────────────────────────
     rerank_dspy_file_path: Optional[str] = None      # path to DSPy JSON; None → built-in prompt

@@ -405,7 +405,7 @@ def main():
     parser.add_argument("--force_openie", action="store_true")
 
     # QAFD
-    parser.add_argument("--qafd_alpha", type=float, default=2.0)
+    parser.add_argument("--qafd_alpha", type=float, default=3.0)
     parser.add_argument("--qafd_epsilon", type=float, default=0.01)
     parser.add_argument("--qafd_max_iterations", type=int, default=500)
     parser.add_argument("--qafd_weight_scheme", type=str, default="original")

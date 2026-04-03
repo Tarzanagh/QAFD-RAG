@@ -187,35 +187,46 @@ class FlowDiffusionRetriever(BaseRetriever):
             self.x = x_combined
 
     def push(self, node: str) -> bool:
-        """Push excess mass from node to neighbors via query-aware edges."""
+        """Push excess mass from node to neighbors.
+
+        Decoupled accumulation/routing: x accumulates by structural degree,
+        mass routes by query-aware edge weights.
+        """
         neighbors = list(self.graph.neighbors(node))
         if not neighbors:
             return False
 
-        # Total outgoing weight
-        w_i = 0
+        # Query-aware weights (for routing)
+        w_qa = 0
         for neighbor in neighbors:
-            weight = self.get_edge_weight(node, neighbor)
-            w_i += weight
+            w_qa += self.get_edge_weight(node, neighbor)
 
-        if w_i == 0:
+        if w_qa == 0:
             return False
 
         excess = self.mass[node] - self.sink_capacity[node]
         if excess <= 0:
             return False
 
-        # Accumulate importance score with step size
-        self.x[node] += self.step_size * excess / (w_i + 1e-8)
+        # Structural weights (for accumulation) — decoupled from QA
+        w_struct = 0
+        for neighbor in neighbors:
+            edge_data = self.graph[node][neighbor]
+            w_struct += edge_data.get('weight', 1.0)
+        if w_struct == 0:
+            w_struct = w_qa
+
+        # Accumulate importance based on structural degree
+        self.x[node] += self.step_size * excess / (w_struct + 1e-8)
 
         # Absorb what sink can hold
         self.mass[node] = self.sink_capacity[node]
 
-        # Push remaining excess to neighbors proportional to edge weights
+        # Route mass using query-aware weights
         for neighbor in neighbors:
             w_ij = self.get_edge_weight(node, neighbor)
             if w_ij > 0:
-                self.mass[neighbor] += excess * w_ij / (w_i + 1e-8)
+                self.mass[neighbor] += excess * w_ij / (w_qa + 1e-8)
 
         return True
 
