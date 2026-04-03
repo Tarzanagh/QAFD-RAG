@@ -79,9 +79,21 @@ from src.hipporag_pipeline.utils import QuerySolution
 # ---------------------------------------------------------------------------
 from openai import AsyncOpenAI
 
+# Shared client — avoids "Event loop is closed" errors from abandoned clients
+_openai_clients: dict = {}
+
+def _get_client(base_url="https://api.openai.com/v1", api_key=""):
+    key = (base_url, api_key)
+    if key not in _openai_clients:
+        _openai_clients[key] = AsyncOpenAI(
+            base_url=base_url,
+            api_key=api_key or os.environ.get("OPENAI_API_KEY", ""),
+        )
+    return _openai_clients[key]
+
 async def _openai_complete(model, prompt, system_prompt=None, history_messages=[],
                            base_url="https://api.openai.com/v1", api_key="", **kwargs):
-    client = AsyncOpenAI(base_url=base_url, api_key=api_key or os.environ.get("OPENAI_API_KEY", ""))
+    client = _get_client(base_url, api_key)
     kwargs.pop("hashing_kv", None)
     kwargs.pop("keyword_extraction", None)
     messages = []
@@ -93,8 +105,7 @@ async def _openai_complete(model, prompt, system_prompt=None, history_messages=[
     return response.choices[0].message.content
 
 async def _openai_embed(texts, model="text-embedding-3-small", api_key=""):
-    client = AsyncOpenAI(api_key=api_key or os.environ.get("OPENAI_API_KEY", ""))
-    # Replace empty strings with a placeholder to avoid API errors
+    client = _get_client(api_key=api_key)
     cleaned = [t if t.strip() else " " for t in texts]
     response = await client.embeddings.create(model=model, input=cleaned, encoding_format="float")
     return np.array([dp.embedding for dp in response.data])
@@ -426,6 +437,8 @@ def main():
                         help="Query-aware x accumulation boost (0=off)")
     parser.add_argument("--qa_post_lambda", type=float, default=0.0,
                         help="Post-diffusion query reranking (0=off)")
+    parser.add_argument("--batch_push", action="store_true",
+                        help="Use batch push-relabel (all excess nodes per iter)")
 
     # Reranker
     parser.add_argument("--rerank_dspy_path", type=str, default=None)
@@ -464,6 +477,7 @@ def main():
         qa_warm_walk=args.qa_warm_walk,
         qa_warm_steps=args.qa_warm_steps,
         qa_accum_gamma=args.qa_accum_gamma,
+        batch_push=args.batch_push,
         qa_warm_delta=args.qa_warm_delta,
         qa_post_lambda=args.qa_post_lambda,
         rerank_dspy_file_path=args.rerank_dspy_path,
