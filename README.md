@@ -32,9 +32,9 @@ python benchmarks/run.py --task ultradomain --dataset mix --questions 10
 
 QAFD-RAG supports two knowledge graph representations, both using the same Query-Aware Flow Diffusion algorithm:
 
-| | **Entity Graph** | **Passage-Entity Graph** ([Gutiérrez et al., 2024](https://arxiv.org/abs/2405.14831)) |
+| | **Entity Graph** | **Passage-Entity Graph** |
 |---|---|---|
-| **Nodes** | Entities + relationships | Entities + passages + facts |
+| **Nodes** | Entities + relationships | Entities + passages + facts ([Gutiérrez et al., 2024](https://arxiv.org/abs/2405.14831)) |
 | **Extraction** | LLM entity/relationship extraction | OpenIE (NER + triple extraction) |
 | **Edges** | Entity-entity relationships | Fact edges + passage edges + synonymy edges |
 | **QAFD traversal** | Flow reaches entities, passages looked up after | Flow reaches passages directly as graph nodes |
