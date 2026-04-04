@@ -27,7 +27,7 @@ datasets>=3.0.0
 
 # --- Embedding Models ---
 torch>=2.0.0
-transformers>=4.40.0,<6.0
+transformers>=4.40.0,<5.0
 sentence-transformers>=3.0.0,<4.0
 einops>=0.7.0
 gritlm>=1.0.0

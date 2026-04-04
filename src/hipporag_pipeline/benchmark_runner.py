@@ -500,10 +500,38 @@ def main():
         )
 
     # ----------------------------------------------------------------
-    # Embedding function
+    # Embedding function (must match the model used to build the KG)
     # ----------------------------------------------------------------
-    async def embed_func(texts):
-        return await _openai_embed(texts, model="text-embedding-3-small", api_key=_api_key)
+    emb_key = config.embedding_model_key
+    if emb_key in ("openai-small", "openai-large"):
+        openai_model = "text-embedding-3-small" if emb_key == "openai-small" else "text-embedding-3-large"
+        async def embed_func(texts):
+            return await _openai_embed(texts, model=openai_model, api_key=_api_key)
+    else:
+        # Local embedding model — use QAFD-RAG's embedding registry
+        logger.info(f"Loading local embedding model: {emb_key}")
+        _emb_cfg = type("Cfg", (), {
+            "embedding_model_name": {
+                "nvidia-nv-embed-v2": "nvidia/NV-Embed-v2",
+                "jina-v3": "jinaai/jina-embeddings-v3",
+                "gritlm": "GritLM/GritLM-7B",
+            }.get(emb_key, emb_key),
+            "embedding_batch_size": config.embedding_batch_size,
+        })()
+        _emb_src = os.path.join(_project_root, "src", "embedding_models")
+        if emb_key == "nvidia-nv-embed-v2":
+            _mod = _load_mod("src.embedding_models.NVEmbedV2", os.path.join(_emb_src, "NVEmbedV2.py"))
+            _local_model = _mod.NVEmbedV2EmbeddingModel(_emb_cfg)
+        elif emb_key == "jina-v3":
+            _mod = _load_mod("src.embedding_models.JinaV3", os.path.join(_emb_src, "JinaV3.py"))
+            _local_model = _mod.JinaV3EmbeddingModel(_emb_cfg)
+        elif emb_key == "gritlm":
+            _mod = _load_mod("src.embedding_models.GritLM", os.path.join(_emb_src, "GritLM.py"))
+            _local_model = _mod.GritLMEmbeddingModel(_emb_cfg)
+        else:
+            raise ValueError(f"Unknown embedding model: {emb_key}")
+        async def embed_func(texts):
+            return np.array(_local_model.batch_encode(texts))
     embedding_model = EmbeddingModelWrapper(embed_func, batch_size=config.embedding_batch_size)
 
     # ----------------------------------------------------------------
@@ -589,7 +617,13 @@ def main():
     # ----------------------------------------------------------------
     openie = OpenIE(llm_func)
     builder = KGBuilder(config, embedding_model, openie)
-    builder.index(docs)
+
+    if builder.graph.vcount() > 0 and not config.force_index_from_scratch:
+        logger.info(f"Using existing KG: {config.working_dir} "
+                     f"({builder.graph.vcount()} nodes, {builder.graph.ecount()} edges)")
+    else:
+        logger.info("Building KG from scratch ...")
+        builder.index(docs)
 
     # ----------------------------------------------------------------
     # Retriever
