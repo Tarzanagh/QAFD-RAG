@@ -209,7 +209,7 @@ def run_entity(args):
 
     elif task == "summarization":
         from benchmarks.summarization.benchmark_summarization import main as summ_main
-        summ_main()
+        asyncio.run(summ_main())
 
     else:
         print(f"ERROR: Unknown task '{task}'")
