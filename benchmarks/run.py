@@ -279,10 +279,9 @@ Examples:
 
     # ── Model ───────────────────────────────────────────────────────────
     parser.add_argument("--llm", type=str, default="gpt-4o-mini")
-    parser.add_argument("--embedding", type=str, default="nvidia-nv-embed-v2",
-                        help="Embedding model (default: nvidia-nv-embed-v2). "
-                             "Pre-built multihop KGs use nvidia-nv-embed-v2. "
-                             "To rebuild with a different embedding, use --force_build.")
+    parser.add_argument("--embedding", type=str, default=None,
+                        help="Embedding model (auto-selected per task: "
+                             "nvidia-nv-embed-v2 for multihop, openai-small for others)")
 
     # ── Run control ─────────────────────────────────────────────────────
     parser.add_argument("--questions", type=int, default=100)
@@ -324,6 +323,16 @@ Examples:
     # ── Resolve graph type ──────────────────────────────────────────────
     if args.graph_type is None:
         args.graph_type = TASK_DEFAULT_GRAPH_TYPE[args.task]
+
+    # ── Resolve embedding (must match pre-built KGs on HuggingFace) ────
+    if args.embedding is None:
+        _task_embeddings = {
+            "multihop": "nvidia-nv-embed-v2",
+            "ultradomain": "openai-small",
+            "text2sql": "openai-small",
+            "summarization": "openai-small",
+        }
+        args.embedding = _task_embeddings[args.task]
 
     # ── Validate dataset ────────────────────────────────────────────────
     valid = TASK_DATASETS.get(args.task, [])
