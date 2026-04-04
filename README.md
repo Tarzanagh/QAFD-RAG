@@ -152,21 +152,25 @@ All benchmarks can also be run through `./run.sh` (always uses entity graph):
 
 Pre-built KGs are available at [huggingface.co/datasets/qafd/kg](https://huggingface.co/datasets/qafd/kg). Downloading is **recommended** to avoid hours of build time and API costs.
 
-| Benchmark | Embedding | GPU needed? |
-|-----------|-----------|-------------|
-| **multihop** | `nvidia-nv-embed-v2` | Yes (runs locally) |
-| **ultradomain** | `openai-small` | No (uses OpenAI API) |
-| **text2sql** | `openai-small` | No (uses OpenAI API) |
+| Benchmark | Embedding | GPU needed? | Notes |
+|-----------|-----------|-------------|-------|
+| **multihop** | `nvidia-nv-embed-v2` | Yes (16GB+ VRAM) | Auto-downloaded from HuggingFace on first run |
+| **ultradomain** | `openai-small` | No | Uses OpenAI API (`OPENAI_API_KEY`) |
+| **text2sql** | `openai-small` | No | Uses OpenAI API (`OPENAI_API_KEY`) |
 
 ```bash
-# Download pre-built KGs
+# Download pre-built KGs (recommended)
 huggingface-cli download qafd/kg --repo-type dataset --include "multihop/*" --local-dir ./kg
 huggingface-cli download qafd/kg --repo-type dataset --include "ultradomain/*" --local-dir ./kg
 
 # Or download everything
 huggingface-cli download qafd/kg --repo-type dataset --local-dir ./kg
+```
 
-# Rebuild with a different embedding (e.g., openai-small instead of nvidia)
+To rebuild KGs with a different embedding (e.g., no GPU available):
+
+```bash
+# Rebuild multihop with openai-small (no GPU needed, uses OpenAI API)
 python benchmarks/run.py --task multihop --dataset musique --force_build --embedding openai-small
 ```
 
