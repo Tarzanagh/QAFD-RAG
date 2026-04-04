@@ -204,12 +204,40 @@ def run_entity(args):
             sys.argv = old_argv
 
     elif task == "text2sql":
-        from benchmarks.text2sql.benchmark_text2sql import main as text2sql_main
-        text2sql_main()
+        sub_argv = ["benchmark_text2sql"]
+        if args.max_documents:
+            sub_argv.extend(["--max-documents", str(args.max_documents)])
+
+        old_argv = sys.argv
+        sys.argv = sub_argv
+        try:
+            from benchmarks.text2sql.benchmark_text2sql import main as text2sql_main
+            text2sql_main()
+        finally:
+            sys.argv = old_argv
 
     elif task == "summarization":
-        from benchmarks.summarization.benchmark_summarization import main as summ_main
-        asyncio.run(summ_main())
+        sub_argv = [
+            "benchmark_summarization",
+            "--dataset", args.dataset,
+            "--questions", str(args.questions),
+            "--embedding", args.embedding,
+            "--llm", args.llm,
+        ]
+        if args.force_build:
+            sub_argv.append("--force-build")
+        if args.build_only:
+            sub_argv.append("--build")
+        if args.max_documents:
+            sub_argv.extend(["--max-documents", str(args.max_documents)])
+
+        old_argv = sys.argv
+        sys.argv = sub_argv
+        try:
+            from benchmarks.summarization.benchmark_summarization import main as summ_main
+            asyncio.run(summ_main())
+        finally:
+            sys.argv = old_argv
 
     else:
         print(f"ERROR: Unknown task '{task}'")
