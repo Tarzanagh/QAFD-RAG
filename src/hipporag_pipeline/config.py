@@ -75,7 +75,19 @@ class HippoRAGConfig:
 
     @property
     def working_dir(self) -> str:
-        """Model-specific sub-directory under save_dir."""
+        """Model-specific sub-directory under save_dir.
+
+        Also checks kg/multihop/ for pre-downloaded KGs from HuggingFace.
+        If found there, uses that path instead of outputs/.
+        """
+        import os
         llm_label = self.llm_model.replace("/", "_")
         emb_label = self.embedding_model_key.replace("/", "_")
+
+        # Check HuggingFace download location first (kg/multihop/{llm}_{emb}_{dataset}/)
+        if self.dataset:
+            hf_path = f"kg/multihop/{llm_label}_{emb_label}_{self.dataset}"
+            if os.path.isdir(hf_path) and os.path.exists(os.path.join(hf_path, "graph.pickle")):
+                return hf_path
+
         return f"{self.save_dir}/{llm_label}_{emb_label}"

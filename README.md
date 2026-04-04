@@ -24,7 +24,11 @@ pip install -r requirements.txt
 # 2. Set your OpenAI API key (required for default embedding and LLM)
 export OPENAI_API_KEY="sk-..."
 
-# 3. Run a benchmark (KG is auto-built on first run)
+# 3. Download pre-built KGs (optional, saves hours of build time)
+huggingface-cli download qafd/kg --repo-type dataset \
+    --include "ultradomain/gpt-4o-mini_openai-small_mix/*" --local-dir ./kg
+
+# 4. Run a benchmark
 # Multihop with passage-entity graph (default for multihop)
 python benchmarks/run.py --task multihop --dataset musique --questions 10
 
