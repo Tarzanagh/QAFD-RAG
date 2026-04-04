@@ -29,6 +29,9 @@ huggingface-cli download qafd/kg --repo-type dataset --include "multihop/*" --lo
 huggingface-cli download qafd/kg --repo-type dataset --include "ultradomain/*" --local-dir ./kg
 
 # 4. Run a benchmark
+#    Note: First run for multihop will auto-download the nvidia/NV-Embed-v2
+#    embedding model (~8GB, one-time, requires GPU with 16GB+ VRAM).
+#    No GPU? See "Rebuild with openai-small" below.
 python benchmarks/run.py --task multihop --dataset musique --questions 10
 python benchmarks/run.py --task ultradomain --dataset mix --questions 10
 ```
