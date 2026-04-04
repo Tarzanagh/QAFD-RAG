@@ -33,7 +33,7 @@ python benchmarks/run.py --task multihop --dataset musique --questions 10
 python benchmarks/run.py --task ultradomain --dataset mix --questions 10
 ```
 
-> **Embeddings:** Pre-built multihop KGs use `nvidia-nv-embed-v2` (runs locally on GPU, no API key needed for embeddings). UltraDomain KGs use `openai-small` (requires `OPENAI_API_KEY`). To rebuild KGs with a different embedding, use `--force_build --embedding <model>`.
+> **Embeddings:** For best multihop results, download the pre-built KGs which use `nvidia-nv-embed-v2` (requires GPU with 16GB+ VRAM, auto-downloaded on first run). If you don't have a GPU, you can rebuild the KGs from scratch with `openai-small` instead: `python benchmarks/run.py --task multihop --dataset musique --force_build --embedding openai-small`.
 >
 > **Graph Types:** Multihop defaults to **passage-entity** graph (entities + passages + facts as nodes). UltraDomain/text2sql/summarization default to **entity** graph (classic KG). Override with `--graph_type`.
 
