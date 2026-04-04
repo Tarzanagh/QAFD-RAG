@@ -280,6 +280,7 @@ Provide scores in JSON format:
 
             print_header("QAFD-RAG Knowledge Graph Builder")
             print_config({
+                "Graph Type": "entity",
                 "Dataset": f"UltraDomain ({dataset_name})",
                 "Embedding": self.embedding_model,
                 "LLM": self.llm_model,
@@ -349,6 +350,7 @@ Provide scores in JSON format:
 
             print_header("QAFD-RAG UltraDomain Benchmark")
             print_config({
+                "Graph Type": "entity",
                 "Dataset": dataset_name,
                 "Questions": str(question_count),
                 "Embedding": self.embedding_model,
@@ -455,6 +457,7 @@ Provide scores in JSON format:
 
                 eval_data = {
                     "timestamp": datetime.now().isoformat(),
+                    "graph_type": "entity",
                     "model": result.model_name,
                     "llm": self.llm_model,
                     "embedding": self.embedding_model,

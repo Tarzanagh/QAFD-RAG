@@ -25,11 +25,19 @@ pip install -r requirements.txt
 export OPENAI_API_KEY="sk-..."
 
 # 3. Run a benchmark (KG is auto-built on first run)
+# Multihop with passage-entity graph (default for multihop)
 python benchmarks/run.py --task multihop --dataset musique --questions 10
+
+# UltraDomain with entity graph (default for ultradomain)
 python benchmarks/run.py --task ultradomain --dataset mix --questions 10
+
+# Override graph type explicitly
+python benchmarks/run.py --task multihop --dataset musique --graph_type entity --questions 10
 ```
 
 > **Note:** The default embedding model is `openai-small` (OpenAI text-embedding-3-small) and the default LLM is `gpt-4o-mini`. Both require `OPENAI_API_KEY`. To use free local embeddings instead, see [Local Embedding Models](#local-embedding-models).
+>
+> **Graph Types:** Multihop defaults to **passage-entity** graph (entities + passages + facts as nodes). UltraDomain/text2sql/summarization default to **entity** graph (classic KG). Override with `--graph_type`.
 
 ## Two Graph Types
 
@@ -134,9 +142,9 @@ python benchmarks/run.py --task multihop --dataset musique --skip_qa
 python benchmarks/run.py --task multihop --dataset musique --build_only
 ```
 
-### Legacy CLI
+### Legacy CLI (entity graph only)
 
-All benchmarks can also be run through `./run.sh`:
+All benchmarks can also be run through `./run.sh` (always uses entity graph):
 
 ```bash
 ./run.sh <task> [options]
@@ -163,18 +171,21 @@ huggingface-cli download qafd/kg --repo-type dataset --local-dir ./kg
 ### Run Benchmarks
 
 ```bash
-# Multi-hop QA
+# Multi-hop QA (passage-entity graph by default)
 python benchmarks/run.py --task multihop --dataset musique --questions 100
 python benchmarks/run.py --task multihop --dataset hotpotqa --questions 100
 python benchmarks/run.py --task multihop --dataset 2wikimultihopqa --questions 100
 
-# UltraDomain
+# UltraDomain (entity graph by default)
 python benchmarks/run.py --task ultradomain --dataset mix --questions 10
 
-# Text-to-SQL
+# UltraDomain with passage-entity graph
+python benchmarks/run.py --task ultradomain --dataset mix --graph_type passage-entity --questions 10
+
+# Text-to-SQL (entity graph)
 python benchmarks/run.py --task text2sql --dataset spider2-lite
 
-# Summarization
+# Summarization (entity graph)
 python benchmarks/run.py --task summarization --dataset narrativeqa
 ```
 

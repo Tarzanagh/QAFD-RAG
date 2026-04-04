@@ -236,6 +236,7 @@ class MultiHopBenchmark:
 
         print_header(f"QAFD-RAG Knowledge Graph Builder")
         print_config({
+            "Graph Type": "entity",
             "Dataset": self.config['name'],
             "Embedding": self.embedding_model,
             "LLM": self.llm_model,
@@ -286,6 +287,7 @@ class MultiHopBenchmark:
 
         print_header(f"QAFD-RAG Multi-hop QA Benchmark")
         print_config({
+            "Graph Type": "entity",
             "Dataset": self.config['name'],
             "Questions": str(question_count),
             "Embedding": self.embedding_model,
@@ -424,6 +426,7 @@ class MultiHopBenchmark:
         # --- Eval file: metrics and timing ---
         eval_data = {
             "timestamp": datetime.now().isoformat(),
+            "graph_type": "entity",
             "model": result.model_name,
             "llm": self.llm_model,
             "embedding": self.embedding_model,

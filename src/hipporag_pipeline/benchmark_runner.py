@@ -574,6 +574,7 @@ def main():
             gold_docs = None
 
     print("=" * 70)
+    print(f"  Graph type:  passage-entity")
     print(f"  Task:        {args.task}")
     print(f"  Dataset:     {args.dataset}")
     print(f"  Queries:     {len(all_queries)}")
@@ -672,6 +673,7 @@ def main():
     os.makedirs(config.working_dir, exist_ok=True)
     results_path = os.path.join(config.working_dir, f"results_{args.dataset}.json")
     output = {
+        "graph_type": "passage-entity",
         "dataset": args.dataset,
         "task": args.task,
         "num_queries": len(all_queries),
