@@ -40,14 +40,14 @@ sys.path.insert(0, QAFD_RAG_HOME)
 # ── Task → dataset mapping ──────────────────────────────────────────────
 
 TASK_DATASETS = {
-    "multihop": ["musique", "hotpotqa", "2wikimultihopqa", "narrativeqa"],
+    "multihop": ["musique", "hotpotqa", "2wikimultihopqa"],
     "ultradomain": [
         "agriculture", "biology", "cs", "finance", "legal",
         "math", "medicine", "mix", "music", "philosophy",
         "physics", "psychology",
     ],
     "text2sql": ["spider2-lite", "bird"],
-    "summarization": ["narrativeqa"],
+    "summarization": ["squality"],
 }
 
 # ── Default graph type per task ─────────────────────────────────────────

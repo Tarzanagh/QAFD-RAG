@@ -195,7 +195,7 @@ python benchmarks/run.py --task ultradomain --dataset mix --graph_type passage-e
 python benchmarks/run.py --task text2sql --dataset spider2-lite
 
 # Summarization (entity graph)
-python benchmarks/run.py --task summarization --dataset narrativeqa
+python benchmarks/run.py --task summarization --dataset squality
 ```
 
 ### Common Options
