@@ -251,7 +251,10 @@ Examples:
 
     # ── Model ───────────────────────────────────────────────────────────
     parser.add_argument("--llm", type=str, default="gpt-4o-mini")
-    parser.add_argument("--embedding", type=str, default="openai-small")
+    parser.add_argument("--embedding", type=str, default="nvidia-nv-embed-v2",
+                        help="Embedding model (default: nvidia-nv-embed-v2). "
+                             "Pre-built multihop KGs use nvidia-nv-embed-v2. "
+                             "To rebuild with a different embedding, use --force_build.")
 
     # ── Run control ─────────────────────────────────────────────────────
     parser.add_argument("--questions", type=int, default=100)

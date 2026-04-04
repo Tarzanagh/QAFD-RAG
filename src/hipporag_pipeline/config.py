@@ -84,10 +84,11 @@ class HippoRAGConfig:
         llm_label = self.llm_model.replace("/", "_")
         emb_label = self.embedding_model_key.replace("/", "_")
 
-        # Check HuggingFace download location first (kg/multihop/{llm}_{emb}_{dataset}/)
+        # Check HuggingFace download location (kg/multihop/{llm}_{emb}_{dataset}/)
         if self.dataset:
-            hf_path = f"kg/multihop/{llm_label}_{emb_label}_{self.dataset}"
-            if os.path.isdir(hf_path) and os.path.exists(os.path.join(hf_path, "graph.pickle")):
-                return hf_path
+            for task_dir in ["multihop", "ultradomain"]:
+                hf_path = os.path.join("kg", task_dir, f"{llm_label}_{emb_label}_{self.dataset}")
+                if os.path.isdir(hf_path) and os.path.exists(os.path.join(hf_path, "graph.pickle")):
+                    return hf_path
 
         return f"{self.save_dir}/{llm_label}_{emb_label}"

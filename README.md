@@ -21,25 +21,19 @@ conda create -n qafd-rag python=3.10 -y
 conda activate qafd-rag
 pip install -r requirements.txt
 
-# 2. Set your OpenAI API key (required for default embedding and LLM)
+# 2. Set your OpenAI API key (required for LLM and answer generation)
 export OPENAI_API_KEY="sk-..."
 
-# 3. Download pre-built KGs (optional, saves hours of build time)
-huggingface-cli download qafd/kg --repo-type dataset \
-    --include "ultradomain/gpt-4o-mini_openai-small_mix/*" --local-dir ./kg
+# 3. Download pre-built KGs (recommended — saves hours of build time + API costs)
+huggingface-cli download qafd/kg --repo-type dataset --include "multihop/*" --local-dir ./kg
+huggingface-cli download qafd/kg --repo-type dataset --include "ultradomain/*" --local-dir ./kg
 
 # 4. Run a benchmark
-# Multihop with passage-entity graph (default for multihop)
 python benchmarks/run.py --task multihop --dataset musique --questions 10
-
-# UltraDomain with entity graph (default for ultradomain)
 python benchmarks/run.py --task ultradomain --dataset mix --questions 10
-
-# Override graph type explicitly
-python benchmarks/run.py --task multihop --dataset musique --graph_type entity --questions 10
 ```
 
-> **Note:** The default embedding model is `openai-small` (OpenAI text-embedding-3-small) and the default LLM is `gpt-4o-mini`. Both require `OPENAI_API_KEY`. To use free local embeddings instead, see [Local Embedding Models](#local-embedding-models).
+> **Embeddings:** Pre-built multihop KGs use `nvidia-nv-embed-v2` (runs locally on GPU, no API key needed for embeddings). UltraDomain KGs use `openai-small` (requires `OPENAI_API_KEY`). To rebuild KGs with a different embedding, use `--force_build --embedding <model>`.
 >
 > **Graph Types:** Multihop defaults to **passage-entity** graph (entities + passages + facts as nodes). UltraDomain/text2sql/summarization default to **entity** graph (classic KG). Override with `--graph_type`.
 
@@ -156,20 +150,24 @@ All benchmarks can also be run through `./run.sh` (always uses entity graph):
 
 ### Knowledge Graphs
 
-KGs are **auto-generated on first run** if not present. To skip building, download pre-built KGs from [huggingface.co/datasets/qafd/kg](https://huggingface.co/datasets/qafd/kg):
+Pre-built KGs are available at [huggingface.co/datasets/qafd/kg](https://huggingface.co/datasets/qafd/kg). Downloading is **recommended** to avoid hours of build time and API costs.
+
+| Benchmark | Embedding | GPU needed? |
+|-----------|-----------|-------------|
+| **multihop** | `nvidia-nv-embed-v2` | Yes (runs locally) |
+| **ultradomain** | `openai-small` | No (uses OpenAI API) |
+| **text2sql** | `openai-small` | No (uses OpenAI API) |
 
 ```bash
-# Download a single KG to test (recommended for first-time setup)
-huggingface-cli download qafd/kg --repo-type dataset \
-    --include "ultradomain/gpt-4o-mini_openai-small_mix/*" --local-dir ./kg
-
-# Download all KGs for one benchmark
+# Download pre-built KGs
 huggingface-cli download qafd/kg --repo-type dataset --include "multihop/*" --local-dir ./kg
 huggingface-cli download qafd/kg --repo-type dataset --include "ultradomain/*" --local-dir ./kg
-huggingface-cli download qafd/kg --repo-type dataset --include "text2sql/*" --local-dir ./kg
 
-# Download everything
+# Or download everything
 huggingface-cli download qafd/kg --repo-type dataset --local-dir ./kg
+
+# Rebuild with a different embedding (e.g., openai-small instead of nvidia)
+python benchmarks/run.py --task multihop --dataset musique --force_build --embedding openai-small
 ```
 
 ### Run Benchmarks
