@@ -25,8 +25,8 @@ pip install -r requirements.txt
 export OPENAI_API_KEY="sk-..."
 
 # 3. Download pre-built KGs (recommended — saves hours of build time + API costs)
-huggingface-cli download qafd/kg --repo-type dataset --include "multihop/*" --local-dir ./kg
-huggingface-cli download qafd/kg --repo-type dataset --include "ultradomain/*" --local-dir ./kg
+huggingface-cli download tarzanagh/QAFD-RAG --include "kg/multihop/*" --local-dir .
+huggingface-cli download tarzanagh/QAFD-RAG --include "kg/ultradomain/*" --local-dir .
 
 # 4. Run a benchmark
 #    Note: First run for multihop will auto-download the nvidia/NV-Embed-v2
@@ -153,7 +153,7 @@ All benchmarks can also be run through `./run.sh` (always uses entity graph):
 
 ### Knowledge Graphs
 
-Pre-built KGs are available at [huggingface.co/datasets/qafd/kg](https://huggingface.co/datasets/qafd/kg). Downloading is **recommended** to avoid hours of build time and API costs.
+Pre-built KGs are available at [huggingface.co/tarzanagh/QAFD-RAG](https://huggingface.co/tarzanagh/QAFD-RAG). Downloading is **recommended** to avoid hours of build time and API costs. Or clone the full repo from HuggingFace to get code + KGs in one step: `git clone https://huggingface.co/tarzanagh/QAFD-RAG`
 
 | Benchmark | Embedding | GPU needed? | Notes |
 |-----------|-----------|-------------|-------|
@@ -163,11 +163,11 @@ Pre-built KGs are available at [huggingface.co/datasets/qafd/kg](https://hugging
 
 ```bash
 # Download pre-built KGs (recommended)
-huggingface-cli download qafd/kg --repo-type dataset --include "multihop/*" --local-dir ./kg
-huggingface-cli download qafd/kg --repo-type dataset --include "ultradomain/*" --local-dir ./kg
+huggingface-cli download tarzanagh/QAFD-RAG --include "kg/multihop/*" --local-dir .
+huggingface-cli download tarzanagh/QAFD-RAG --include "kg/ultradomain/*" --local-dir .
 
 # Or download everything
-huggingface-cli download qafd/kg --repo-type dataset --local-dir ./kg
+huggingface-cli download tarzanagh/QAFD-RAG --include "kg/*" --local-dir .
 ```
 
 To rebuild KGs with a different embedding (e.g., no GPU available):
