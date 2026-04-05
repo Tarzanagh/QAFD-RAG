@@ -1,6 +1,6 @@
 #!/bin/bash
 # Query-Awareness Ablation V2: warm walk, accumulation, more steps
-cd /home/davoud/QAFD-RAG
+cd "$(dirname "$0")/.."
 N=100
 BASE="python src/hipporag_pipeline/benchmark_runner.py --task multihop --num_queries $N --embedding_model openai-small --skip_qa"
 

@@ -2,7 +2,7 @@
 # Edge weight ablation: similarity contrast functions across 3 datasets
 # Tests whether sharper similarity contrast makes query-aware edge weights effective
 
-cd /home/davoud/QAFD-RAG
+cd "$(dirname "$0")/.."
 N=100
 BASE="python src/hipporag_pipeline/benchmark_runner.py --task multihop --num_queries $N --embedding_model openai-small --skip_qa"
 

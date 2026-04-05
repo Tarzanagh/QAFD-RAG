@@ -1,7 +1,7 @@
 #!/bin/bash
 # Batch push ablation: does batch push make edge weights matter?
 # Compare: single vs batch, agnostic vs aware
-cd /home/davoud/QAFD-RAG
+cd "$(dirname "$0")/.."
 N=100
 BASE="python src/hipporag_pipeline/benchmark_runner.py --task multihop --num_queries $N --embedding_model openai-small --skip_qa"
 
