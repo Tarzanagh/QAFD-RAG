@@ -3,7 +3,7 @@
 # Goal: find config where QA-aware beats agnostic AND recall is high
 cd "$(dirname "$0")/.."
 N=100
-BASE="python src/hipporag_pipeline/benchmark_runner.py --task multihop --num_queries $N --embedding_model nvidia-nv-embed-v2 --skip_qa"
+BASE="python src/passage_entity/benchmark_runner.py --task multihop --num_queries $N --embedding_model nvidia-nv-embed-v2 --skip_qa"
 LOG=experiments/results/batch_push_nvidia.log
 mkdir -p experiments/results
 exec > >(tee -a $LOG) 2>&1

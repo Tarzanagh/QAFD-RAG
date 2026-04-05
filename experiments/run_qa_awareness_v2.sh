@@ -2,7 +2,7 @@
 # Query-Awareness Ablation V2: warm walk, accumulation, more steps
 cd "$(dirname "$0")/.."
 N=100
-BASE="python src/hipporag_pipeline/benchmark_runner.py --task multihop --num_queries $N --embedding_model openai-small --skip_qa"
+BASE="python src/passage_entity/benchmark_runner.py --task multihop --num_queries $N --embedding_model openai-small --skip_qa"
 
 echo "======================================================================"
 echo "  Query-Awareness V2 Ablation ($N queries per dataset)"

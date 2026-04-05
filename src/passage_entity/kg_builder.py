@@ -1,5 +1,5 @@
 """
-Knowledge graph builder following HippoRAG's ``index()`` method.
+Knowledge graph builder following the original ``index()`` method.
 
 Steps:
     1. Insert docs into chunk embedding store.
@@ -21,7 +21,7 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
-from .config import HippoRAGConfig
+from .config import PassageEntityConfig
 from .embedding_store import EmbeddingStore, EmbeddingModelWrapper
 from .openie import OpenIE
 from .utils import (
@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# KNN helper (simplified from HippoRAG's embed_utils.py)
+# KNN helper (simplified from the original embed_utils.py)
 # ---------------------------------------------------------------------------
 
 def retrieve_knn(
@@ -111,11 +111,11 @@ def retrieve_knn(
 # ===========================================================================
 
 class KGBuilder:
-    """Build a HippoRAG-style knowledge graph and persist it to disk."""
+    """Build a passage-entity knowledge graph and persist it to disk."""
 
     def __init__(
         self,
-        config: HippoRAGConfig,
+        config: PassageEntityConfig,
         embedding_model: EmbeddingModelWrapper,
         openie: OpenIE,
     ):

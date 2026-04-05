@@ -3,7 +3,7 @@
 # Tests: QA-aware vs agnostic, different alpha/epsilon settings
 cd "$(dirname "$0")/.."
 N=100
-BASE="python src/hipporag_pipeline/benchmark_runner.py --task multihop --num_queries $N --embedding_model nvidia-nv-embed-v2 --skip_qa"
+BASE="python src/passage_entity/benchmark_runner.py --task multihop --num_queries $N --embedding_model nvidia-nv-embed-v2 --skip_qa"
 
 echo "======================================================================"
 echo "  Query-Awareness on nvidia KG (dense graph, $N queries)"

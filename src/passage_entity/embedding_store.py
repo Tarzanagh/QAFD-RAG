@@ -1,5 +1,5 @@
 """
-Parquet-backed embedding store, adapted from HippoRAG's EmbeddingStore.
+Parquet-backed embedding store, adapted from the original EmbeddingStore.
 
 Uses QAFD-RAG's async embedding functions (wrapped synchronously) so we
 can share models / GPU memory with the rest of the QAFD-RAG system.
@@ -81,7 +81,7 @@ class EmbeddingModelWrapper:
 class EmbeddingStore:
     """Parquet-backed vector store.
 
-    Mirrors HippoRAG's EmbeddingStore but uses ``EmbeddingModelWrapper``
+    Mirrors the original EmbeddingStore but uses ``EmbeddingModelWrapper``
     (which calls QAFD-RAG's async embedding functions under the hood).
     """
 

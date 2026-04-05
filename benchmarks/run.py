@@ -86,10 +86,10 @@ GRAPH_TYPE_DEFAULTS = {
 
 
 def run_passage_entity(args):
-    """Run benchmark using passage-entity graph (hipporag_pipeline)."""
+    """Run benchmark using passage-entity graph (passage_entity)."""
     # Bypass src/__init__.py (heavy AWS deps)
     import types as _types
-    for _pkg_path in ["src", "src.retrievers", "src.hipporag_pipeline"]:
+    for _pkg_path in ["src", "src.retrievers", "src.passage_entity"]:
         if _pkg_path not in sys.modules:
             _m = _types.ModuleType(_pkg_path)
             _m.__path__ = [os.path.join(QAFD_RAG_HOME, *_pkg_path.split("."))]
@@ -109,7 +109,7 @@ def run_passage_entity(args):
     _load_mod("src.retrievers.flow_diffusion", os.path.join(_src, "retrievers", "flow_diffusion.py"))
 
     # Import after module setup
-    from src.hipporag_pipeline.benchmark_runner import main as hippo_main
+    from src.passage_entity.benchmark_runner import main as pe_main
 
     # Build sys.argv for the sub-module
     sub_argv = [
@@ -140,7 +140,7 @@ def run_passage_entity(args):
     old_argv = sys.argv
     sys.argv = sub_argv
     try:
-        hippo_main()
+        pe_main()
     finally:
         sys.argv = old_argv
 

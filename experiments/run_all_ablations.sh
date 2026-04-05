@@ -4,7 +4,7 @@
 
 DATASET="musique"
 N=100
-BASE="python src/hipporag_pipeline/benchmark_runner.py --task multihop --dataset $DATASET --num_queries $N --embedding_model openai-small --skip_qa"
+BASE="python src/passage_entity/benchmark_runner.py --task multihop --dataset $DATASET --num_queries $N --embedding_model openai-small --skip_qa"
 
 echo "======================================================================"
 echo "  QAFD-RAG Query-Awareness Ablation (${DATASET}, ${N} queries)"

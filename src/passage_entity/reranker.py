@@ -1,8 +1,8 @@
 """
-Fact reranker following HippoRAG's DSPy filter logic.
+Fact reranker following the original DSPy filter logic.
 
 Uses QAFD-RAG's async LLM functions (wrapped synchronously) to call the
-same prompt structure that HippoRAG's DSPyFilter uses.
+same prompt structure that the original DSPyFilter uses.
 """
 
 import ast

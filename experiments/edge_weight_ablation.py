@@ -27,7 +27,7 @@ _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, _project_root)
 
 import types as _types
-for _pkg_path in ["src", "src.retrievers", "src.hipporag_pipeline"]:
+for _pkg_path in ["src", "src.retrievers", "src.passage_entity"]:
     if _pkg_path not in sys.modules:
         _m = _types.ModuleType(_pkg_path)
         _m.__path__ = [os.path.join(_project_root, *_pkg_path.split("."))]
@@ -46,14 +46,14 @@ _src = os.path.join(_project_root, "src")
 _load_mod("src.retrievers.base", os.path.join(_src, "retrievers", "base.py"))
 _load_mod("src.retrievers.flow_diffusion", os.path.join(_src, "retrievers", "flow_diffusion.py"))
 
-from src.hipporag_pipeline.config import HippoRAGConfig
-from src.hipporag_pipeline.embedding_store import EmbeddingModelWrapper
-from src.hipporag_pipeline.kg_builder import KGBuilder
-from src.hipporag_pipeline.openie import OpenIE
-from src.hipporag_pipeline.reranker import FactReranker
-from src.hipporag_pipeline.retriever import HippoRAGRetriever
-from src.hipporag_pipeline.graph_adapter import run_igraph_qafd
-from src.hipporag_pipeline.benchmark_runner import (
+from src.passage_entity.config import PassageEntityConfig
+from src.passage_entity.embedding_store import EmbeddingModelWrapper
+from src.passage_entity.kg_builder import KGBuilder
+from src.passage_entity.openie import OpenIE
+from src.passage_entity.reranker import FactReranker
+from src.passage_entity.retriever import PassageEntityRetriever
+from src.passage_entity.graph_adapter import run_igraph_qafd
+from src.passage_entity.benchmark_runner import (
     get_gold_docs, get_gold_answers, recall_at_k,
     exact_match, f1_score, run_qa, _openai_embed, _openai_complete,
 )
@@ -69,7 +69,7 @@ def load_everything(dataset="musique", num_queries=10):
     """Load KG, embeddings, data — once for all experiments."""
     api_key = os.environ.get("OPENAI_API_KEY", "")
 
-    config = HippoRAGConfig(
+    config = PassageEntityConfig(
         llm_model="gpt-4o-mini",
         embedding_model_key="openai-small",
         dataset=dataset,
@@ -110,7 +110,7 @@ def load_everything(dataset="musique", num_queries=10):
 
     # Build retriever
     reranker = FactReranker(llm_func)
-    retriever = HippoRAGRetriever(
+    retriever = PassageEntityRetriever(
         config=config,
         embedding_model=embedding_model,
         reranker=reranker,
@@ -126,7 +126,7 @@ def load_everything(dataset="musique", num_queries=10):
 
 
 def run_retrieval_with_params(
-    retriever: HippoRAGRetriever,
+    retriever: PassageEntityRetriever,
     queries: List[str],
     gold_docs: List[List[str]],
     gold_answers,
@@ -136,7 +136,7 @@ def run_retrieval_with_params(
     query_aware: bool = True,
 ) -> Dict:
     """Run retrieval with specific edge weight params. Returns metrics dict."""
-    from src.hipporag_pipeline.utils import compute_mdhash_id, min_max_normalize
+    from src.passage_entity.utils import compute_mdhash_id, min_max_normalize
 
     retriever._encode_queries(queries)
     k_list = [1, 2, 5, 10, 20, 50, 100, 200]

@@ -1,5 +1,5 @@
 """
-Full retrieval pipeline following HippoRAG's retrieve + graph_search_with_fact_entities.
+Full retrieval pipeline following the original retrieve + graph_search_with_fact_entities.
 
 Steps:
     1. Encode query for fact matching and passage matching.
@@ -19,7 +19,7 @@ import igraph as ig
 import numpy as np
 from tqdm import tqdm
 
-from .config import HippoRAGConfig
+from .config import PassageEntityConfig
 from .embedding_store import EmbeddingStore, EmbeddingModelWrapper
 from .graph_adapter import run_igraph_qafd
 from .prompts import get_query_instruction
@@ -39,7 +39,7 @@ from .utils import (
 logger = logging.getLogger(__name__)
 
 
-class HippoRAGRetriever:
+class PassageEntityRetriever:
     """End-to-end retriever:  query -> ranked passages.
 
     Uses the pre-built KG (igraph), embedding stores, and QAFD flow diffusion.
@@ -47,7 +47,7 @@ class HippoRAGRetriever:
 
     def __init__(
         self,
-        config: HippoRAGConfig,
+        config: PassageEntityConfig,
         embedding_model: EmbeddingModelWrapper,
         reranker: FactReranker,
         graph: ig.Graph,
@@ -89,7 +89,7 @@ class HippoRAGRetriever:
         self.total_time = 0.0
 
     # ------------------------------------------------------------------
-    # Preparation (mirrors HippoRAG prepare_retrieval_objects)
+    # Preparation (mirrors the passage-entity pipeline prepare_retrieval_objects)
     # ------------------------------------------------------------------
 
     def prepare(self):
@@ -224,7 +224,7 @@ class HippoRAGRetriever:
         return top_indices, top_facts, meta
 
     # ------------------------------------------------------------------
-    # Graph search (core of HippoRAG retrieval)
+    # Graph search (core of passage-entity retrieval)
     # ------------------------------------------------------------------
 
     def _graph_search(

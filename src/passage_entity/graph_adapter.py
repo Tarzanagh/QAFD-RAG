@@ -1,10 +1,10 @@
 """
-Bridge between igraph (HippoRAG's graph format) and QAFD-RAG's flow diffusion.
+Bridge between igraph (the original graph format) and QAFD-RAG's flow diffusion.
 
 Provides:
     - ``igraph_to_networkx``: convert an igraph.Graph to NetworkX (kept for
       compatibility, but no longer used in the main retrieval path).
-    - ``IGraphQAFD``: igraph-native QAFD that matches HippoRAG's
+    - ``IGraphQAFD``: igraph-native QAFD that matches the original
       ``QueryAwareFlowDiffusion`` exactly — numpy arrays, C-based neighbor
       lookups, no NetworkX conversion overhead.
 """
@@ -75,7 +75,7 @@ def _cosine_similarity(vec1: np.ndarray, vec2: np.ndarray, mode: str = "normaliz
 
 
 class IGraphQAFD:
-    """Query-Aware Flow Diffusion directly on igraph — matches HippoRAG exactly.
+    """Query-Aware Flow Diffusion directly on igraph — matches the original exactly.
 
     Uses numpy arrays for mass/x/sink_capacity and igraph's C-based
     ``graph.neighbors()`` for fast neighbour lookups.
@@ -484,7 +484,7 @@ def run_igraph_qafd(
 
 
 # ===========================================================================
-# Fast PPR via igraph (matches HippoRAG's actual benchmark method)
+# Fast PPR via igraph (matches the original actual benchmark method)
 # ===========================================================================
 
 def run_ppr(
@@ -496,7 +496,7 @@ def run_ppr(
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Run Personalized PageRank on igraph and return (sorted_doc_ids, sorted_doc_scores).
 
-    This matches HippoRAG's ``run_ppr()`` with ``use_qafd=False``.
+    This matches the original ``run_ppr()`` with ``use_qafd=False``.
     Uses igraph's C-based prpack implementation — converges instantly.
     """
     reset_prob = np.where(np.isnan(reset_prob) | (reset_prob < 0), 0, reset_prob)

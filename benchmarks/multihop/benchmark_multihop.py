@@ -209,7 +209,7 @@ class MultiHopBenchmark:
             from huggingface_hub import hf_hub_download
             os.makedirs(data_dir, exist_ok=True)
             hf_hub_download(
-                repo_id="osunlp/HippoRAG_2",
+                repo_id="osunlp/HippoRAG",  # Dataset source
                 filename=filename,
                 repo_type="dataset",
                 local_dir=data_dir,

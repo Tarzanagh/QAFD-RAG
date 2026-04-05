@@ -1,6 +1,6 @@
 """
 Inline prompt templates for NER, triple extraction, query NER,
-fact reranking, and RAG QA — adapted from HippoRAG's template files.
+fact reranking, and RAG QA — adapted from the original template files.
 """
 
 from string import Template
@@ -119,7 +119,7 @@ def make_triple_messages(passage: str, named_entities: List[str]) -> List[Dict[s
     ]
 
 # ============================================================================
-# Fact reranker / filter  (DSPy-style prompt from HippoRAG)
+# Fact reranker / filter  (DSPy-style prompt from the original pipeline)
 # ============================================================================
 
 RERANKER_SYSTEM = (
@@ -167,7 +167,7 @@ RERANKER_OUTPUT_TEMPLATE = (
     "[[ ## completed ## ]]"
 )
 
-# Built-in few-shot demos (from HippoRAG's filter_default_prompt.py)
+# Built-in few-shot demos (from the original filter_default_prompt.py)
 RERANKER_DEMOS = [
     {
         "question": "Are Imperial River (Florida) and Amaradia (Dolj) both located in the same country?",

@@ -1,7 +1,7 @@
 """
-Configuration dataclass for the HippoRAG-style KG pipeline inside QAFD-RAG.
+Configuration dataclass for the passage-entity KG pipeline in QAFD-RAG.
 
-Combines HippoRAG BaseConfig fields with QAFD algorithm parameters.
+Combines passage-entity BaseConfig fields with QAFD algorithm parameters.
 """
 
 from dataclasses import dataclass, field
@@ -9,7 +9,7 @@ from typing import Optional, Literal
 
 
 @dataclass
-class HippoRAGConfig:
+class PassageEntityConfig:
     """Unified configuration for indexing, retrieval, and QAFD."""
 
     # ── LLM ────────────────────────────────────────────────────────────────

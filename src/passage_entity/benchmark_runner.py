@@ -1,10 +1,10 @@
 """
 Entry point for running multihop benchmarks (MuSiQue, HotpotQA, 2WikiMultiHopQA)
-with the HippoRAG-style KG pipeline + QAFD inside QAFD-RAG.
+Passage-entity KG pipeline benchmark runner for QAFD-RAG.
 
 Usage::
 
-    python -m src.hipporag_pipeline.benchmark_runner \\
+    python -m src.passage_entity.benchmark_runner \\
         --dataset musique \\
         --llm_model gpt-4o-mini \\
         --embedding_model nvidia-nv-embed-v2 \\
@@ -34,7 +34,7 @@ import numpy as np
 
 # ---------------------------------------------------------------------------
 # Ensure the QAFD-RAG root is on the path so ``src.*`` imports work
-# when this file is executed as ``python -m src.hipporag_pipeline.benchmark_runner``
+# when this file is executed as ``python -m src.passage_entity.benchmark_runner``
 # ---------------------------------------------------------------------------
 _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if _project_root not in sys.path:
@@ -45,7 +45,7 @@ if _project_root not in sys.path:
 # src as a plain namespace package before any sub-package imports.
 # ---------------------------------------------------------------------------
 import types as _types
-for _pkg_path in ["src", "src.retrievers", "src.hipporag_pipeline"]:
+for _pkg_path in ["src", "src.retrievers", "src.passage_entity"]:
     if _pkg_path not in sys.modules:
         _m = _types.ModuleType(_pkg_path)
         _m.__path__ = [os.path.join(_project_root, *_pkg_path.split("."))]
@@ -65,14 +65,14 @@ _src = os.path.join(_project_root, "src")
 _load_mod("src.retrievers.base", os.path.join(_src, "retrievers", "base.py"))
 _load_mod("src.retrievers.flow_diffusion", os.path.join(_src, "retrievers", "flow_diffusion.py"))
 
-from src.hipporag_pipeline.config import HippoRAGConfig
-from src.hipporag_pipeline.embedding_store import EmbeddingModelWrapper
-from src.hipporag_pipeline.kg_builder import KGBuilder
-from src.hipporag_pipeline.openie import OpenIE
-from src.hipporag_pipeline.reranker import FactReranker
-from src.hipporag_pipeline.retriever import HippoRAGRetriever
-from src.hipporag_pipeline.prompts import make_qa_messages
-from src.hipporag_pipeline.utils import QuerySolution
+from src.passage_entity.config import PassageEntityConfig
+from src.passage_entity.embedding_store import EmbeddingModelWrapper
+from src.passage_entity.kg_builder import KGBuilder
+from src.passage_entity.openie import OpenIE
+from src.passage_entity.reranker import FactReranker
+from src.passage_entity.retriever import PassageEntityRetriever
+from src.passage_entity.prompts import make_qa_messages
+from src.passage_entity.utils import QuerySolution
 
 # ---------------------------------------------------------------------------
 # Minimal OpenAI LLM + Embedding (no AWS deps, no src/llm.py)
@@ -113,7 +113,7 @@ async def _openai_embed(texts, model="text-embedding-3-small", api_key=""):
 logger = logging.getLogger(__name__)
 
 # ===========================================================================
-# Gold extraction helpers (from HippoRAG main_qafd.py)
+# Gold extraction helpers (from the original pipeline main_qafd.py)
 # ===========================================================================
 
 def get_gold_docs(samples: List[dict], dataset_name: str = None) -> List[List[str]]:
@@ -376,7 +376,7 @@ Provide scores in JSON format:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="HippoRAG + QAFD benchmark runner",
+        description="QAFD-RAG passage-entity benchmark runner",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--dataset", type=str, default="musique",
@@ -453,7 +453,7 @@ def main():
     # ----------------------------------------------------------------
     # Config
     # ----------------------------------------------------------------
-    config = HippoRAGConfig(
+    config = PassageEntityConfig(
         llm_model=args.llm_model,
         llm_base_url=args.llm_base_url,
         llm_api_key=args.llm_api_key,
@@ -629,7 +629,7 @@ def main():
     # Retriever
     # ----------------------------------------------------------------
     reranker = FactReranker(llm_func, dspy_file_path=config.rerank_dspy_file_path)
-    retriever = HippoRAGRetriever(
+    retriever = PassageEntityRetriever(
         config=config,
         embedding_model=embedding_model,
         reranker=reranker,

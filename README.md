@@ -80,7 +80,7 @@ QAFD-RAG/
 │   ├── retrievers/
 │   │   ├── flow_diffusion.py        # QAFD on NetworkX (entity graph)
 │   │   └── base.py                  # Retriever interface
-│   ├── hipporag_pipeline/           # Passage-entity graph pipeline
+│   ├── passage_entity/           # Passage-entity graph pipeline
 │   │   ├── kg_builder.py            # OpenIE → igraph (entities + passages + facts)
 │   │   ├── graph_adapter.py         # QAFD on igraph (passage-entity graph)
 │   │   ├── retriever.py             # Fact reranking → seed selection → QAFD

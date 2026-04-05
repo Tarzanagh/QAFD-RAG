@@ -1,7 +1,7 @@
 """
 OpenIE extraction (NER + triple extraction) using QAFD-RAG's LLM functions.
 
-Follows HippoRAG's openie_openai.py logic but calls the async LLM wrappers
+Follows the original openie_openai.py logic but calls the async LLM wrappers
 from ``QAFD-RAG/src/llm.py`` synchronously via ``asyncio.run``.
 """
 

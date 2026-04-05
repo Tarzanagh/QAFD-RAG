@@ -11,7 +11,7 @@ echo "  Overnight Query-Awareness Experiments"
 echo "  Started: $(date)"
 echo "======================================================================"
 
-BASE_PE="python src/hipporag_pipeline/benchmark_runner.py"
+BASE_PE="python src/passage_entity/benchmark_runner.py"
 
 # =====================================================================
 # 1. PASSAGE-ENTITY: Multihop with OpenAI embedding (100q, alpha=3)

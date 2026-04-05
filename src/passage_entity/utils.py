@@ -1,7 +1,7 @@
 """
-Utility functions and data classes for the HippoRAG-style KG pipeline.
+Utility functions and data classes for the passage-entity KG pipeline.
 
-Adapted from HippoRAG's misc_utils.py and llm_utils.py.
+Adapted from the original misc_utils.py and llm_utils.py.
 """
 
 import json
@@ -148,7 +148,7 @@ def min_max_normalize(x: np.ndarray) -> np.ndarray:
     return (x - min_val) / range_val
 
 # ---------------------------------------------------------------------------
-# JSON repair helpers (from HippoRAG llm_utils)
+# JSON repair helpers (from the original pipeline llm_utils)
 # ---------------------------------------------------------------------------
 
 def fix_broken_generated_json(json_str: str) -> str:
