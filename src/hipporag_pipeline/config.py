@@ -48,7 +48,7 @@ class HippoRAGConfig:
 
     # ── QAFD algorithm parameters ──────────────────────────────────────────
     use_qafd: bool = True
-    qafd_alpha: float = 3.0
+    qafd_alpha: float = 2.0
     qafd_epsilon: float = 0.01
     qafd_max_iterations: int = 500
     qafd_weight_scheme: str = "original"     # "multiply", "add", "original"

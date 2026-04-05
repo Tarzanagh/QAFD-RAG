@@ -64,7 +64,7 @@ TASK_DEFAULT_GRAPH_TYPE = {
 
 GRAPH_TYPE_DEFAULTS = {
     "passage-entity": {
-        "alpha": 3.0,
+        "alpha": 2.0,
         "epsilon": 0.01,
         "max_iterations": 500,
         "step_size": 0.2,
@@ -74,7 +74,7 @@ GRAPH_TYPE_DEFAULTS = {
         "retrieval_top_k": 200,
     },
     "entity": {
-        "alpha": 3.0,
+        "alpha": 2.0,
         "epsilon": 0.01,
         "max_iterations": 500,
         "step_size": 0.2,
@@ -297,7 +297,7 @@ Examples:
 
     # ── QAFD parameters (shared) ────────────────────────────────────────
     parser.add_argument("--alpha", type=float, default=None,
-                        help="QAFD alpha (default: 3.0)")
+                        help="QAFD alpha (default: 2.0)")
     parser.add_argument("--epsilon", type=float, default=None)
     parser.add_argument("--max_iterations", type=int, default=None)
     parser.add_argument("--step_size", type=float, default=None)
