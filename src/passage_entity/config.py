@@ -48,7 +48,7 @@ class PassageEntityConfig:
 
     # ── QAFD algorithm parameters ──────────────────────────────────────────
     use_qafd: bool = True
-    qafd_alpha: float = 2.0
+    qafd_alpha: float = 1.5
     qafd_epsilon: float = 0.01
     qafd_max_iterations: int = 500
     qafd_weight_scheme: str = "multiply"     # "multiply", "add", "original"
