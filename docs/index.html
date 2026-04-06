@@ -349,95 +349,117 @@
   </div>
 </header>
 
+<!-- ============ ABSTRACT ============ -->
 <section>
   <div class="container">
     <h2 style="font-size:1.55rem;font-weight:700;color:var(--slate-800);margin-bottom:16px;">Query-Aware Flow Diffusion for Graph-Based<br/>Retrieval-Augmented Generation</h2>
-    <p class="about-text"><strong style="color:var(--blue-600);">QAFD-RAG</strong> is a graph-based retrieval-augmented generation framework that uses <strong>query-aware flow diffusion</strong> to retrieve contextually relevant subgraphs from a knowledge graph with <strong>statistical retrieval guarantees</strong>.</p>
-    <div class="duo-grid">
-      <div class="card"><h3>The Problem</h3><p>Existing graph-based RAG methods rely on <strong>static retrieval</strong>&mdash;community detection (GraphRAG) or one-hop entity lookup (LightRAG)&mdash;that ignore query context and miss relevant multi-hop connections.</p></div>
-      <div class="card"><h3>Our Solution</h3><p>QAFD-RAG <strong>dynamically re-weights</strong> graph edges based on query relevance and <strong>propagates flow</strong> through the knowledge graph to discover multi-hop context, assembling a query-specific subgraph for the LLM.</p></div>
+    <p class="about-text" style="text-align:justify;">Graph-based RAG systems leverage interconnected knowledge structures to capture complex relationships, enabling multi-hop reasoning. Yet most existing methods suffer from (i) heuristic designs lacking theoretical guarantees and (ii) static exploration strategies that ignore the query&rsquo;s holistic meaning. We propose <strong style="color:var(--blue-600);">QAFD-RAG</strong>, a training-free framework that dynamically adapts graph traversal to each query&rsquo;s semantics. The central innovation is <em>query-aware traversal</em>: edges are dynamically weighted by how well their endpoints align with the query embedding, guiding flow along semantically relevant paths while suppressing irrelevant regions. This enables the <strong>first statistical guarantees</strong> for query-aware graph retrieval, with <strong>exponential convergence</strong> and complexity scaling with the retrieved subgraph rather than the full graph.</p>
+  </div>
+</section>
+
+<!-- ============ KEY CONTRIBUTIONS ============ -->
+<section class="alt">
+  <div class="container">
+    <h2>Key Contributions</h2>
+    <div class="duo-grid" style="grid-template-columns:1fr 1fr 1fr;gap:16px;">
+      <div class="card"><h3>Query-Aware Framework</h3><p>First principled flow diffusion method for graph-based RAG that incorporates query semantics via alignment-based edge weighting. Adapts flow probabilities <strong>online</strong>, guiding traversal toward semantically relevant regions.</p></div>
+      <div class="card"><h3>Provable Guarantees</h3><p><strong>Exponential convergence</strong> to a query-dependent stationary distribution. <strong>Recovery guarantees</strong> ensuring relevant subgraphs are retrieved with high probability under mild signal-to-noise conditions.</p></div>
+      <div class="card"><h3>State-of-the-Art Results</h3><p>Leads in <strong>96%</strong> of UltraDomain comparisons. Best F1/EM on HotpotQA (<strong>73.4/58.1</strong>) and MuSiQue (<strong>48.0/33.5</strong>). Outperforms GraphRAG, LightRAG, and RAPTOR across all benchmarks.</p></div>
     </div>
   </div>
 </section>
 
-<section class="alt">
+<!-- ============ APPROACH COMPARISON ============ -->
+<section>
   <div class="container">
     <h2>Approach Comparison</h2>
-    <p class="section-sub">How different retrieval strategies explore a knowledge graph</p>
+    <p class="section-sub">Query: <em>&ldquo;Introduce Steve Jobs&rsquo;s products in Apple.&rdquo;</em></p>
     <div class="figure-row">
       <div class="figure-card"><img src="figs/GraphRAG.png" alt="GraphRAG"/><div class="caption">GraphRAG<br/><small>Community Detection</small></div></div>
       <div class="figure-card"><img src="figs/LightRAG.png" alt="LightRAG"/><div class="caption">LightRAG<br/><small>One-Hop Entity-Centric</small></div></div>
       <div class="figure-card"><img src="figs/QAFD-RAG.png" alt="QAFD-RAG"/><div class="caption">QAFD-RAG (Ours)<br/><small>Query-Aware Flow Diffusion</small></div></div>
     </div>
-    <p style="margin-top:24px;font-size:0.92rem;color:var(--slate-500);line-height:1.75;max-width:860px;margin-left:auto;margin-right:auto;">Comparison on Wikipedia pages (Apple fruit, Apple Inc., Amazon River, Amazon.com). Query: <em>"Introduce Steve Jobs's products in Apple."</em> <strong style="color:var(--slate-700);">GraphRAG</strong> retrieves entire communities, mixing relevant nodes with irrelevant ones. <strong style="color:var(--slate-700);">LightRAG</strong> focuses on 1-hop neighborhoods. <strong style="color:var(--slate-700);">QAFD-RAG</strong> reweights edges by query meaning, suppressing irrelevant neighborhoods.</p>
+    <p style="margin-top:24px;font-size:0.92rem;color:var(--slate-500);line-height:1.75;max-width:860px;margin-left:auto;margin-right:auto;"><strong style="color:var(--slate-700);">GraphRAG</strong> retrieves entire communities, mixing relevant and irrelevant nodes. <strong style="color:var(--slate-700);">LightRAG</strong> extracts 1-hop neighborhoods without semantic alignment. <strong style="color:var(--slate-700);">QAFD-RAG</strong> reweights edges by query meaning, suppressing irrelevant clusters (Amazon River, Apple fruit) and reinforcing reasoning paths (Apple &rarr; Mac &rarr; macOS). Edge thickness reflects weight; node color indicates importance.</p>
   </div>
 </section>
 
-<section>
-  <div class="container">
-    <h2>How It Works</h2>
-    <p class="section-sub">A two-stage pipeline from raw documents to grounded LLM answers</p>
-    <div class="duo-grid">
-      <div class="card"><h3>Stage 1 &mdash; Knowledge Graph Construction</h3><ol><li><strong>Chunking</strong> &mdash; Documents split into overlapping token-based chunks.</li><li><strong>Entity Extraction</strong> &mdash; LLM identifies entities and relationships.</li><li><strong>Graph Assembly</strong> &mdash; Entities become nodes, relationships become weighted edges.</li></ol></div>
-      <div class="card"><h3>Stage 2 &mdash; Query-Aware Retrieval</h3><ol><li><strong>Entity Matching</strong> &mdash; Query keywords matched to KG entities via vector similarity.</li><li><strong>Flow Diffusion</strong> &mdash; Mass propagates with query-aware edge re-weighting.</li><li><strong>Context Assembly</strong> &mdash; Top-ranked nodes form context for the LLM.</li></ol></div>
-    </div>
-  </div>
-</section>
-
+<!-- ============ HOW IT WORKS ============ -->
 <section class="alt">
   <div class="container">
-    <h2>Benchmarks</h2>
-    <p class="section-sub">Evaluated across diverse retrieval and generation tasks</p>
-    <div class="bench-grid">
-      <div class="bench-item"><div class="task">UltraDomain</div><div class="dataset">Diverse Domain QA</div><div class="metrics">Comprehensiveness · Diversity · Relevance · Logicality · Coherence</div></div>
-      <div class="bench-item"><div class="task">Multi-hop QA</div><div class="dataset">MuSiQue · HotpotQA · 2WikiMultiHopQA</div><div class="metrics">F1 · Exact Match</div></div>
-      <div class="bench-item"><div class="task">Text-to-SQL</div><div class="dataset">Spider2-lite (Pagila, etc.)</div><div class="metrics">Schema Retrieval Accuracy</div></div>
-      <div class="bench-item"><div class="task">Summarization</div><div class="dataset">SQuALITY</div><div class="metrics">BLEU · ROUGE · METEOR</div></div>
+    <h2>How It Works</h2>
+    <p class="section-sub">A two-stage pipeline from raw documents to grounded answers</p>
+    <div class="duo-grid">
+      <div class="card"><h3>Stage 1 &mdash; Knowledge Graph Construction</h3><ol><li><strong>Document Chunking</strong> &mdash; Split into context-preserving chunks.</li><li><strong>Entity &amp; Relationship Extraction</strong> &mdash; LLM builds a structured KG with entities as nodes and relationships as edges.</li><li><strong>Embedding</strong> &mdash; All nodes embedded into vector space for similarity matching.</li></ol></div>
+      <div class="card"><h3>Stage 2 &mdash; Query-Aware Retrieval</h3><ol><li><strong>Seed Selection</strong> &mdash; Query matched to KG entities via embedding similarity; LLM reranker filters top seeds.</li><li><strong>Flow Diffusion</strong> &mdash; Mass injected at seeds and propagated via push-relabel with <em>query-aware edge weights</em>.</li><li><strong>Response Generation</strong> &mdash; Top-ranked subgraph assembled into context for LLM answer generation.</li></ol></div>
     </div>
   </div>
 </section>
 
+<!-- ============ RESULTS ============ -->
 <section>
   <div class="container">
-    <h2>Supported Models</h2>
-    <p class="models-text"><strong>Embeddings:</strong> openai-small · openai-large · jina-v3 · gritlm · nvidia-nv-embed-v2<br/><strong>LLMs:</strong> gpt-4o-mini · gpt-4o · gpt-5-nano · gpt-5-mini · gpt-5 · gpt-oss-120b</p>
+    <h2>Results</h2>
+    <p class="section-sub">Evaluated across four benchmark categories</p>
+    <div class="duo-grid">
+      <div class="card">
+        <h3>Multi-hop QA (F1 / EM)</h3>
+        <table style="width:100%;font-size:0.88rem;border-collapse:collapse;margin-top:8px;">
+          <tr style="border-bottom:2px solid var(--slate-200);"><th style="text-align:left;padding:6px 4px;">Method</th><th style="text-align:center;padding:6px 4px;">HotpotQA</th><th style="text-align:center;padding:6px 4px;">MuSiQue</th><th style="text-align:center;padding:6px 4px;">2Wiki</th></tr>
+          <tr style="border-bottom:1px solid var(--slate-100);"><td style="padding:6px 4px;color:var(--slate-500);">GraphRAG</td><td style="text-align:center;padding:6px 4px;">68.6</td><td style="text-align:center;padding:6px 4px;">38.5</td><td style="text-align:center;padding:6px 4px;">58.6</td></tr>
+          <tr style="border-bottom:1px solid var(--slate-100);"><td style="padding:6px 4px;color:var(--slate-500);">LightRAG</td><td style="text-align:center;padding:6px 4px;">2.4</td><td style="text-align:center;padding:6px 4px;">1.6</td><td style="text-align:center;padding:6px 4px;">11.6</td></tr>
+          <tr style="border-bottom:1px solid var(--slate-100);"><td style="padding:6px 4px;color:var(--slate-500);">RAPTOR</td><td style="text-align:center;padding:6px 4px;">69.5</td><td style="text-align:center;padding:6px 4px;">28.9</td><td style="text-align:center;padding:6px 4px;">52.1</td></tr>
+          <tr style="background:var(--blue-50);font-weight:600;"><td style="padding:6px 4px;color:var(--blue-600);">QAFD-RAG</td><td style="text-align:center;padding:6px 4px;"><strong>73.4</strong></td><td style="text-align:center;padding:6px 4px;"><strong>48.0</strong></td><td style="text-align:center;padding:6px 4px;">69.4</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Text-to-SQL (Execution Accuracy %)</h3>
+        <table style="width:100%;font-size:0.88rem;border-collapse:collapse;margin-top:8px;">
+          <tr style="border-bottom:2px solid var(--slate-200);"><th style="text-align:left;padding:6px 4px;">Method</th><th style="text-align:center;padding:6px 4px;">SQLite</th><th style="text-align:center;padding:6px 4px;">Snowflake</th></tr>
+          <tr style="border-bottom:1px solid var(--slate-100);"><td style="padding:6px 4px;color:var(--slate-500);">Spider-Agent</td><td style="text-align:center;padding:6px 4px;">21.5</td><td style="text-align:center;padding:6px 4px;">16.3</td></tr>
+          <tr style="background:var(--blue-50);font-weight:600;"><td style="padding:6px 4px;color:var(--blue-600);">QAFD-RAG</td><td style="text-align:center;padding:6px 4px;"><strong>26.7</strong></td><td style="text-align:center;padding:6px 4px;"><strong>23.7</strong></td></tr>
+        </table>
+        <p style="margin-top:12px;font-size:0.85rem;color:var(--slate-400);">Also reduces LLM API calls by 31.9&ndash;54.5%.</p>
+      </div>
+    </div>
+    <div class="bench-grid" style="margin-top:20px;">
+      <div class="bench-item"><div class="task">UltraDomain QA</div><div class="dataset">11 domains &middot; 5 quality metrics</div><div class="metrics">Leads in <strong>96%</strong> of comparisons (48/50)</div></div>
+      <div class="bench-item"><div class="task">Multi-hop QA</div><div class="dataset">MuSiQue &middot; HotpotQA &middot; 2WikiMultiHopQA</div><div class="metrics">Best F1/EM on 2 of 3 datasets</div></div>
+      <div class="bench-item"><div class="task">Text-to-SQL</div><div class="dataset">Spider2-lite (SQLite &middot; Snowflake)</div><div class="metrics">+5.2pp SQLite &middot; +7.4pp Snowflake</div></div>
+      <div class="bench-item"><div class="task">Summarization</div><div class="dataset">SQuALITY</div><div class="metrics">BLEU &middot; ROUGE &middot; METEOR</div></div>
+    </div>
   </div>
 </section>
 
+<!-- ============ QUICK START ============ -->
 <section class="alt">
   <div class="container">
     <h2>Quick Start</h2>
-<pre><code><span class="comment"># 1. Install dependencies</span>
+    <p class="section-sub">Get running in minutes with pre-built knowledge graphs</p>
+<pre><code><span class="comment"># Option 1: Clone from HuggingFace (code + pre-built KGs)</span>
+git clone https://huggingface.co/tarzanagh/QAFD-RAG
+<span class="keyword">cd</span> QAFD-RAG
+
+<span class="comment"># Option 2: Clone from GitHub (code only) + download KGs</span>
+git clone https://github.com/Tarzanagh/QAFD-RAG.git
+<span class="keyword">cd</span> QAFD-RAG
+huggingface-cli download tarzanagh/QAFD-RAG --include <span class="string">"kg/multihop/*"</span> --local-dir .
+
+<span class="comment"># Install and run</span>
 pip install -r requirements.txt
-<span class="comment"># 2. Set your OpenAI API key</span>
 export OPENAI_API_KEY=<span class="string">"sk-..."</span>
-<span class="comment"># 3. Build a knowledge graph</span>
-./run.sh ultradomain --build --max-documents 100
-<span class="comment"># 4. Run a benchmark</span>
-./run.sh ultradomain --questions 10</code></pre>
-    <h3>Python API</h3>
-<pre><code><span class="keyword">from</span> src <span class="keyword">import</span> QAFD_RAG, QueryParam
-rag = QAFD_RAG(
-    working_dir=<span class="string">"./my_kg"</span>,
-    llm_model_name=<span class="string">"gpt-4o-mini"</span>,
-    embedding_model_key=<span class="string">"jina-v3"</span>,
-)
-<span class="comment"># Index documents</span>
-rag.insert([<span class="string">"Document text 1..."</span>, <span class="string">"Document text 2..."</span>])
-<span class="comment"># Query</span>
-answer = rag.query(<span class="string">"What is X?"</span>, param=QueryParam(mode=<span class="string">"hybrid"</span>))
-print(answer)</code></pre>
+python benchmarks/run.py --task multihop --dataset musique --questions 10</code></pre>
   </div>
 </section>
 
+<!-- ============ CITATION ============ -->
 <section>
   <div class="container">
     <h2>Citation</h2>
 <pre><code>@inproceedings{zhou2026qafd,
   title={Query-Aware Flow Diffusion for Graph-Based RAG with Retrieval Guarantees},
-  author={Zhuoping Zhou and Davoud Ataee Tarzanagh and Sima Didari and Wenjun Hu
-          and Baruch Gutow and Oxana Verkholyak and Masoud Faraki and Heng Hao
-          and Hankyu Moon and Seungjai Min},
+  author={Zhou, Zhuoping and Ataee Tarzanagh, Davoud and Didari, Sima and Hu, Wenjun
+          and Gutow, Baruch and Verkholyak, Oxana and Faraki, Masoud and Hao, Heng
+          and Moon, Hankyu and Min, Seungjai},
   booktitle={International Conference on Learning Representations (ICLR)},
   year={2026}
 }</code></pre>
