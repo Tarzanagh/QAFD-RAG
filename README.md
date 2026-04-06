@@ -103,7 +103,6 @@ QAFD-RAG/
 ├── data/                            # Datasets (auto-downloaded from HuggingFace)
 ├── kg/                              # Knowledge graphs (auto-generated or downloaded)
 ├── docs/figs/                       # Figures for README
-├── ICLR2026/                        # Paper source (LaTeX)
 └── results/                         # Benchmark results (JSON)
 ```
 
