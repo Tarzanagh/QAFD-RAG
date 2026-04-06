@@ -395,36 +395,15 @@
   </div>
 </section>
 
-<!-- ============ RESULTS ============ -->
+<!-- ============ BENCHMARKS ============ -->
 <section>
   <div class="container">
-    <h2>Results</h2>
-    <p class="section-sub">Evaluated across four benchmark categories</p>
-    <div class="duo-grid">
-      <div class="card">
-        <h3>Multi-hop QA (F1 / EM)</h3>
-        <table style="width:100%;font-size:0.88rem;border-collapse:collapse;margin-top:8px;">
-          <tr style="border-bottom:2px solid var(--slate-200);"><th style="text-align:left;padding:6px 4px;">Method</th><th style="text-align:center;padding:6px 4px;">HotpotQA</th><th style="text-align:center;padding:6px 4px;">MuSiQue</th><th style="text-align:center;padding:6px 4px;">2Wiki</th></tr>
-          <tr style="border-bottom:1px solid var(--slate-100);"><td style="padding:6px 4px;color:var(--slate-500);">GraphRAG</td><td style="text-align:center;padding:6px 4px;">68.6</td><td style="text-align:center;padding:6px 4px;">38.5</td><td style="text-align:center;padding:6px 4px;">58.6</td></tr>
-          <tr style="border-bottom:1px solid var(--slate-100);"><td style="padding:6px 4px;color:var(--slate-500);">LightRAG</td><td style="text-align:center;padding:6px 4px;">2.4</td><td style="text-align:center;padding:6px 4px;">1.6</td><td style="text-align:center;padding:6px 4px;">11.6</td></tr>
-          <tr style="border-bottom:1px solid var(--slate-100);"><td style="padding:6px 4px;color:var(--slate-500);">RAPTOR</td><td style="text-align:center;padding:6px 4px;">69.5</td><td style="text-align:center;padding:6px 4px;">28.9</td><td style="text-align:center;padding:6px 4px;">52.1</td></tr>
-          <tr style="background:var(--blue-50);font-weight:600;"><td style="padding:6px 4px;color:var(--blue-600);">QAFD-RAG</td><td style="text-align:center;padding:6px 4px;"><strong>73.4</strong></td><td style="text-align:center;padding:6px 4px;"><strong>48.0</strong></td><td style="text-align:center;padding:6px 4px;">69.4</td></tr>
-        </table>
-      </div>
-      <div class="card">
-        <h3>Text-to-SQL (Execution Accuracy %)</h3>
-        <table style="width:100%;font-size:0.88rem;border-collapse:collapse;margin-top:8px;">
-          <tr style="border-bottom:2px solid var(--slate-200);"><th style="text-align:left;padding:6px 4px;">Method</th><th style="text-align:center;padding:6px 4px;">SQLite</th><th style="text-align:center;padding:6px 4px;">Snowflake</th></tr>
-          <tr style="border-bottom:1px solid var(--slate-100);"><td style="padding:6px 4px;color:var(--slate-500);">Spider-Agent</td><td style="text-align:center;padding:6px 4px;">21.5</td><td style="text-align:center;padding:6px 4px;">16.3</td></tr>
-          <tr style="background:var(--blue-50);font-weight:600;"><td style="padding:6px 4px;color:var(--blue-600);">QAFD-RAG</td><td style="text-align:center;padding:6px 4px;"><strong>26.7</strong></td><td style="text-align:center;padding:6px 4px;"><strong>23.7</strong></td></tr>
-        </table>
-        <p style="margin-top:12px;font-size:0.85rem;color:var(--slate-400);">Also reduces LLM API calls by 31.9&ndash;54.5%.</p>
-      </div>
-    </div>
-    <div class="bench-grid" style="margin-top:20px;">
+    <h2>Benchmarks</h2>
+    <p class="section-sub">Evaluated on UltraDomain QA (11 domains), multi-hop QA, text-to-SQL, and summarization. Full results in the <a href="https://openreview.net/pdf?id=n28wnc2QTc" style="color:var(--blue-600);">paper</a>.</p>
+    <div class="bench-grid">
       <div class="bench-item"><div class="task">UltraDomain QA</div><div class="dataset">11 domains &middot; 5 quality metrics</div><div class="metrics">Leads in <strong>96%</strong> of comparisons (48/50)</div></div>
-      <div class="bench-item"><div class="task">Multi-hop QA</div><div class="dataset">MuSiQue &middot; HotpotQA &middot; 2WikiMultiHopQA</div><div class="metrics">Best F1/EM on 2 of 3 datasets</div></div>
-      <div class="bench-item"><div class="task">Text-to-SQL</div><div class="dataset">Spider2-lite (SQLite &middot; Snowflake)</div><div class="metrics">+5.2pp SQLite &middot; +7.4pp Snowflake</div></div>
+      <div class="bench-item"><div class="task">Multi-hop QA</div><div class="dataset">MuSiQue &middot; HotpotQA &middot; 2Wiki</div><div class="metrics">Best F1 on HotpotQA (<strong>73.4</strong>) &amp; MuSiQue (<strong>48.0</strong>)</div></div>
+      <div class="bench-item"><div class="task">Text-to-SQL</div><div class="dataset">Spider2-lite (SQLite &middot; Snowflake)</div><div class="metrics"><strong>26.7%</strong> SQLite &middot; <strong>23.7%</strong> Snowflake</div></div>
       <div class="bench-item"><div class="task">Summarization</div><div class="dataset">SQuALITY</div><div class="metrics">BLEU &middot; ROUGE &middot; METEOR</div></div>
     </div>
   </div>
