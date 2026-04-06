@@ -403,6 +403,8 @@ def main():
     # Indexing
     parser.add_argument("--force_index", action="store_true")
     parser.add_argument("--force_openie", action="store_true")
+    parser.add_argument("--max_documents", type=int, default=None,
+                        help="Max documents for KG building (default: all)")
 
     # QAFD
     parser.add_argument("--qafd_alpha", type=float, default=1.5)
@@ -585,6 +587,9 @@ def main():
         with open(corpus_path) as f:
             corpus = json.load(f)
         docs = [f"{d['title']}\n{d['text']}" for d in corpus]
+        if args.max_documents and args.max_documents < len(docs):
+            docs = docs[:args.max_documents]
+            logger.info(f"Limited to {args.max_documents} documents for KG building")
 
         logger.info(f"Loading questions from {questions_path}")
         with open(questions_path) as f:

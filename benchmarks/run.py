@@ -136,6 +136,8 @@ def run_passage_entity(args):
     if args.force_build:
         sub_argv.append("--force_index")
         sub_argv.append("--force_openie")
+    if args.max_documents:
+        sub_argv.extend(["--max_documents", str(args.max_documents)])
 
     old_argv = sys.argv
     sys.argv = sub_argv
