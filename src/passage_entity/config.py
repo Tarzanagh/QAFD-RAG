@@ -38,7 +38,7 @@ class PassageEntityConfig:
     synonymy_edge_sim_threshold: float = 0.8
 
     # ── Retrieval ──────────────────────────────────────────────────────────
-    linking_top_k: int = 5
+    linking_top_k: int = 10
     retrieval_top_k: int = 200
     passage_node_weight: float = 0.05
     damping: float = 0.5
@@ -51,7 +51,7 @@ class PassageEntityConfig:
     qafd_alpha: float = 2.0
     qafd_epsilon: float = 0.01
     qafd_max_iterations: int = 500
-    qafd_weight_scheme: str = "original"     # "multiply", "add", "original"
+    qafd_weight_scheme: str = "multiply"     # "multiply", "add", "original"
     qafd_use_node_degree: bool = True
     qafd_step_size: float = 0.2
     qafd_random_seed: int = 42

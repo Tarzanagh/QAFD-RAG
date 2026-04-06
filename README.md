@@ -53,7 +53,7 @@ QAFD-RAG supports two knowledge graph representations, both using the same Query
 | **Best for** | General QA, text2sql, summarization | Multi-hop reasoning |
 | **Default tasks** | ultradomain, text2sql, summarization | multihop |
 
-Both graph types use query-aware flow diffusion with the same parameters (alpha=2.0, epsilon=0.01, step_size=0.2).
+Both graph types use query-aware flow diffusion with the same parameters (alpha=2.0, epsilon=0.01, step_size=0.2, weight_scheme=multiply, linking_top_k=10).
 
 ## Project Structure
 

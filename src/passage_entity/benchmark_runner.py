@@ -408,11 +408,11 @@ def main():
     parser.add_argument("--qafd_alpha", type=float, default=2.0)
     parser.add_argument("--qafd_epsilon", type=float, default=0.01)
     parser.add_argument("--qafd_max_iterations", type=int, default=500)
-    parser.add_argument("--qafd_weight_scheme", type=str, default="original")
+    parser.add_argument("--qafd_weight_scheme", type=str, default="multiply")
     parser.add_argument("--qafd_step_size", type=float, default=0.2)
 
     # Retrieval
-    parser.add_argument("--linking_top_k", type=int, default=5)
+    parser.add_argument("--linking_top_k", type=int, default=10)
     parser.add_argument("--retrieval_top_k", type=int, default=200)
     parser.add_argument("--passage_node_weight", type=float, default=0.05)
 
