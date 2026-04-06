@@ -272,40 +272,6 @@ Local embeddings (`jina-v3`, `gritlm`, `nvidia-nv-embed-v2`) run on your GPU and
 
 `gpt-4o-mini` (default), `gpt-4o`, `gpt-5-nano`, `gpt-5-mini`, `gpt-5`, `gpt-oss-120b` (free, local)
 
-## Python API
-
-```python
-from src import QAFD_RAG, QueryParam
-
-# Initialize
-rag = QAFD_RAG(
-    working_dir="./my_kg",
-    llm_model_name="gpt-4o-mini",
-    embedding_model_key="jina-v3",
-)
-
-# Index documents
-rag.insert(["Document text 1...", "Document text 2..."])
-
-# Query
-answer = rag.query(
-    "What is X?",
-    param=QueryParam(mode="hybrid"),
-)
-print(answer)
-```
-
-### QueryParam Options
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `mode` | `"hybrid"` | Retrieval mode: `local`, `global`, `hybrid` |
-| `top_k` | 40 | Number of entities to retrieve |
-| `max_source_nodes` | 40 | Max source nodes for flow diffusion |
-| `min_flow_threshold` | 0.1 | Minimum flow value to include a node |
-| `enable_query_aware_flow_diffusion` | `True` | Use query-aware edge weighting |
-| `alpha` | 50.0 | Flow diffusion initialization factor |
-| `response_type` | `"Multiple Paragraphs"` | Output format |
 
 ## How It Works
 
