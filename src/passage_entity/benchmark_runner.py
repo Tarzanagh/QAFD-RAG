@@ -91,17 +91,12 @@ if os.path.isfile(_dotenv_path):
                 if _k.strip() not in os.environ:
                     os.environ[_k.strip()] = _v
 
-# Shared client — avoids "Event loop is closed" errors from abandoned clients
-_openai_clients: dict = {}
-
+# Create a fresh client per call — avoids stale event loop issues
 def _get_client(base_url="https://api.openai.com/v1", api_key=""):
-    key = (base_url, api_key)
-    if key not in _openai_clients:
-        _openai_clients[key] = AsyncOpenAI(
-            base_url=base_url,
-            api_key=api_key or os.environ.get("OPENAI_API_KEY", ""),
-        )
-    return _openai_clients[key]
+    return AsyncOpenAI(
+        base_url=base_url,
+        api_key=api_key or os.environ.get("OPENAI_API_KEY", ""),
+    )
 
 async def _openai_complete(model, prompt, system_prompt=None, history_messages=[],
                            base_url="https://api.openai.com/v1", api_key="", **kwargs):
