@@ -191,7 +191,8 @@ python benchmarks/run.py --task ultradomain --dataset mix --questions 10
 python benchmarks/run.py --task ultradomain --dataset mix --graph_type passage-entity --questions 10
 
 # Text-to-SQL (entity graph)
-python benchmarks/run.py --task text2sql --dataset spider2-lite
+# Text-to-SQL (entity graph) — use run.sh to specify database
+./run.sh text2sql --questions 1 --db Pagila
 
 # Summarization (entity graph)
 python benchmarks/run.py --task summarization --dataset squality
