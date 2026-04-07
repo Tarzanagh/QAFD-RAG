@@ -214,7 +214,7 @@ def run_entity(args):
         sys.argv = sub_argv
         try:
             from benchmarks.text2sql.benchmark_text2sql import main as text2sql_main
-            text2sql_main()
+            asyncio.run(text2sql_main())
         finally:
             sys.argv = old_argv
 
