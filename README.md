@@ -165,8 +165,8 @@ Pre-built KGs are available at [huggingface.co/tarzanagh/QAFD-RAG](https://huggi
 huggingface-cli download tarzanagh/QAFD-RAG --include "kg/multihop/*" --local-dir .
 huggingface-cli download tarzanagh/QAFD-RAG --include "kg/ultradomain/*" --local-dir .
 
-# Or download everything
-huggingface-cli download tarzanagh/QAFD-RAG --include "kg/*" --local-dir .
+# Or clone from HuggingFace to get everything (code + all KGs)
+git clone https://huggingface.co/tarzanagh/QAFD-RAG
 ```
 
 To rebuild KGs with a different embedding (e.g., no GPU available):
