@@ -144,10 +144,11 @@ def compute_schema_metrics(results: List[Text2SQLResult], golden_path: str) -> d
 
 
 class Text2SQLBenchmark:
-    def __init__(self, api_key: str, embedding_model: str = "openai-small", llm_model: str = "gpt-4o-mini"):
+    def __init__(self, api_key: str, embedding_model: str = "openai-small", llm_model: str = "gpt-4o-mini", force_build: bool = False):
         self.api_key = api_key
         self.embedding_model = embedding_model
         self.llm_model = llm_model
+        self.force_build = force_build
         os.environ["OPENAI_API_KEY"] = api_key
         os.environ["OPENAI_API_BASE"] = "https://api.openai.com/v1"
 
@@ -179,7 +180,7 @@ class Text2SQLBenchmark:
             print_progress(i + 1, total, "Progress")
 
             # Auto-build KG if schema summary exists (generates from .sqlite if needed)
-            if not kg_exists(db):
+            if self.force_build or not kg_exists(db):
                 from src.text2sql.runner import ensure_db_summary
                 schema_path = ensure_db_summary(db) or get_schema_path(db)
                 if not schema_path:
@@ -315,6 +316,10 @@ async def main():
     parser.add_argument("--benchmark", type=str, default="spider2-lite",
                         choices=["spider2-lite", "bird"],
                         help="Benchmark dataset (default: spider2-lite)")
+    parser.add_argument("--force-build", action="store_true",
+                        help="Force rebuild KG even if it exists")
+    parser.add_argument("--build", action="store_true",
+                        help="Build KG only, don't run benchmark")
 
     args = parser.parse_args()
 
@@ -323,7 +328,7 @@ async def main():
         print("ERROR: Set OPENAI_API_KEY environment variable")
         return
 
-    benchmark = Text2SQLBenchmark(api_key, args.embedding, args.llm)
+    benchmark = Text2SQLBenchmark(api_key, args.embedding, args.llm, force_build=args.force_build)
 
     jsonl_files = {
         "spider2-lite": QAFD_RAG_HOME / "data" / "text2sql" / "spider2-lite" / "spider2-lite.jsonl",
