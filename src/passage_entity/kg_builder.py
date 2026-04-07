@@ -388,7 +388,15 @@ class KGBuilder:
             # Standardise indices
             for item in all_info:
                 item["idx"] = compute_mdhash_id(item["passage"], "chunk-")
-            existing_keys = {info["idx"] for info in all_info}
+            # Only consider a doc "done" if it has at least some extracted content
+            existing_keys = set()
+            for info in all_info:
+                has_content = (
+                    len(info.get("extracted_entities", [])) > 0
+                    or len(info.get("extracted_triples", [])) > 0
+                )
+                if has_content:
+                    existing_keys.add(info["idx"])
             for ck in chunk_keys:
                 if ck not in existing_keys:
                     chunk_keys_to_save.add(ck)
