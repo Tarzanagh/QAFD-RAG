@@ -79,6 +79,11 @@ from src.passage_entity.utils import QuerySolution
 # ---------------------------------------------------------------------------
 from openai import AsyncOpenAI
 
+# Suppress harmless "Event loop is closed" warnings from httpx async cleanup
+import warnings
+warnings.filterwarnings("ignore", message=".*Event loop is closed.*")
+logging.getLogger("asyncio").setLevel(logging.CRITICAL)
+
 # Load .env file if present (for API keys)
 _dotenv_path = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
 if os.path.isfile(_dotenv_path):
