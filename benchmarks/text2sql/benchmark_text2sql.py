@@ -194,7 +194,8 @@ class Text2SQLBenchmark:
                 try:
                     await ensure_kg(db, schema_path,
                                     embedding_model=self.embedding_model,
-                                    llm_model=self.llm_model)
+                                    llm_model=self.llm_model,
+                                    rebuild=self.force_build)
                 except Exception as e:
                     results.append(Text2SQLResult(
                         instance_id=instance_id, db=db, question=question,
