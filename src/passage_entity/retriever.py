@@ -387,12 +387,18 @@ class PassageEntityRetriever:
             self.rerank_time += time.time() - rerank_t0
 
             if len(top_facts) == 0:
-                logger.info("No facts after reranking -> fallback to DPR")
-                sorted_ids, sorted_scores = self._dense_passage_retrieval(q)
-            else:
-                sorted_ids, sorted_scores = self._graph_search(
-                    q, fact_scores, top_facts, top_indices
-                )
+                # Reranker rejected all facts — use top facts by embedding score
+                logger.info("No facts after reranking -> using top facts by embedding score")
+                link_top_k = self.config.linking_top_k
+                if len(fact_scores) > 0:
+                    top_indices = np.argsort(fact_scores)[-link_top_k:][::-1].tolist()
+                    real_ids = [self.fact_node_keys[i] for i in top_indices]
+                    rows = self.fact_store.get_rows(real_ids)
+                    top_facts = [eval(rows[rid]["content"]) for rid in real_ids]
+
+            sorted_ids, sorted_scores = self._graph_search(
+                q, fact_scores, top_facts, top_indices
+            )
 
             top_docs = [
                 self.chunk_store.get_row(self.passage_node_keys[idx])["content"]
