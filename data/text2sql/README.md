@@ -1,49 +1,53 @@
 # Text-to-SQL Data
 
-This directory contains the data for the Text-to-SQL benchmark, following the
-[Spider2-lite](https://github.com/xlang-ai/Spider2) directory layout.
+This directory contains the data for the Text-to-SQL benchmark, supporting
+[Spider2-lite](https://github.com/xlang-ai/Spider2) and [Bird](https://bird-bench.github.io/) datasets.
 
 ## Structure
 
 ```
 data/text2sql/
-├── spider2-lite.jsonl              # Benchmark questions (instance_id, db, question)
 ├── README.md
-└── databases/
-    ├── sqlite/                     # Local SQLite databases
-    │   └── <DB_Name>/
-    │       ├── <DB_Name>.sqlite            # SQLite database file
-    │       └── <DB_Name>_db_summary.json   # Auto-generated schema summary
-    │
-    ├── bigquery/                   # BigQuery dataset schemas
-    │   └── <dataset_group>/
-    │       └── <dataset_group>_bigquery_summary.json   # Schema summary
-    │
-    └── snowflake/                  # Snowflake database schemas
-        └── <DATABASE>/
-            └── <DATABASE>_db_summary.json              # Schema summary
+├── spider2-lite/
+│   ├── spider2-lite.jsonl                          # Spider2-lite questions (546 instances)
+│   ├── golden_lite_spider_total.json               # Gold labels for evaluation
+│   ├── sqlite/                                     # Local SQLite databases
+│   │   └── <DB_Name>/
+│   │       ├── <DB_Name>.sqlite                    # SQLite database file
+│   │       └── <DB_Name>_db_summary.json           # Auto-generated schema summary
+│   ├── bigquery/                                   # BigQuery dataset schemas
+│   │   └── <dataset_group>/
+│   │       └── <dataset_group>_bigquery_summary.json
+│   └── snowflake/                                  # Snowflake database schemas
+│       └── <DATABASE>/
+│           └── <DATABASE>_db_summary.json
+└── bird/
+    ├── bird.jsonl                                  # Bird questions (129 instances)
+    └── databases/
+        └── <DB_Name>/
+            ├── <DB_Name>.sqlite
+            └── <DB_Name>_db_summary.json
 ```
 
-## Sample Databases
+## Included Example Databases
 
-One example db_summary is included per backend type:
-
-| Backend   | Database | Summary file                              | Description                  |
-|-----------|----------|-------------------------------------------|------------------------------|
-| sqlite    | Pagila   | `Pagila/Pagila_db_summary.json`           | DVD rental store (16 tables) |
-| bigquery  | austin   | `austin/austin_bigquery_summary.json`     | Austin 311 service requests  |
-| snowflake | AUSTIN   | `AUSTIN/AUSTIN_db_summary.json`           | Austin 311 service requests  |
+| Backend   | Benchmark    | Database   | Description                  |
+|-----------|-------------|------------|------------------------------|
+| SQLite    | Spider2-lite | **Pagila**     | DVD rental store (16 tables) |
+| SQLite    | Bird         | **superhero**  | Superhero database (10 tables) |
+| BigQuery  | Spider2-lite | austin     | Austin 311 service requests (schema only) |
+| Snowflake | Spider2-lite | AUSTIN     | Austin 311 service requests (schema only) |
 
 ## Adding a New SQLite Database
 
 1. Place the `.sqlite` file:
    ```
-   data/text2sql/databases/sqlite/MyDB/MyDB.sqlite
+   data/text2sql/spider2-lite/sqlite/MyDB/MyDB.sqlite
    ```
 2. The schema summary is auto-generated on first run, or generate manually:
    ```bash
    python -m src.indexing.extract_db_summary \
-       --db-path data/text2sql/databases/sqlite/MyDB/MyDB.sqlite
+       --db-path data/text2sql/spider2-lite/sqlite/MyDB/MyDB.sqlite
    ```
 
 ## Adding a BigQuery Database
@@ -52,7 +56,7 @@ One example db_summary is included per backend type:
    ```bash
    python -m src.indexing.extract_db_summary_bigquery \
        --datasets project_id.dataset_id \
-       --output-dir data/text2sql/databases/bigquery/my_dataset/
+       --output-dir data/text2sql/spider2-lite/bigquery/my_dataset/
    ```
 
 ## Adding a Snowflake Database
@@ -61,10 +65,10 @@ One example db_summary is included per backend type:
    ```bash
    python -m src.indexing.extract_db_summary_snowflake \
        --databases MY_DATABASE \
-       --output-dir data/text2sql/databases/snowflake/MY_DATABASE/
+       --output-dir data/text2sql/spider2-lite/snowflake/MY_DATABASE/
    ```
 
 ## Full Spider2-lite Data
 
 To run the full benchmark, clone [Spider2](https://github.com/xlang-ai/Spider2)
-and symlink or copy the databases into `databases/`.
+and copy the databases into `spider2-lite/sqlite/`.

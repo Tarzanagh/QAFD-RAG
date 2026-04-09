@@ -55,6 +55,185 @@ QAFD-RAG supports two knowledge graph representations, both using the same Query
 
 Both graph types use query-aware flow diffusion with the same parameters (alpha=1.5, epsilon=0.01, step_size=0.2, weight_scheme=multiply, linking_top_k=10).
 
+## Benchmarks
+
+QAFD-RAG is evaluated on four tasks. Each subsection below covers data setup, pre-built KGs, and how to run.
+
+All benchmarks use the unified runner:
+
+```bash
+python benchmarks/run.py --task <task> --dataset <dataset> [options]
+```
+
+The runner automatically selects the appropriate graph type (passage-entity for multihop, entity for others). Override with `--graph_type`. A legacy CLI (`./run.sh`) is also available for entity-graph benchmarks.
+
+Pre-built KGs for all tasks are available at [huggingface.co/tarzanagh/QAFD-RAG](https://huggingface.co/tarzanagh/QAFD-RAG). Downloading is **recommended** to avoid hours of build time and API costs.
+
+### Multi-hop QA
+
+| | |
+|---|---|
+| **Datasets** | MuSiQue, HotpotQA, 2WikiMultiHopQA |
+| **Graph type** | passage-entity (default) |
+| **Metrics** | F1, Exact Match |
+| **Data** | Included in `data/multihop/` (from [osunlp](https://huggingface.co/osunlp)) |
+| **Embedding** | `nvidia-nv-embed-v2` (GPU, 16GB+ VRAM) |
+
+```bash
+# Download pre-built KGs (recommended — saves hours + API costs)
+huggingface-cli download tarzanagh/QAFD-RAG --include "kg/multihop/*" --local-dir .
+
+# Run benchmark
+python benchmarks/run.py --task multihop --dataset musique --questions 100
+python benchmarks/run.py --task multihop --dataset hotpotqa --questions 100
+python benchmarks/run.py --task multihop --dataset 2wikimultihopqa --questions 100
+
+# No GPU? Rebuild KGs with openai-small instead
+python benchmarks/run.py --task multihop --dataset musique --force_build --embedding openai-small
+
+# Retrieval only (skip answer generation)
+python benchmarks/run.py --task multihop --dataset musique --skip_qa
+```
+
+### UltraDomain
+
+| | |
+|---|---|
+| **Datasets** | agriculture, biology, cs, finance, legal, math, medicine, mix, music, philosophy, physics |
+| **Graph type** | entity (default) |
+| **Metrics** | Quality scores (comprehensiveness, diversity, relevance, logicality, coherence) |
+| **Data** | Auto-downloaded from [TommyChien/UltraDomain](https://huggingface.co/datasets/TommyChien/UltraDomain) at runtime |
+| **Embedding** | `openai-small` (no GPU needed) |
+
+```bash
+# Download pre-built KGs (recommended)
+huggingface-cli download tarzanagh/QAFD-RAG --include "kg/ultradomain/*" --local-dir .
+
+# Run benchmark
+python benchmarks/run.py --task ultradomain --dataset mix --questions 10
+
+# Use passage-entity graph instead of entity graph
+python benchmarks/run.py --task ultradomain --dataset mix --graph_type passage-entity --questions 10
+```
+
+### Text-to-SQL
+
+| | |
+|---|---|
+| **Datasets** | Spider2-lite, Bird |
+| **Graph type** | entity |
+| **Metrics** | Schema retrieval precision / recall |
+| **Data** | Example databases included in `data/text2sql/` (see [Data](#data) section) |
+| **Embedding** | `openai-small` (no GPU needed) |
+
+Two example databases are included with pre-generated DB summaries:
+- **Pagila** (Spider2-lite) -- DVD rental store, 16 tables, SQLite
+- **superhero** (Bird) -- superhero database, 10 tables, SQLite
+
+For the full Spider2-lite benchmark, clone [Spider2](https://github.com/xlang-ai/Spider2) and copy databases into `data/text2sql/spider2-lite/sqlite/`.
+
+```bash
+# Run on included example database
+./run.sh text2sql --questions 5 --db Pagila
+./run.sh text2sql --questions 5 --db superhero
+
+# Build KG only (no benchmark)
+python benchmarks/run.py --task text2sql --dataset spider2-lite --build_only --db Pagila
+```
+
+> **Adding a new database:** Place your `.sqlite` file in `data/text2sql/spider2-lite/sqlite/<DB_Name>/`, then generate a DB summary (see [Generating DB Summaries](#generating-db-summaries)). The benchmark will auto-build the KG on first run.
+
+### Summarization
+
+| | |
+|---|---|
+| **Dataset** | SQuALITY |
+| **Graph type** | entity |
+| **Metrics** | BLEU, ROUGE, METEOR, quality scores |
+| **Data** | Auto-downloaded from [pszemraj/SQuALITY-v1.3](https://huggingface.co/datasets/pszemraj/SQuALITY-v1.3) at runtime |
+
+```bash
+python benchmarks/run.py --task summarization --dataset squality --questions 50
+```
+
+### Common Options
+
+| Option | Description |
+|--------|-------------|
+| `--task TASK` | `multihop`, `ultradomain`, `text2sql`, `summarization` |
+| `--dataset NAME` | Dataset name (e.g., `musique`, `mix`, `spider2-lite`) |
+| `--graph_type TYPE` | `passage-entity` or `entity` (auto-selected by task) |
+| `--questions N` | Number of questions to evaluate |
+| `--build_only` | Build KG only, skip benchmark |
+| `--force_build` | Rebuild KG even if it exists |
+| `--skip_qa` | Run retrieval only, skip QA (passage-entity) |
+| `--embedding MODEL` | Embedding model (see [Configuration](#configuration)) |
+| `--llm MODEL` | LLM model (`gpt-4o-mini`, `gpt-4o`, `gpt-5-nano`, `gpt-5-mini`, `gpt-5`, `gpt-oss-120b`) |
+| `--alpha FLOAT` | QAFD alpha parameter (default: 2.0) |
+| `--epsilon FLOAT` | QAFD convergence threshold (default: 0.01) |
+| `--weight_scheme` | Query-aware edge weighting: `original`, `multiply`, `add` |
+
+## Data
+
+### Included Data
+
+| Task | Directory | Contents | Size |
+|------|-----------|----------|------|
+| **Multi-hop QA** | `data/multihop/` | MuSiQue, HotpotQA, 2WikiMultiHopQA (full datasets from [osunlp](https://huggingface.co/osunlp)) | 134 MB |
+| **UltraDomain** | `data/ultradomain/` | Auto-downloaded from [HuggingFace](https://huggingface.co/datasets/TommyChien/UltraDomain) at runtime | -- |
+| **Text-to-SQL** | `data/text2sql/` | Example databases + question files (see below) | 9.6 MB |
+| **Summarization** | `data/summarization/` | Auto-downloaded from [HuggingFace](https://huggingface.co/datasets/pszemraj/SQuALITY-v1.3) at runtime | -- |
+
+### Text-to-SQL Data
+
+Example databases with pre-generated DB summaries are included so you can run the text2sql benchmark out of the box:
+
+| Backend | Database | Files | Description |
+|---------|----------|-------|-------------|
+| SQLite | **Pagila** | `Pagila.sqlite` + `Pagila_db_summary.json` | DVD rental store (16 tables) |
+| SQLite | **superhero** | `superhero.sqlite` + `superhero_db_summary.json` | Superhero database (10 tables) |
+| BigQuery | austin | `austin_bigquery_summary.json` | Austin 311 service requests (schema only) |
+| Snowflake | AUSTIN | `AUSTIN_db_summary.json` | Austin 311 service requests (schema only) |
+
+Question files: `spider2-lite.jsonl` (546 questions) and `bird.jsonl` (129 questions).
+
+For the full Spider2-lite benchmark with all databases, clone [Spider2](https://github.com/xlang-ai/Spider2) and copy the SQLite files into `data/text2sql/spider2-lite/sqlite/`.
+
+### Generating DB Summaries
+
+To add a new SQLite database to the text2sql benchmark, generate a DB summary using the included CLI tool:
+
+```bash
+# Generate DB summary for a SQLite database
+python -m src.indexing.extract_db_summary \
+    --db-path data/text2sql/spider2-lite/sqlite/MyDB/MyDB.sqlite
+
+# Specify custom output directory
+python -m src.indexing.extract_db_summary \
+    --db-path path/to/database.sqlite \
+    --output data/text2sql/spider2-lite/sqlite/MyDB/
+```
+
+This produces a `<DB_Name>_db_summary.json` file containing:
+- Table and column metadata (types, primary/foreign keys, nullable)
+- Cardinality and distinct value counts per column
+- Sample values for each column
+- Inferred foreign key relationships
+
+For BigQuery and Snowflake databases (schema summaries only, no raw data):
+
+```bash
+# BigQuery
+python -m src.indexing.extract_db_summary_bigquery \
+    --datasets project_id.dataset_id \
+    --output-dir data/text2sql/spider2-lite/bigquery/my_dataset/
+
+# Snowflake
+python -m src.indexing.extract_db_summary_snowflake \
+    --databases MY_DATABASE \
+    --output-dir data/text2sql/spider2-lite/snowflake/MY_DATABASE/
+```
+
 ## Project Structure
 
 ```
@@ -95,136 +274,21 @@ QAFD-RAG/
 │   │   ├── chunkers.py              # Token-based chunking
 │   │   ├── extractors.py            # Entity/relationship extraction
 │   │   ├── schema_builder.py        # Database schema KG builder
+│   │   ├── extract_db_summary.py    # SQLite DB summary generator (CLI)
 │   │   └── build_kg.py              # CLI KG builder
 │   ├── embedding_models/            # Embedding model implementations
 │   ├── prompts/                     # LLM prompt templates
 │   ├── text2sql/                    # Text-to-SQL support
 │   └── utils/                       # Helpers
-├── data/                            # Datasets (auto-downloaded from HuggingFace)
+├── data/                            # Datasets (included or auto-downloaded)
+│   ├── multihop/                    # MuSiQue, HotpotQA, 2WikiMultiHopQA
+│   ├── ultradomain/                 # Auto-downloaded at runtime
+│   ├── text2sql/                    # Example DBs (Pagila, superhero) + questions
+│   └── summarization/               # Auto-downloaded at runtime
 ├── kg/                              # Knowledge graphs (auto-generated or downloaded)
 ├── docs/figs/                       # Figures for README
 └── results/                         # Benchmark results (JSON)
 ```
-
-## Benchmarks
-
-| Task | Datasets | Metrics |
-|------|----------|---------|
-| **UltraDomain** | agriculture, biology, cs, finance, legal, math, medicine, mix, music, philosophy, physics | Quality scores (comprehensiveness, diversity, relevance, logicality, coherence) |
-| **Multi-hop QA** | MuSiQue, HotpotQA, 2WikiMultiHopQA | F1, Exact Match |
-| **Text-to-SQL** | Spider2-lite, Bird | Schema retrieval precision/recall |
-| **Summarization** | SQuALITY | BLEU, ROUGE, METEOR, quality scores |
-
-## Usage
-
-### Unified Benchmark Runner
-
-```bash
-python benchmarks/run.py --task <task> --dataset <dataset> [options]
-```
-
-The runner automatically selects the appropriate graph type (passage-entity for multihop, entity for others). Override with `--graph_type`:
-
-```bash
-# Multihop with passage-entity graph (default)
-python benchmarks/run.py --task multihop --dataset musique --questions 100
-
-# Multihop with entity graph (override)
-python benchmarks/run.py --task multihop --dataset musique --graph_type entity
-
-# Ultradomain
-python benchmarks/run.py --task ultradomain --dataset mix --questions 10
-
-# Retrieval only (skip QA)
-python benchmarks/run.py --task multihop --dataset musique --skip_qa
-
-# Build KG only
-python benchmarks/run.py --task multihop --dataset musique --build_only
-```
-
-### Legacy CLI (entity graph only)
-
-All benchmarks can also be run through `./run.sh` (always uses entity graph):
-
-```bash
-./run.sh <task> [options]
-```
-
-### Knowledge Graphs
-
-Pre-built KGs are available at [huggingface.co/tarzanagh/QAFD-RAG](https://huggingface.co/tarzanagh/QAFD-RAG). Downloading is **recommended** to avoid hours of build time and API costs. Or clone the full repo from HuggingFace to get code + KGs in one step: `git clone https://huggingface.co/tarzanagh/QAFD-RAG`
-
-| Benchmark | Embedding | GPU needed? | Notes |
-|-----------|-----------|-------------|-------|
-| **multihop** | `nvidia-nv-embed-v2` | Yes (16GB+ VRAM) | Auto-downloaded from HuggingFace on first run |
-| **ultradomain** | `openai-small` | No | Uses OpenAI API (`OPENAI_API_KEY`) |
-| **text2sql** | `openai-small` | No | Uses OpenAI API (`OPENAI_API_KEY`) |
-
-```bash
-# Download pre-built KGs (recommended)
-huggingface-cli download tarzanagh/QAFD-RAG --include "kg/multihop/*" --local-dir .
-huggingface-cli download tarzanagh/QAFD-RAG --include "kg/ultradomain/*" --local-dir .
-
-# Or clone from HuggingFace to get everything (code + all KGs)
-git clone https://huggingface.co/tarzanagh/QAFD-RAG
-```
-
-To rebuild KGs with a different embedding (e.g., no GPU available):
-
-```bash
-# Rebuild multihop with openai-small (no GPU needed, uses OpenAI API)
-python benchmarks/run.py --task multihop --dataset musique --force_build --embedding openai-small
-```
-
-### Run Benchmarks
-
-```bash
-# Multi-hop QA (passage-entity graph by default)
-python benchmarks/run.py --task multihop --dataset musique --questions 100
-python benchmarks/run.py --task multihop --dataset hotpotqa --questions 100
-python benchmarks/run.py --task multihop --dataset 2wikimultihopqa --questions 100
-
-# UltraDomain (entity graph by default)
-python benchmarks/run.py --task ultradomain --dataset mix --questions 10
-
-# UltraDomain with passage-entity graph
-python benchmarks/run.py --task ultradomain --dataset mix --graph_type passage-entity --questions 10
-
-# Text-to-SQL (entity graph)
-# Text-to-SQL (entity graph) — use run.sh to specify database
-./run.sh text2sql --questions 1 --db Pagila
-
-# Summarization (entity graph)
-python benchmarks/run.py --task summarization --dataset squality
-```
-
-### Common Options
-
-| Option | Description |
-|--------|-------------|
-| `--task TASK` | `multihop`, `ultradomain`, `text2sql`, `summarization` |
-| `--dataset NAME` | Dataset name (e.g., `musique`, `mix`, `spider2-lite`) |
-| `--graph_type TYPE` | `passage-entity` or `entity` (auto-selected by task) |
-| `--questions N` | Number of questions to evaluate |
-| `--build_only` | Build KG only, skip benchmark |
-| `--force_build` | Rebuild KG even if it exists |
-| `--skip_qa` | Run retrieval only, skip QA (passage-entity) |
-| `--embedding MODEL` | Embedding model (see table below) |
-| `--llm MODEL` | LLM model (`gpt-4o-mini`, `gpt-4o`, `gpt-5-nano`, `gpt-5-mini`, `gpt-5`, `gpt-oss-120b`) |
-| `--alpha FLOAT` | QAFD alpha parameter (default: 2.0) |
-| `--epsilon FLOAT` | QAFD convergence threshold (default: 0.01) |
-| `--weight_scheme` | Query-aware edge weighting: `original`, `multiply`, `add` |
-
-## Data
-
-Datasets are automatically downloaded from HuggingFace on first run:
-
-| Task | Source | Reference |
-|------|--------|-----------|
-| **UltraDomain** | [TommyChien/UltraDomain](https://huggingface.co/datasets/TommyChien/UltraDomain) | agriculture, biology, cs, finance, legal, math, medicine, mix, music, philosophy, physics |
-| **Multi-hop QA** | [osunlp](https://huggingface.co/osunlp) | MuSiQue, HotpotQA, 2WikiMultiHopQA |
-| **Summarization** | [pszemraj/SQuALITY-v1.3](https://huggingface.co/datasets/pszemraj/SQuALITY-v1.3) | SQuALITY |
-| **Text-to-SQL** | Included (`data/text2sql/`) | Spider2-lite (Pagila) + Bird (superhero) with auto-generated DB summaries |
 
 ## Configuration
 
