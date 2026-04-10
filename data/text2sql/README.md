@@ -35,7 +35,7 @@ data/text2sql/
 |-----------|-------------|------------|------------------------------|
 | SQLite    | Spider2-lite | **Pagila**     | DVD rental store (16 tables) |
 | SQLite    | Bird         | **superhero**  | Superhero database (10 tables) |
-| BigQuery  | Spider2-lite | austin     | Austin 311 service requests (schema only) |
+| BigQuery  | Spider2-lite | **san_francisco** | SF city data: bikeshare, crime, film locations, fire dept, street trees (8 tables, 118 columns, schema only) |
 | Snowflake | Spider2-lite | AUSTIN     | Austin 311 service requests (schema only) |
 
 ## Adding a New SQLite Database

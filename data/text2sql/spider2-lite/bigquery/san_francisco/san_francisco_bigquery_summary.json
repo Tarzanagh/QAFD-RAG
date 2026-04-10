@@ -1,0 +1,1447 @@
+{
+  "tables": {
+    "bigquery-public-data.san_francisco.311_service_requests": {
+      "name": "bigquery-public-data.san_francisco.311_service_requests",
+      "columns": [
+        {
+          "name": "unique_key",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "created_date",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "closed_date",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "resolution_action_updated_date",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "status",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "status_notes",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "agency_name",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "category",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "complaint_type",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "descriptor",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "incident_address",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "supervisor_district",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "neighborhood",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "location",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "source",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "media_url",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "latitude",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "longitude",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "police_district",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "samples": [
+        {
+          "unique_key": 4875703,
+          "created_date": "2015-07-02 13:37:09+00:00",
+          "closed_date": "2015-07-14 15:01:16+00:00",
+          "resolution_action_updated_date": "2015-07-14 15:01:16+00:00",
+          "status": "Closed",
+          "status_notes": "resolved: Maximo Service Request has been resolved",
+          "agency_name": "PUC Sewer Ops",
+          "category": "Sewer Issues",
+          "complaint_type": "Odor",
+          "descriptor": "Odor From_catch_basin",
+          "incident_address": "Not associated with a specific address",
+          "supervisor_district": null,
+          "neighborhood": "",
+          "location": "",
+          "source": "Web",
+          "media_url": "",
+          "latitude": 0.0,
+          "longitude": 0.0,
+          "police_district": ""
+        },
+        {
+          "unique_key": 3645142,
+          "created_date": "2014-05-15 11:25:58+00:00",
+          "closed_date": "2014-05-19 06:26:42+00:00",
+          "resolution_action_updated_date": "2014-05-19 06:26:42+00:00",
+          "status": "Closed",
+          "status_notes": "cancelled: Maximo Service Request has been cancelled",
+          "agency_name": "PUC Sewer Ops",
+          "category": "Sewer Issues",
+          "complaint_type": "Odor",
+          "descriptor": "Odor From_manhole_cover",
+          "incident_address": "Not associated with a specific address",
+          "supervisor_district": null,
+          "neighborhood": "",
+          "location": "",
+          "source": "Web",
+          "media_url": "",
+          "latitude": 0.0,
+          "longitude": 0.0,
+          "police_district": ""
+        },
+        {
+          "unique_key": 5188903,
+          "created_date": "2015-10-14 15:33:01+00:00",
+          "closed_date": "NaT",
+          "resolution_action_updated_date": "2015-10-14 18:12:27+00:00",
+          "status": "Open",
+          "status_notes": "open",
+          "agency_name": "PUC - Sewer - G",
+          "category": "Sewer Issues",
+          "complaint_type": "Odor",
+          "descriptor": "Odor From_other_location",
+          "incident_address": "Not associated with a specific address",
+          "supervisor_district": null,
+          "neighborhood": "",
+          "location": "",
+          "source": "Web",
+          "media_url": "",
+          "latitude": 0.0,
+          "longitude": 0.0,
+          "police_district": ""
+        },
+        {
+          "unique_key": 2222674,
+          "created_date": "2013-04-08 23:53:48+00:00",
+          "closed_date": "2013-04-09 06:59:22+00:00",
+          "resolution_action_updated_date": "2013-04-09 06:59:22+00:00",
+          "status": "Closed",
+          "status_notes": "Eastside Recycled Water Project",
+          "agency_name": "311 Supervisor Queue",
+          "category": "Sewer Issues",
+          "complaint_type": "Odor",
+          "descriptor": "Odor From_other_location",
+          "incident_address": "Not associated with a specific address",
+          "supervisor_district": null,
+          "neighborhood": "",
+          "location": "",
+          "source": "Web",
+          "media_url": "",
+          "latitude": 0.0,
+          "longitude": 0.0,
+          "police_district": ""
+        },
+        {
+          "unique_key": 4218038,
+          "created_date": "2014-11-17 15:37:10+00:00",
+          "closed_date": "2014-11-18 16:52:46+00:00",
+          "resolution_action_updated_date": "2014-11-18 16:52:46+00:00",
+          "status": "Closed",
+          "status_notes": "resolved: Maximo Service Request has been resolved.",
+          "agency_name": "PUC Sewer Ops",
+          "category": "Sewer Issues",
+          "complaint_type": "Odor",
+          "descriptor": "Odor From_side_sewer_vent",
+          "incident_address": "Not associated with a specific address",
+          "supervisor_district": null,
+          "neighborhood": "",
+          "location": "",
+          "source": "Web",
+          "media_url": "",
+          "latitude": 0.0,
+          "longitude": 0.0,
+          "police_district": ""
+        }
+      ],
+      "foreign_keys": []
+    },
+    "bigquery-public-data.san_francisco.bikeshare_stations": {
+      "name": "bigquery-public-data.san_francisco.bikeshare_stations",
+      "columns": [
+        {
+          "name": "station_id",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "name",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "latitude",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "longitude",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "dockcount",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "landmark",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "installation_date",
+          "type": "DATE",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "samples": [
+        {
+          "station_id": 4,
+          "name": "Santa Clara at Almaden",
+          "latitude": 37.333988,
+          "longitude": -121.894902,
+          "dockcount": 11,
+          "landmark": "San Jose",
+          "installation_date": "2013-08-06"
+        },
+        {
+          "station_id": 84,
+          "name": "Ryland Park",
+          "latitude": 37.342725,
+          "longitude": -121.895617,
+          "dockcount": 15,
+          "landmark": "San Jose",
+          "installation_date": "2014-04-09"
+        },
+        {
+          "station_id": 8,
+          "name": "San Salvador at 1st",
+          "latitude": 37.330165,
+          "longitude": -121.885831,
+          "dockcount": 15,
+          "landmark": "San Jose",
+          "installation_date": "2013-08-05"
+        },
+        {
+          "station_id": 9,
+          "name": "Japantown",
+          "latitude": 37.348742,
+          "longitude": -121.894715,
+          "dockcount": 15,
+          "landmark": "San Jose",
+          "installation_date": "2013-08-05"
+        },
+        {
+          "station_id": 3,
+          "name": "San Jose Civic Center",
+          "latitude": 37.330698,
+          "longitude": -121.888979,
+          "dockcount": 15,
+          "landmark": "San Jose",
+          "installation_date": "2013-08-05"
+        }
+      ],
+      "foreign_keys": []
+    },
+    "bigquery-public-data.san_francisco.bikeshare_status": {
+      "name": "bigquery-public-data.san_francisco.bikeshare_status",
+      "columns": [
+        {
+          "name": "station_id",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "bikes_available",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "docks_available",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "time",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "samples": [
+        {
+          "station_id": 2,
+          "bikes_available": 0,
+          "docks_available": 26,
+          "time": "2014-09-10 09:25:02+00:00"
+        },
+        {
+          "station_id": 2,
+          "bikes_available": 0,
+          "docks_available": 26,
+          "time": "2015-09-12 02:07:02+00:00"
+        },
+        {
+          "station_id": 2,
+          "bikes_available": 0,
+          "docks_available": 26,
+          "time": "2015-09-11 11:05:02+00:00"
+        },
+        {
+          "station_id": 2,
+          "bikes_available": 0,
+          "docks_available": 27,
+          "time": "2016-08-30 15:13:47+00:00"
+        },
+        {
+          "station_id": 2,
+          "bikes_available": 0,
+          "docks_available": 27,
+          "time": "2015-09-24 13:31:02+00:00"
+        }
+      ],
+      "foreign_keys": []
+    },
+    "bigquery-public-data.san_francisco.bikeshare_trips": {
+      "name": "bigquery-public-data.san_francisco.bikeshare_trips",
+      "columns": [
+        {
+          "name": "trip_id",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "duration_sec",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "start_date",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "start_station_name",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "start_station_id",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "end_date",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "end_station_name",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "end_station_id",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "bike_number",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "zip_code",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "subscriber_type",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "samples": [
+        {
+          "trip_id": 1235850,
+          "duration_sec": 1540,
+          "start_date": "2016-06-11 08:19:00+00:00",
+          "start_station_name": "San Jose Diridon Caltrain Station",
+          "start_station_id": 2,
+          "end_date": "2016-06-11 08:45:00+00:00",
+          "end_station_name": "San Jose Diridon Caltrain Station",
+          "end_station_id": 2,
+          "bike_number": 124,
+          "zip_code": "15206",
+          "subscriber_type": "Customer"
+        },
+        {
+          "trip_id": 1219337,
+          "duration_sec": 6324,
+          "start_date": "2016-05-29 12:49:00+00:00",
+          "start_station_name": "San Jose Diridon Caltrain Station",
+          "start_station_id": 2,
+          "end_date": "2016-05-29 14:34:00+00:00",
+          "end_station_name": "San Jose Diridon Caltrain Station",
+          "end_station_id": 2,
+          "bike_number": 174,
+          "zip_code": "55416",
+          "subscriber_type": "Customer"
+        },
+        {
+          "trip_id": 793762,
+          "duration_sec": 115572,
+          "start_date": "2015-06-04 09:22:00+00:00",
+          "start_station_name": "San Jose Diridon Caltrain Station",
+          "start_station_id": 2,
+          "end_date": "2015-06-05 17:28:00+00:00",
+          "end_station_name": "San Jose Diridon Caltrain Station",
+          "end_station_id": 2,
+          "bike_number": 190,
+          "zip_code": "95391",
+          "subscriber_type": "Customer"
+        },
+        {
+          "trip_id": 453845,
+          "duration_sec": 54120,
+          "start_date": "2014-09-15 16:53:00+00:00",
+          "start_station_name": "San Jose Diridon Caltrain Station",
+          "start_station_id": 2,
+          "end_date": "2014-09-16 07:55:00+00:00",
+          "end_station_name": "San Jose Diridon Caltrain Station",
+          "end_station_id": 2,
+          "bike_number": 127,
+          "zip_code": "81",
+          "subscriber_type": "Customer"
+        },
+        {
+          "trip_id": 1245113,
+          "duration_sec": 5018,
+          "start_date": "2016-06-17 20:08:00+00:00",
+          "start_station_name": "San Jose Diridon Caltrain Station",
+          "start_station_id": 2,
+          "end_date": "2016-06-17 21:32:00+00:00",
+          "end_station_name": "San Jose Diridon Caltrain Station",
+          "end_station_id": 2,
+          "bike_number": 153,
+          "zip_code": "95070",
+          "subscriber_type": "Customer"
+        }
+      ],
+      "foreign_keys": []
+    },
+    "bigquery-public-data.san_francisco.film_locations": {
+      "name": "bigquery-public-data.san_francisco.film_locations",
+      "columns": [
+        {
+          "name": "title",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "release_year",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "locations",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "fun_facts",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "production_company",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "distributor",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "director",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "writer",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "actor_1",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "actor_2",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "actor_3",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "samples": [
+        {
+          "title": "A Jitney Elopement",
+          "release_year": 1915,
+          "locations": "20th and Folsom Streets",
+          "fun_facts": "",
+          "production_company": "The Essanay Film Manufacturing Company",
+          "distributor": "General Film Company",
+          "director": "Charles Chaplin",
+          "writer": "Charles Chaplin",
+          "actor_1": "Charles Chaplin",
+          "actor_2": "Edna Purviance",
+          "actor_3": ""
+        },
+        {
+          "title": "A Jitney Elopement",
+          "release_year": 1915,
+          "locations": "Golden Gate Park",
+          "fun_facts": "During San Francisco's Gold Rush era, the Park was part of an area designated as the \"Great Sand Waste\".",
+          "production_company": "The Essanay Film Manufacturing Company",
+          "distributor": "General Film Company",
+          "director": "Charles Chaplin",
+          "writer": "Charles Chaplin",
+          "actor_1": "Charles Chaplin",
+          "actor_2": "Edna Purviance",
+          "actor_3": ""
+        },
+        {
+          "title": "San Francisco",
+          "release_year": 1936,
+          "locations": "The Barbary Coast",
+          "fun_facts": "The Barbary Coast was a red-light district that was largely destroyed in the 1906 earthquake. Though some of the establishments were rebuilt after the earthquake, an anti-vice campaign put the establishments out of business.",
+          "production_company": "Metro-Goldwyn Mayer",
+          "distributor": "Metro-Goldwyn Mayer",
+          "director": "W.S. Van Dyke",
+          "writer": "Anita Loos",
+          "actor_1": "Clark Gable",
+          "actor_2": "Jeanette MacDonald",
+          "actor_3": "Spencer Tracy"
+        },
+        {
+          "title": "San Francisco",
+          "release_year": 1936,
+          "locations": "City Hall",
+          "fun_facts": "The dome of SF's City Hall is almost a foot taller than that of the US Capitol Building. In 1954, Joe DiMaggio and Marilyn Monroe married at the Beaux Arts-style building.",
+          "production_company": "Metro-Goldwyn Mayer",
+          "distributor": "Metro-Goldwyn Mayer",
+          "director": "W.S. Van Dyke",
+          "writer": "Anita Loos",
+          "actor_1": "Clark Gable",
+          "actor_2": "Jeanette MacDonald",
+          "actor_3": "Spencer Tracy"
+        },
+        {
+          "title": "After the Thin Man",
+          "release_year": 1936,
+          "locations": "Coit Tower",
+          "fun_facts": "The Tower was funded by a gift bequeathed by Lillie Hitchcock Coit, a socialite who reportedly liked to chase fires. Though the tower resembles a firehose nozzle, it was not designed this way.",
+          "production_company": "Metro-Goldwyn Mayer",
+          "distributor": "Metro-Goldwyn Mayer",
+          "director": "W.S. Van Dyke",
+          "writer": "Frances Goodrich",
+          "actor_1": "William Powell",
+          "actor_2": "Myrna Loy",
+          "actor_3": "James Stewart"
+        }
+      ],
+      "foreign_keys": []
+    },
+    "bigquery-public-data.san_francisco.sffd_service_calls": {
+      "name": "bigquery-public-data.san_francisco.sffd_service_calls",
+      "columns": [
+        {
+          "name": "call_number",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "unit_id",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "incident_number",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "call_type",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "call_date",
+          "type": "DATE",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "watch_date",
+          "type": "DATE",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "received_timestamp",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "entry_timestamp",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "dispatch_timestamp",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "response_timestamp",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "on_scene_timestamp",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "transport_timestamp",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "hospital_timestamp",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "call_final_disposition",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "available_timestamp",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "address",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "city",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "zipcode_of_incident",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "battalion",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "station_area",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "box",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "original_priority",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "priority",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "final_priority",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "als_unit",
+          "type": "BOOL",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "call_type_group",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "number_of_alarms",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "unit_type",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "unit_sequence_in_call_dispatch",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "fire_prevention_district",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "supervisor_district",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "neighborhood_district",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "location",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "row_id",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "latitude",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "longitude",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "samples": [
+        {
+          "call_number": 122570160,
+          "unit_id": "KM10",
+          "incident_number": 12084932,
+          "call_type": "Medical Incident",
+          "call_date": "2012-09-13",
+          "watch_date": "2012-09-13",
+          "received_timestamp": "2012-09-13 12:44:55+00:00",
+          "entry_timestamp": "2012-09-13 12:46:22+00:00",
+          "dispatch_timestamp": "2012-09-13 12:46:33+00:00",
+          "response_timestamp": "2012-09-13 12:47:18+00:00",
+          "on_scene_timestamp": "2012-09-13 13:01:09+00:00",
+          "transport_timestamp": "2012-09-13 13:16:59+00:00",
+          "hospital_timestamp": "2012-09-13 13:37:24+00:00",
+          "call_final_disposition": "Patient Declined Transport",
+          "available_timestamp": "2012-09-13 13:37:44+00:00",
+          "address": "600 Block of MERCHANT ST",
+          "city": "SF",
+          "zipcode_of_incident": "94111",
+          "battalion": "B01",
+          "station_area": "13",
+          "box": "0124",
+          "original_priority": "1",
+          "priority": "1",
+          "final_priority": 2,
+          "als_unit": false,
+          "call_type_group": "Non Life-threatening",
+          "number_of_alarms": 1,
+          "unit_type": "PRIVATE",
+          "unit_sequence_in_call_dispatch": 1,
+          "fire_prevention_district": "1",
+          "supervisor_district": "3",
+          "neighborhood_district": "",
+          "location": "(37.7949086758744, -122.404037735679)",
+          "row_id": "122570160-KM10",
+          "latitude": 37.7949086758744,
+          "longitude": -122.404037735679
+        },
+        {
+          "call_number": 2510051,
+          "unit_id": "M28",
+          "incident_number": 75063,
+          "call_type": "Medical Incident",
+          "call_date": "2000-09-07",
+          "watch_date": "2000-09-06",
+          "received_timestamp": "2000-09-07 06:45:27+00:00",
+          "entry_timestamp": "2000-09-07 06:46:31+00:00",
+          "dispatch_timestamp": "2000-09-07 06:47:13+00:00",
+          "response_timestamp": "2000-09-07 06:49:50+00:00",
+          "on_scene_timestamp": "2000-09-07 07:00:59+00:00",
+          "transport_timestamp": "NaT",
+          "hospital_timestamp": "NaT",
+          "call_final_disposition": "Other",
+          "available_timestamp": "2000-09-07 07:25:42+00:00",
+          "address": "400 Block of FILBERT ST",
+          "city": "SF",
+          "zipcode_of_incident": "94133",
+          "battalion": "B01",
+          "station_area": "28",
+          "box": "0126",
+          "original_priority": "1",
+          "priority": "1",
+          "final_priority": 2,
+          "als_unit": true,
+          "call_type_group": "",
+          "number_of_alarms": 1,
+          "unit_type": "MEDIC",
+          "unit_sequence_in_call_dispatch": 1,
+          "fire_prevention_district": "1",
+          "supervisor_district": "3",
+          "neighborhood_district": "",
+          "location": "(37.8018046785455, -122.406418120773)",
+          "row_id": "002510051-M28",
+          "latitude": 37.8018046785455,
+          "longitude": -122.406418120773
+        },
+        {
+          "call_number": 32050385,
+          "unit_id": "M28",
+          "incident_number": 3059082,
+          "call_type": "Medical Incident",
+          "call_date": "2003-07-24",
+          "watch_date": "2003-07-24",
+          "received_timestamp": "2003-07-24 21:14:34+00:00",
+          "entry_timestamp": "2003-07-24 21:16:03+00:00",
+          "dispatch_timestamp": "2003-07-24 21:16:29+00:00",
+          "response_timestamp": "2003-07-24 21:17:53+00:00",
+          "on_scene_timestamp": "2003-07-24 21:19:52+00:00",
+          "transport_timestamp": "NaT",
+          "hospital_timestamp": "NaT",
+          "call_final_disposition": "Other",
+          "available_timestamp": "2003-07-24 21:23:24+00:00",
+          "address": "2200 Block of POWELL ST",
+          "city": "SF",
+          "zipcode_of_incident": "94133",
+          "battalion": "B01",
+          "station_area": "28",
+          "box": "0131",
+          "original_priority": "1",
+          "priority": "1",
+          "final_priority": 2,
+          "als_unit": true,
+          "call_type_group": "",
+          "number_of_alarms": 1,
+          "unit_type": "MEDIC",
+          "unit_sequence_in_call_dispatch": 1,
+          "fire_prevention_district": "1",
+          "supervisor_district": "3",
+          "neighborhood_district": "",
+          "location": "(37.8055846438693, -122.411972668154)",
+          "row_id": "032050385-M28",
+          "latitude": 37.8055846438693,
+          "longitude": -122.411972668154
+        },
+        {
+          "call_number": 12780403,
+          "unit_id": "M13",
+          "incident_number": 1085363,
+          "call_type": "Medical Incident",
+          "call_date": "2001-10-05",
+          "watch_date": "2001-10-05",
+          "received_timestamp": "2001-10-05 22:19:34+00:00",
+          "entry_timestamp": "2001-10-05 22:19:51+00:00",
+          "dispatch_timestamp": "2001-10-05 22:20:07+00:00",
+          "response_timestamp": "2001-10-05 22:20:47+00:00",
+          "on_scene_timestamp": "2001-10-05 22:26:56+00:00",
+          "transport_timestamp": "2001-10-05 22:35:58+00:00",
+          "hospital_timestamp": "2001-10-05 22:53:54+00:00",
+          "call_final_disposition": "Other",
+          "available_timestamp": "2001-10-05 23:07:47+00:00",
+          "address": "2300 Block of POWELL ST",
+          "city": "SF",
+          "zipcode_of_incident": "94133",
+          "battalion": "B01",
+          "station_area": "28",
+          "box": "0131",
+          "original_priority": "1",
+          "priority": "1",
+          "final_priority": 2,
+          "als_unit": true,
+          "call_type_group": "",
+          "number_of_alarms": 1,
+          "unit_type": "MEDIC",
+          "unit_sequence_in_call_dispatch": 1,
+          "fire_prevention_district": "1",
+          "supervisor_district": "3",
+          "neighborhood_district": "",
+          "location": "(37.8062826874223, -122.412114085659)",
+          "row_id": "012780403-M13",
+          "latitude": 37.8062826874223,
+          "longitude": -122.412114085659
+        },
+        {
+          "call_number": 12240329,
+          "unit_id": "M28",
+          "incident_number": 1069433,
+          "call_type": "Medical Incident",
+          "call_date": "2001-08-12",
+          "watch_date": "2001-08-12",
+          "received_timestamp": "2001-08-12 23:02:27+00:00",
+          "entry_timestamp": "2001-08-12 23:04:00+00:00",
+          "dispatch_timestamp": "2001-08-12 23:04:10+00:00",
+          "response_timestamp": "2001-08-12 23:05:29+00:00",
+          "on_scene_timestamp": "2001-08-12 23:08:12+00:00",
+          "transport_timestamp": "NaT",
+          "hospital_timestamp": "NaT",
+          "call_final_disposition": "Other",
+          "available_timestamp": "2001-08-12 23:42:04+00:00",
+          "address": "2300 Block of POWELL ST",
+          "city": "SF",
+          "zipcode_of_incident": "94133",
+          "battalion": "B01",
+          "station_area": "28",
+          "box": "0131",
+          "original_priority": "1",
+          "priority": "1",
+          "final_priority": 2,
+          "als_unit": true,
+          "call_type_group": "",
+          "number_of_alarms": 1,
+          "unit_type": "MEDIC",
+          "unit_sequence_in_call_dispatch": 1,
+          "fire_prevention_district": "1",
+          "supervisor_district": "3",
+          "neighborhood_district": "",
+          "location": "(37.8062826874223, -122.412114085659)",
+          "row_id": "012240329-M28",
+          "latitude": 37.8062826874223,
+          "longitude": -122.412114085659
+        }
+      ],
+      "foreign_keys": []
+    },
+    "bigquery-public-data.san_francisco.sfpd_incidents": {
+      "name": "bigquery-public-data.san_francisco.sfpd_incidents",
+      "columns": [
+        {
+          "name": "unique_key",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "category",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "descript",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "dayofweek",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "pddistrict",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "resolution",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "address",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "longitude",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "latitude",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "location",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "pdid",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "timestamp",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "samples": [
+        {
+          "unique_key": 140841035,
+          "category": "LARCENY/THEFT",
+          "descript": "PETTY THEFT FROM LOCKED AUTO",
+          "dayofweek": "Saturday",
+          "pddistrict": "PARK",
+          "resolution": "NONE",
+          "address": "1400 Block of WALLER ST",
+          "longitude": -122.44796773714,
+          "latitude": 37.768862804,
+          "location": "(37.768862804, -122.44796773714)",
+          "pdid": 14084103506241,
+          "timestamp": "2014-10-04 18:30:00+00:00"
+        },
+        {
+          "unique_key": 121031708,
+          "category": "MISSING PERSON",
+          "descript": "MISSING ADULT",
+          "dayofweek": "Saturday",
+          "pddistrict": "PARK",
+          "resolution": "NONE",
+          "address": "1400 Block of WALLER ST",
+          "longitude": -122.44796773714,
+          "latitude": 37.768862804,
+          "location": "(37.768862804, -122.44796773714)",
+          "pdid": 12103170874000,
+          "timestamp": "2012-12-22 14:00:00+00:00"
+        },
+        {
+          "unique_key": 60771542,
+          "category": "VANDALISM",
+          "descript": "MALICIOUS MISCHIEF, GRAFFITI",
+          "dayofweek": "Wednesday",
+          "pddistrict": "PARK",
+          "resolution": "NONE",
+          "address": "1400 Block of WALLER ST",
+          "longitude": -122.44796773714,
+          "latitude": 37.768862804,
+          "location": "(37.768862804, -122.44796773714)",
+          "pdid": 6077154228165,
+          "timestamp": "2006-07-19 10:00:00+00:00"
+        },
+        {
+          "unique_key": 50688521,
+          "category": "VANDALISM",
+          "descript": "MALICIOUS MISCHIEF, GRAFFITI",
+          "dayofweek": "Thursday",
+          "pddistrict": "PARK",
+          "resolution": "NONE",
+          "address": "1400 Block of WALLER ST",
+          "longitude": -122.44796773714,
+          "latitude": 37.768862804,
+          "location": "(37.768862804, -122.44796773714)",
+          "pdid": 5068852128165,
+          "timestamp": "2005-06-16 00:01:00+00:00"
+        },
+        {
+          "unique_key": 150083471,
+          "category": "NON-CRIMINAL",
+          "descript": "AIDED CASE -PROPERTY FOR DESTRUCTION",
+          "dayofweek": "Tuesday",
+          "pddistrict": "PARK",
+          "resolution": "NONE",
+          "address": "1400 Block of WALLER ST",
+          "longitude": -122.44796773714,
+          "latitude": 37.768862804,
+          "location": "(37.768862804, -122.44796773714)",
+          "pdid": 15008347151041,
+          "timestamp": "2015-01-27 20:40:00+00:00"
+        }
+      ],
+      "foreign_keys": []
+    },
+    "bigquery-public-data.san_francisco.street_trees": {
+      "name": "bigquery-public-data.san_francisco.street_trees",
+      "columns": [
+        {
+          "name": "tree_id",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "legal_status",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "species",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "address",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "site_order",
+          "type": "INT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "site_info",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "plant_type",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "care_taker",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "care_assistant",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "plant_date",
+          "type": "TIMESTAMP",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "dbh",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "plot_size",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "permit_notes",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "x_coordinate",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "y_coordinate",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "latitude",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "longitude",
+          "type": "FLOAT64",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "location",
+          "type": "STRING",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "samples": [
+        {
+          "tree_id": 113066,
+          "legal_status": "",
+          "species": "Cupressus macrocarpa :: Monterey Cypress",
+          "address": "2X Cranleigh Dr",
+          "site_order": 7,
+          "site_info": ":",
+          "plant_type": "Tree",
+          "care_taker": "DPW",
+          "care_assistant": "",
+          "plant_date": "2015-09-09 13:08:00+00:00",
+          "dbh": "3",
+          "plot_size": "",
+          "permit_notes": "",
+          "x_coordinate": 5991370.3,
+          "y_coordinate": 2095943.7,
+          "latitude": 37.7345659248964,
+          "longitude": -122.472270103664,
+          "location": "(37.7345659248964, -122.472270103664)"
+        },
+        {
+          "tree_id": 97434,
+          "legal_status": "",
+          "species": "Ulmus parvifolia :: Chinese Elm",
+          "address": "1380x Newcomb Ave",
+          "site_order": 5,
+          "site_info": "Median : Cutout",
+          "plant_type": "Tree",
+          "care_taker": "DPW",
+          "care_assistant": "",
+          "plant_date": "2011-09-30 00:00:00+00:00",
+          "dbh": "3",
+          "plot_size": "",
+          "permit_notes": "",
+          "x_coordinate": 6016360.63733,
+          "y_coordinate": 2094893.94179,
+          "latitude": 37.7330981190079,
+          "longitude": -122.385796183605,
+          "location": "(37.7330981190079, -122.385796183605)"
+        },
+        {
+          "tree_id": 91166,
+          "legal_status": "",
+          "species": "Cercis canadensis :: Eastern Redbud",
+          "address": "1548x Quesada Ave",
+          "site_order": 4,
+          "site_info": "Median : Cutout",
+          "plant_type": "Tree",
+          "care_taker": "DPW",
+          "care_assistant": "",
+          "plant_date": "2009-01-31 00:00:00+00:00",
+          "dbh": "3",
+          "plot_size": "",
+          "permit_notes": "",
+          "x_coordinate": 6015526.48125,
+          "y_coordinate": 2094420.051093,
+          "latitude": 37.7317507154659,
+          "longitude": -122.388647039673,
+          "location": "(37.7317507154659, -122.388647039673)"
+        },
+        {
+          "tree_id": 87422,
+          "legal_status": "",
+          "species": "Lophostemon confertus :: Brisbane Box",
+          "address": "45X Jones St",
+          "site_order": 1,
+          "site_info": "Sidewalk: Curb side : Cutout",
+          "plant_type": "Tree",
+          "care_taker": "DPW",
+          "care_assistant": "",
+          "plant_date": "2008-04-22 00:00:00+00:00",
+          "dbh": "",
+          "plot_size": "",
+          "permit_notes": "",
+          "x_coordinate": 6009092.517834,
+          "y_coordinate": 2112687.614007,
+          "latitude": 37.7815506408215,
+          "longitude": -122.412181237011,
+          "location": "(37.7815506408215, -122.412181237011)"
+        },
+        {
+          "tree_id": 87402,
+          "legal_status": "",
+          "species": "Prunus cerasifera :: Cherry Plum",
+          "address": "1300 Webster St",
+          "site_order": 7,
+          "site_info": "Median : Cutout",
+          "plant_type": "Tree",
+          "care_taker": "DPW",
+          "care_assistant": "",
+          "plant_date": "2008-04-21 00:00:00+00:00",
+          "dbh": "3",
+          "plot_size": "3x3",
+          "permit_notes": "",
+          "x_coordinate": 6003725.160049,
+          "y_coordinate": 2113179.069411,
+          "latitude": 37.7825974263114,
+          "longitude": -122.430784800607,
+          "location": "(37.7825974263114, -122.430784800607)"
+        }
+      ],
+      "foreign_keys": []
+    }
+  },
+  "relationships": []
+}

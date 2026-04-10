@@ -193,7 +193,7 @@ Example databases with pre-generated DB summaries are included so you can run th
 |---------|----------|-------|-------------|
 | SQLite | **Pagila** | `Pagila.sqlite` + `Pagila_db_summary.json` | DVD rental store (16 tables) |
 | SQLite | **superhero** | `superhero.sqlite` + `superhero_db_summary.json` | Superhero database (10 tables) |
-| BigQuery | austin | `austin_bigquery_summary.json` | Austin 311 service requests (schema only) |
+| BigQuery | **san_francisco** | `san_francisco_bigquery_summary.json` | SF city data: bikeshare, crime, film locations, fire dept, street trees (8 tables, 118 columns, schema only) |
 | Snowflake | AUSTIN | `AUSTIN_db_summary.json` | Austin 311 service requests (schema only) |
 
 Question files: `spider2-lite.jsonl` (546 questions) and `bird.jsonl` (129 questions).
