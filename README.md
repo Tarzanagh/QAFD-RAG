@@ -133,9 +133,10 @@ Two example databases are included with pre-generated DB summaries:
 For the full Spider2-lite benchmark, clone [Spider2](https://github.com/xlang-ai/Spider2) and copy databases into `data/text2sql/spider2-lite/sqlite/`.
 
 ```bash
-# Run on included example database
-./run.sh text2sql --questions 5 --db Pagila
-./run.sh text2sql --questions 5 --db superhero
+# Run on included example databases
+./run.sh text2sql --questions 5 --db Pagila                          # Spider2-lite (auto-detected)
+./run.sh text2sql --questions 5 --db superhero                       # Bird (auto-detected)
+./run.sh text2sql --benchmark bird --questions 5 --db superhero      # explicit benchmark selection
 
 # Build KG only (no benchmark)
 python benchmarks/run.py --task text2sql --dataset spider2-lite --build_only --db Pagila

@@ -339,6 +339,17 @@ async def main():
     db_filter = [args.db] if args.db else None
     questions = benchmark.load_questions(data_path, db_filter)
 
+    # Auto-detect benchmark: if --db is set but found 0 questions, try the other benchmark
+    if db_filter and len(questions) == 0:
+        other = "bird" if args.benchmark == "spider2-lite" else "spider2-lite"
+        other_path = str(jsonl_files[other])
+        if os.path.exists(other_path):
+            other_questions = benchmark.load_questions(other_path, db_filter)
+            if other_questions:
+                args.benchmark = other
+                data_path = other_path
+                questions = other_questions
+
     print_header("QAFD-RAG Text2SQL Benchmark")
     print_config({
         "Benchmark": args.benchmark,
