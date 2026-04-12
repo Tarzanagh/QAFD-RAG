@@ -117,24 +117,13 @@ class FactReranker:
 
     # ------------------------------------------------------------------
     def _call_llm(self, messages: List[Dict[str, str]]) -> str:
-        system_prompt = None
-        history = []
-        user_prompt = ""
-        for msg in messages:
-            if msg["role"] == "system":
-                system_prompt = msg["content"]
-            elif msg["role"] == "assistant":
-                history.append(msg)
-            elif msg["role"] == "user":
-                if user_prompt:
-                    history.append({"role": "user", "content": user_prompt})
-                user_prompt = msg["content"]
-
+        # Pass messages directly to OpenAI — the old decompose/recompose
+        # loop scrambled demo order (assistant before user in each pair).
         return _run_sync(
             self.llm_func(
-                prompt=user_prompt,
-                system_prompt=system_prompt,
-                history_messages=history,
+                prompt=messages[-1]["content"],
+                system_prompt=messages[0]["content"] if messages[0]["role"] == "system" else None,
+                history_messages=messages[1:-1],
                 max_tokens=512,
             )
         )

@@ -108,6 +108,8 @@ async def _openai_complete(model, prompt, system_prompt=None, history_messages=[
     client = _get_client(base_url, api_key)
     kwargs.pop("hashing_kv", None)
     kwargs.pop("keyword_extraction", None)
+    kwargs.setdefault("temperature", 0.0)
+    kwargs.setdefault("seed", 0)
     messages = []
     if system_prompt:
         messages.append({"role": "system", "content": system_prompt})
@@ -254,27 +256,15 @@ def run_qa(
     for qs in queries:
         passages = qs.docs[:qa_top_k]
         msgs = make_qa_messages(passages, qs.question)
-        # Convert messages to single call
-        system_prompt = None
-        history = []
-        user_prompt = ""
-        for msg in msgs:
-            if msg["role"] == "system":
-                system_prompt = msg["content"]
-            elif msg["role"] == "assistant":
-                history.append(msg)
-            elif msg["role"] == "user":
-                if user_prompt:
-                    history.append({"role": "user", "content": user_prompt})
-                user_prompt = msg["content"]
-
+        # Pass messages directly — preserves correct user/assistant order.
+        # The old decompose/recompose loop put assistant before user in demos.
         try:
             response = _run_sync(
                 llm_func(
-                    prompt=user_prompt,
-                    system_prompt=system_prompt,
-                    history_messages=history,
-                    max_tokens=512,
+                    prompt=msgs[-1]["content"],
+                    system_prompt=msgs[0]["content"] if msgs[0]["role"] == "system" else None,
+                    history_messages=msgs[1:-1],
+                    # No max_tokens cap — let the model use its full context
                 )
             )
             # Extract answer
