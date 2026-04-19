@@ -89,11 +89,55 @@
     footer { background:var(--slate-900); color:var(--slate-400); padding:36px 20px; text-align:center; font-size:0.85rem; }
     footer a { color:var(--blue-300); text-decoration:none; } footer a:hover { text-decoration:underline; }
     footer .sep { margin:0 8px; opacity:0.4; }
+    /* ---------- Benchmark tabs & bar chart ---------- */
+    .bench-tabs-wrap { margin-top:8px; }
+    .bench-tabs { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:20px; }
+    .bt-btn {
+      font-family:inherit; font-size:0.92rem; font-weight:600;
+      padding:9px 18px; border-radius:999px;
+      background:var(--white); color:var(--slate-700);
+      border:1.5px solid var(--slate-200); cursor:pointer;
+      transition:all 0.18s;
+    }
+    .bt-btn:hover { border-color:var(--blue-400); color:var(--blue-600); }
+    .bt-btn.active {
+      background:var(--navy-900); color:var(--white); border-color:var(--navy-900);
+      box-shadow:0 2px 10px rgba(15,23,42,0.14);
+    }
+    .bench-card {
+      background:var(--white); border:1px solid var(--slate-200);
+      border-radius:var(--radius-lg); padding:24px 24px 20px;
+      box-shadow:0 1px 3px rgba(15,23,42,0.04);
+    }
+    .bench-header { text-align:center; margin-bottom:8px; }
+    .bench-header h3 { font-size:1.25rem; font-weight:700; color:var(--slate-800); margin:0; }
+    .bench-header p  { font-size:0.88rem; color:var(--slate-500); margin:4px 0 0; }
+    .subtabs { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:14px 0 4px; }
+    .st-btn {
+      font-family:inherit; font-size:0.82rem; font-weight:500;
+      padding:5px 12px; border-radius:999px;
+      background:transparent; color:var(--slate-500);
+      border:1px solid var(--slate-200); cursor:pointer;
+      transition:all 0.15s;
+    }
+    .st-btn:hover { border-color:var(--blue-300); color:var(--blue-600); }
+    .st-btn.active {
+      background:var(--blue-50); color:var(--blue-600); border-color:var(--blue-300);
+    }
+    .chart-box { margin:6px auto 0; max-width:640px; }
+    #bt-chart { width:100%; height:auto; display:block; }
+    .chart-caption {
+      font-style:italic; color:var(--slate-500); font-size:0.88rem;
+      text-align:center; margin:8px 0 0;
+    }
+
     @media (max-width:768px) {
       .hero h1 { font-size:2.2rem; }
       .graph-wrap { width:100%; max-width:480px; height:auto; aspect-ratio:420/280; }
       .duo-grid { grid-template-columns:1fr; }
       .figure-card { max-width:100%; }
+      .bt-btn { font-size:0.82rem; padding:7px 13px; }
+      #bt-chart { min-height:240px; }
     }
   </style>
 </head>
@@ -394,15 +438,254 @@
 <section>
   <div class="container">
     <h2>Benchmarks</h2>
-    <p class="section-sub">Evaluated on UltraDomain QA (11 domains), multi-hop QA, text-to-SQL, and summarization. Full results in the <a href="https://openreview.net/pdf?id=n28wnc2QTc" style="color:var(--blue-600);">paper</a>.</p>
-    <div class="bench-grid">
-      <div class="bench-item"><div class="task">UltraDomain QA</div><div class="dataset">11 domains &middot; 5 quality metrics</div><div class="metrics">Leads in <strong>96%</strong> of comparisons (48/50)</div></div>
-      <div class="bench-item"><div class="task">Multi-hop QA</div><div class="dataset">MuSiQue &middot; HotpotQA &middot; 2Wiki</div><div class="metrics">Best F1 on HotpotQA (<strong>73.4</strong>) &amp; MuSiQue (<strong>48.0</strong>)</div></div>
-      <div class="bench-item"><div class="task">Text-to-SQL</div><div class="dataset">Spider2-lite (SQLite &middot; Snowflake)</div><div class="metrics"><strong>26.7%</strong> SQLite &middot; <strong>23.7%</strong> Snowflake</div></div>
-      <div class="bench-item"><div class="task">Summarization</div><div class="dataset">SQuALITY</div><div class="metrics">BLEU &middot; ROUGE &middot; METEOR</div></div>
+    <p class="section-sub">Evaluated on multi-hop QA, UltraDomain QA (11 domains), text-to-SQL, and long-document summarization. Full results in the <a href="https://openreview.net/pdf?id=n28wnc2QTc" style="color:var(--blue-600);">paper</a>.</p>
+
+    <div class="bench-tabs-wrap">
+      <div class="bench-tabs" role="tablist" aria-label="Benchmark category">
+        <button class="bt-btn active" role="tab" data-tab="multihop"   aria-selected="true">Multi-hop QA</button>
+        <button class="bt-btn"        role="tab" data-tab="ultradomain" aria-selected="false">UltraDomain</button>
+        <button class="bt-btn"        role="tab" data-tab="text2sql"    aria-selected="false">Text-to-SQL</button>
+        <button class="bt-btn"        role="tab" data-tab="summ"        aria-selected="false">Summarization</button>
+      </div>
+
+      <div class="bench-card">
+        <div class="bench-header">
+          <h3 id="bt-title">Multi-hop QA</h3>
+          <p id="bt-sub">F1 on HotpotQA</p>
+        </div>
+        <div class="subtabs" id="bt-subtabs"></div>
+        <div class="chart-box">
+          <svg id="bt-chart" viewBox="0 0 640 320" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="bt-title bt-sub"></svg>
+        </div>
+        <p class="chart-caption" id="bt-caption"></p>
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+(function(){
+  // ── Paper numbers (from ICLR 2026 submission, n28wnc2QTc) ───────────────
+  //   Multi-hop QA: Table "tab:multi-hop"
+  //   UltraDomain : Table "tab:rag_all_in_one_part1" — Agriculture row
+  //   Text-to-SQL : Abstract + Table "tab:sql_accuracy"
+  //   Summarization: Table "tab:squality_automated" (SQuALITY)
+  const METHODS = ["GraphRAG", "LightRAG", "RAPTOR", "HippoRAG", "QAFD-RAG"];
+  const BENCH = {
+    multihop: {
+      title: "Multi-hop QA",
+      metricLabel: "F1 Score",
+      sub:   { HotpotQA:"HotpotQA", "2WikiMultihopQA":"2WikiMultihopQA", MuSiQue:"MuSiQue" },
+      subDefault: "HotpotQA",
+      series: {
+        HotpotQA:         [33.40,  8.80, 52.30, 58.67, 73.42],
+        "2WikiMultihopQA":[15.20,  8.20, 38.80, 70.33, 69.41],
+        MuSiQue:          [39.40,  1.40, 28.10, 38.33, 47.99],
+      },
+      ymax: 80,
+      caption: {
+        HotpotQA:         "QAFD-RAG leads HotpotQA F1 by 14.8 points over the next best (HippoRAG).",
+        "2WikiMultihopQA":"Competitive with HippoRAG on 2Wiki; +30.6 F1 over GraphRAG and +30.6 over RAPTOR.",
+        MuSiQue:          "QAFD-RAG sets a new best on MuSiQue, +9.7 F1 over HippoRAG.",
+      }
+    },
+    ultradomain: {
+      title: "UltraDomain QA",
+      metricLabel: "Score (0–100)",
+      sub: {
+        Comprehensive:"Comprehensiveness",
+        Diversity:"Diversity",
+        Logicality:"Logicality",
+        Relevance:"Relevance",
+        Coherence:"Coherence"
+      },
+      subDefault: "Comprehensive",
+      series: {  // Agriculture subdomain; GPT-4o judged
+        Comprehensive: [87.30, 83.65, 83.32, 82.51, 89.93],
+        Diversity:     [82.85, 77.71, 76.65, 76.26, 84.95],
+        Logicality:    [90.80, 88.85, 89.54, 88.84, 92.10],
+        Relevance:     [94.01, 93.55, 94.56, 94.09, 95.67],
+        Coherence:     [90.08, 88.67, 89.47, 88.79, 92.00],
+      },
+      ymax: 100,
+      ymin: 70,
+      caption: {
+        Comprehensive:"Agriculture subdomain, GPT-4o judged. QAFD-RAG leads in 96% of topic–metric comparisons (48/50).",
+        Diversity:    "QAFD-RAG leads Diversity by +2.1 over the next-best baseline on Agriculture.",
+        Logicality:   "QAFD-RAG leads Logicality by +1.3 over GraphRAG on Agriculture.",
+        Relevance:    "QAFD-RAG leads Relevance by +1.1 over RAPTOR on Agriculture.",
+        Coherence:    "QAFD-RAG leads Coherence by +1.9 over GraphRAG on Agriculture.",
+      }
+    },
+    text2sql: {
+      title: "Text-to-SQL",
+      metricLabel: "Execution Accuracy (%)",
+      methods: ["Spider-Agent", "QAFD-RAG"],
+      sub: { SQLite:"Spider2-lite (SQLite)", Snowflake:"Spider2-lite (Snowflake)" },
+      subDefault: "SQLite",
+      series: {
+        SQLite:    [21.5, 26.7],
+        Snowflake: [16.3, 23.7],
+      },
+      ymax: 35,
+      caption: {
+        SQLite:    "+5.2 points over Spider-Agent on SQLite, while reducing LLM API calls by 31.9–54.5%.",
+        Snowflake: "+7.4 points over Spider-Agent on Snowflake, with fewer LLM calls.",
+      }
+    },
+    summ: {
+      title: "Summarization",
+      metricLabel: "Score",
+      sub: {
+        "BLEU-1":"BLEU-1",
+        "BLEU-2":"BLEU-2",
+        "ROUGE-1":"ROUGE-1 F1",
+        "ROUGE-2":"ROUGE-2 F1",
+        METEOR:"METEOR"
+      },
+      subDefault: "METEOR",
+      methodsOrder: ["GraphRAG","HippoRAG","RAPTOR","LightRAG","QAFD-RAG"],
+      series: {  // SQuALITY long-document summarization
+        "BLEU-1": [33.91, 33.22, 32.10, 34.17, 35.44],
+        "BLEU-2": [16.12, 16.74, 16.58, 17.41, 18.63],
+        "ROUGE-1":[26.38, 27.29, 25.13, 28.59, 28.43],
+        "ROUGE-2":[ 4.08,  3.92,  3.49,  4.31,  4.79],
+        METEOR:   [24.38, 23.41, 22.87, 23.27, 25.59],
+      },
+      ymax: { "BLEU-1":40, "BLEU-2":22, "ROUGE-1":32, "ROUGE-2":6, METEOR:30 },
+      caption: {
+        "BLEU-1": "QAFD-RAG sets the best BLEU-1 on SQuALITY.",
+        "BLEU-2": "QAFD-RAG sets the best BLEU-2 on SQuALITY.",
+        "ROUGE-1":"Within 0.16 of LightRAG on ROUGE-1 F1; best overall on 4 of 5 metrics.",
+        "ROUGE-2":"QAFD-RAG sets the best ROUGE-2 F1 on SQuALITY.",
+        METEOR:   "Best METEOR on SQuALITY, +1.2 over GraphRAG.",
+      }
+    }
+  };
+
+  // ── State ──────────────────────────────────────────────────────────────
+  let activeTab = "multihop";
+  let activeSub = BENCH[activeTab].subDefault;
+
+  const $chart = document.getElementById("bt-chart");
+  const $title = document.getElementById("bt-title");
+  const $sub   = document.getElementById("bt-sub");
+  const $caption = document.getElementById("bt-caption");
+  const $subtabs = document.getElementById("bt-subtabs");
+
+  function getMethods(tab) {
+    const cfg = BENCH[tab];
+    if (cfg.methods) return cfg.methods;
+    if (cfg.methodsOrder) return cfg.methodsOrder;
+    return METHODS;
+  }
+
+  function getYmax(tab, sub) {
+    const cfg = BENCH[tab];
+    if (typeof cfg.ymax === "number") return cfg.ymax;
+    if (typeof cfg.ymax === "object") return cfg.ymax[sub];
+    return 100;
+  }
+  function getYmin(tab) {
+    return BENCH[tab].ymin || 0;
+  }
+
+  function renderChart(tab, sub) {
+    const cfg = BENCH[tab];
+    const methods = getMethods(tab);
+    const values  = cfg.series[sub];
+    const ymax = getYmax(tab, sub);
+    const ymin = getYmin(tab);
+
+    const W = 640, H = 320;
+    const padL = 56, padR = 24, padT = 48, padB = 60;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const n = methods.length;
+    const gap = 0.28;
+    const bw = plotW / n * (1 - gap);
+    const slot = plotW / n;
+
+    const range = ymax - ymin;
+    const yToPx = v => padT + plotH - (v - ymin) / range * plotH;
+
+    // pick best index (highest value)
+    const best = values.reduce((acc, v, i) => v > values[acc] ? i : acc, 0);
+
+    // ── Build SVG content ───────────────────────────────────────────────
+    let svg = "";
+    // gridlines (4 horizontal)
+    for (let g = 0; g <= 4; g++) {
+      const y = padT + plotH * g / 4;
+      const val = ymax - (ymax - ymin) * g / 4;
+      svg += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e2e8f0" stroke-width="1"/>`;
+      svg += `<text x="${padL - 10}" y="${y + 4}" text-anchor="end" fill="#94a3b8" font-size="11" font-family="DM Sans, sans-serif">${val.toFixed(0)}</text>`;
+    }
+    // baseline
+    svg += `<line x1="${padL}" y1="${padT + plotH}" x2="${W - padR}" y2="${padT + plotH}" stroke="#0f172a" stroke-width="1.5"/>`;
+
+    // y-axis metric label
+    svg += `<text x="16" y="${padT + plotH/2}" fill="#64748b" font-size="11.5" font-family="DM Sans, sans-serif" transform="rotate(-90 16 ${padT + plotH/2})" text-anchor="middle">${cfg.metricLabel}</text>`;
+
+    // bars
+    methods.forEach((m, i) => {
+      const v = values[i];
+      const x = padL + slot * i + (slot - bw) / 2;
+      const y = yToPx(v);
+      const h = padT + plotH - y;
+      const isQAFD = m === "QAFD-RAG";
+      const fill = isQAFD ? "#2563eb" : (i === best ? "#64748b" : "#cbd5e1");
+      // bar
+      svg += `<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="3" ry="3" fill="${fill}"/>`;
+      // value label
+      svg += `<text x="${x + bw/2}" y="${y - 8}" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700" font-family="DM Sans, sans-serif">${v.toFixed(2).replace(/\.00$/,'')}</text>`;
+      // method label
+      const weight = isQAFD ? "700" : "500";
+      const color  = isQAFD ? "#2563eb" : "#334155";
+      svg += `<text x="${x + bw/2}" y="${padT + plotH + 22}" text-anchor="middle" fill="${color}" font-size="12.5" font-weight="${weight}" font-family="DM Sans, sans-serif">${m}</text>`;
+    });
+
+    $chart.innerHTML = svg;
+    $title.textContent = cfg.title;
+    $sub.textContent   = `${cfg.metricLabel} · ${cfg.sub[sub]}`;
+    $caption.textContent = cfg.caption[sub] || "";
+  }
+
+  function renderSubtabs(tab) {
+    const cfg = BENCH[tab];
+    const keys = Object.keys(cfg.sub);
+    $subtabs.innerHTML = keys.map(k =>
+      `<button class="st-btn${k === activeSub ? ' active' : ''}" data-sub="${k}" role="tab" aria-selected="${k === activeSub}">${cfg.sub[k]}</button>`
+    ).join("");
+    $subtabs.querySelectorAll(".st-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeSub = btn.dataset.sub;
+        renderSubtabs(tab);
+        renderChart(activeTab, activeSub);
+      });
+    });
+  }
+
+  // Main tabs
+  document.querySelectorAll(".bt-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".bt-btn").forEach(b => {
+        b.classList.remove("active");
+        b.setAttribute("aria-selected", "false");
+      });
+      btn.classList.add("active");
+      btn.setAttribute("aria-selected", "true");
+      activeTab = btn.dataset.tab;
+      activeSub = BENCH[activeTab].subDefault;
+      renderSubtabs(activeTab);
+      renderChart(activeTab, activeSub);
+    });
+  });
+
+  // Initial render
+  renderSubtabs(activeTab);
+  renderChart(activeTab, activeSub);
+})();
+</script>
 
 <!-- ============ QUICK START ============ -->
 <section class="alt">
