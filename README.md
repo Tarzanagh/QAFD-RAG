@@ -364,7 +364,7 @@ QAFD-RAG processes documents through a two-stage pipeline:
 
 The flow diffusion algorithm is the key differentiator: rather than simple graph traversal or vector search alone, it combines graph structure with query relevance to find contextually important information that may be several hops away from the initial match.
 
-## Citation
+## BibTeX
 
 ```bibtex
 @inproceedings{zhou2026qafd,
